@@ -3,6 +3,7 @@ import { ZodError } from 'zod';
 import { openDatabase, seedDemo } from './db.mjs';
 import { installAuth, AppError } from './auth.mjs';
 import { CareService, installCare } from './care.mjs';
+import { installAI } from './ai.mjs';
 
 export function createApp(options = {}) {
   const config = {
@@ -28,6 +29,7 @@ export function createApp(options = {}) {
   installAuth(app, db, config);
   const care = new CareService(db, { webhook: process.env.NOTIFICATION_WEBHOOK_URL, ...options });
   installCare(app, care);
+  installAI(app, care);
   function finish() {
     app.use('/api', (_req, _res, next) => next(new AppError(404, 'This action was not found.')));
     app.use((err, _req, res, _next) => {
