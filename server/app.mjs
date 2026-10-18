@@ -2,6 +2,7 @@ import express from 'express';
 import { ZodError } from 'zod';
 import { openDatabase, seedDemo } from './db.mjs';
 import { installAuth, AppError } from './auth.mjs';
+import { CareService, installCare } from './care.mjs';
 
 export function createApp(options = {}) {
   const config = {
@@ -25,6 +26,8 @@ export function createApp(options = {}) {
   app.use(express.json({ limit: '24kb' }));
   app.get('/api/health', (_req, res) => res.json({ status: 'ok', demo: config.demo, ai: process.env.AI_API_KEY && process.env.AI_MODEL ? 'live' : 'local', notifications: process.env.NOTIFICATION_WEBHOOK_URL ? 'webhook' : 'in-app' }));
   installAuth(app, db, config);
+  const care = new CareService(db, { webhook: process.env.NOTIFICATION_WEBHOOK_URL, ...options });
+  installCare(app, care);
   function finish() {
     app.use('/api', (_req, _res, next) => next(new AppError(404, 'This action was not found.')));
     app.use((err, _req, res, _next) => {
@@ -35,5 +38,5 @@ export function createApp(options = {}) {
       res.status(err.status || 500).json({ error: err.status ? err.message : 'Something went wrong. Please try again.' });
     });
   }
-  return { app, db, config, finish, close: () => db.close() };
+  return { app, db, care, config, finish, close: () => db.close() };
 }
