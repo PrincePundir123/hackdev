@@ -21,3 +21,13 @@ deliverables/report_extracted.txt
 .idea/
 Thumbs.db
 .DS_Store
+
+# Application dependencies, builds, databases and test output
+node_modules/
+dist/
+data/
+*.sqlite*
+*.tsbuildinfo
+playwright-report/
+test-results/
+.runtime/
