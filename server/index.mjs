@@ -1,6 +1,18 @@
 import { createApp } from './app.mjs';
+import express from 'express';
+import { resolve } from 'node:path';
+import { existsSync } from 'node:fs';
 
 const { app, care, finish, close } = createApp();
+const dist = resolve('dist');
+if (existsSync(resolve(dist, 'index.html'))) {
+  app.use(express.static(dist, { index: false, maxAge: '1h' }));
+  app.get('/{*path}', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    res.setHeader('Cache-Control', 'no-cache');
+    res.sendFile(resolve(dist, 'index.html'));
+  });
+}
 finish();
 const worker = setInterval(() => {
   try { care.tick(); care.deliver().catch(error => console.error('Delivery worker failed:', error.message)); }
