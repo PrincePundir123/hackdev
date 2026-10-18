@@ -1,0 +1,23 @@
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+.aws/
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Generated report review artifacts
+deliverables/preview_*.png
+deliverables/all_pages_review.png
+deliverables/layout_metrics.json
+deliverables/report_extracted.txt
+
+# Local editor and OS files
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
