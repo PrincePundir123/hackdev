@@ -5,7 +5,7 @@ import { Avatar, Badge, Empty, GardenIllustration, Modal, SectionTitle, TextLink
 import type { Contact, DashboardData, Health, Incident, Page, Preview, Reminder } from './types';
 
 export type PageProps = { data: DashboardData; busy: boolean; act: (path: string, body: unknown, method?: string) => Promise<boolean>; notify: (s: string) => void; refresh: () => void; go: (page: Page) => void; openReminder: () => void; openHelp: () => void; openIncident: (id: string) => void };
-const openStates = ['CREATED', 'AWAITING_RESPONSE', 'ASSIGNED', 'FOLLOW_UP_OVERDUE'];
+const openStates = ['CREATED', 'AWAITING_RESPONSE', 'ASSIGNED', 'FOLLOW_UP_OVERDUE', 'NO_RESPONDER'];
 function PageHeading({ eyebrow, title, subtitle, action }: { eyebrow: string; title: string; subtitle: string; action?: ReactNode }) {
   return <div className="page-heading"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{subtitle}</p></div>{action}</div>;
 }

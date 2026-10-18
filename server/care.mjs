@@ -73,7 +73,7 @@ export class CareService {
       reminders: permitted ? this.all('SELECT * FROM reminders WHERE elder_id=? ORDER BY CASE status WHEN \'due\' THEN 0 WHEN \'scheduled\' THEN 1 WHEN \'waiting\' THEN 2 ELSE 3 END, due_at LIMIT 100', elder.id) : [],
       reminders_allowed: !!permitted, incidents, last_check_in: checkin?.received_at || null,
       audit: own ? this.all('SELECT * FROM audit WHERE elder_id=? ORDER BY created_at DESC,rowid DESC LIMIT 80', elder.id) : [],
-      stats: { open: incidents.filter(i => !terminal.includes(i.state)).length, completed: incidents.filter(i => i.state === 'RESOLVED').length },
+      stats: { open: incidents.filter(i => !['RESOLVED', 'CANCELLED'].includes(i.state)).length, completed: incidents.filter(i => i.state === 'RESOLVED').length },
     };
   }
   createInvite(user, body) {
@@ -128,10 +128,10 @@ export class CareService {
   reminder(user, body) {
     this.requireElder(user);
     const data = reminderSchema.parse(body);
-    requireThat(data.trigger_type !== 'fixed' || (data.due_at && data.due_at > this.now() && data.due_at < this.now() + 366 * 86400000), 400, 'Choose a reminder time in the coming year.');
-    requireThat(data.trigger_type !== 'fixed' || data.repeat === 'once', 400, 'Daily reminders currently use the morning check-in trigger.');
     const previous = this.get('SELECT * FROM reminders WHERE elder_id=? AND client_key=?', user.id, data.client_key);
     if (previous) return previous;
+    requireThat(data.trigger_type !== 'fixed' || (data.due_at && data.due_at > this.now() && data.due_at < this.now() + 366 * 86400000), 400, 'Choose a reminder time in the coming year.');
+    requireThat(data.trigger_type !== 'fixed' || data.repeat === 'once', 400, 'Daily reminders currently use the morning check-in trigger.');
     const reminderId = id();
     this.run('INSERT INTO reminders (id,elder_id,client_key,title,trigger_type,offset_minutes,due_at,repeat,status,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)', reminderId, user.id, data.client_key, data.title, data.trigger_type, data.offset_minutes, data.trigger_type === 'fixed' ? data.due_at : null, data.repeat, data.trigger_type === 'fixed' ? 'scheduled' : 'waiting', this.now());
     this.audit(user.id, user.id, 'reminder_created', 'A confirmed reminder was saved.');
