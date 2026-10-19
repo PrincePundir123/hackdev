@@ -43,18 +43,14 @@ export default function LanguagePicker({
             }
           }}
         >
-          {languages.map((entry) => (
-            <option
-              key={entry.code}
-              value={entry.code}
-              lang={entry.code}
-              disabled={!entry.available}
-            >
-              {entry.native}
-              {entry.code === 'en' ? '' : ` · ${entry.name}`}
-              {!entry.available ? ` (${t('Not yet')})` : ''}
-            </option>
-          ))}
+          {languages
+            .filter((entry) => entry.available)
+            .map((entry) => (
+              <option key={entry.code} value={entry.code} lang={entry.code}>
+                {entry.native}
+                {entry.code === 'en' ? '' : ` · ${entry.name}`}
+              </option>
+            ))}
         </select>
       </label>
       {busy && <span role="status">{t('Saving…')}</span>}

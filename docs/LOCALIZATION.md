@@ -4,7 +4,7 @@ Use the **Language** selector on the welcome screen or in the signed-in header. 
 
 The prototype has draft interfaces for **Assamese, Bengali, Gujarati, Hindi, Kannada, Malayalam, Marathi, Nepali, Odia, Punjabi, Sanskrit, Tamil, Telugu, and Urdu**, alongside English. Buttons, navigation, form labels, confirmations, care states, generated timelines, sharing history, and the care coverage planner use the selected display language. Urdu uses a right-to-left layout. Fonts ship with the app.
 
-**Bodo, Dogri, Kashmiri, Konkani, Maithili, Manipuri, Santali, and Sindhi remain unavailable.** They are listed as “Not yet” and cannot be selected or saved through the API. Reliable translations for these languages were not produced; another language has not been substituted. Consequently this release does **not** provide full coverage of all 22 scheduled Indian languages.
+**Bodo, Dogri, Kashmiri, Konkani, Maithili, Manipuri, Santali, and Sindhi remain unavailable.** They are hidden from the language selector and cannot be saved through the API. This release provides English and 14 regional interfaces.
 
 All regional copy is a draft and needs fluent-speaker review before public use, particularly consent, safety limitations, plural agreement, and care workflow terminology. Automated coverage checks establish that message keys and placeholders exist; they cannot establish translation accuracy.
 
