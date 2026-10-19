@@ -964,6 +964,7 @@ select:focus {
   padding: 56px 0;
 }
 .auth-copy h1 {
+  color: white;
   font-family: 'Poppins', sans-serif;
   font-size: clamp(38px, 4vw, 56px);
   font-weight: 700;
@@ -1005,6 +1006,9 @@ select:focus {
 }
 .auth-story .brand small {
   color: #b6d6e5;
+}
+.auth-story .brand {
+  color: white;
 }
 .auth-panel {
   padding: 56px 64px;

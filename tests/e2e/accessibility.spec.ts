@@ -1,6 +1,26 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+test('welcome headline and brand contrast with the dark panel on desktop and mobile', async ({
+  page,
+}) => {
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    const headline = page.locator('.auth-copy h1');
+    await expect(headline).toBeVisible();
+    await expect(headline).toHaveCSS('color', 'rgb(255, 255, 255)');
+    await expect(page.locator('.auth-story .brand')).toHaveCSS('color', 'rgb(255, 255, 255)');
+    await expect(page.locator('.auth-story')).toHaveCSS('background-color', 'rgb(0, 38, 77)');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+  }
+});
+
 test('entry, dashboard, and reminder dialog have no serious accessibility violations', async ({
   page,
 }) => {
