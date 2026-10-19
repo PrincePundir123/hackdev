@@ -4,7 +4,7 @@ import { dirname } from 'node:path';
 import { randomBytes, scryptSync, timingSafeEqual, createHash, randomUUID } from 'node:crypto';
 
 export const id = () => randomUUID();
-export const hashToken = token => createHash('sha256').update(token).digest('hex');
+export const hashToken = (token) => createHash('sha256').update(token).digest('hex');
 export function hashPassword(password) {
   const salt = randomBytes(16).toString('hex');
   return salt + ':' + scryptSync(password, salt, 64).toString('hex');
@@ -86,28 +86,86 @@ export function openDatabase(path = './data/saathi.sqlite') {
 
 export function transaction(db, fn) {
   db.exec('BEGIN IMMEDIATE');
-  try { const result = fn(); db.exec('COMMIT'); return result; }
-  catch (error) { db.exec('ROLLBACK'); throw error; }
+  try {
+    const result = fn();
+    db.exec('COMMIT');
+    return result;
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
 }
 
 export function seedDemo(db, now = Date.now()) {
   if (db.prepare("SELECT id FROM users WHERE id = 'meera'").get()) return;
   transaction(db, () => {
     const password = hashPassword('SaathiDemo2026!');
-    const insert = db.prepare('INSERT INTO users (id,household_id,name,email,password_hash,role,is_demo,created_at) VALUES (?,?,?,?,?,?,1,?)');
+    const insert = db.prepare(
+      'INSERT INTO users (id,household_id,name,email,password_hash,role,is_demo,created_at) VALUES (?,?,?,?,?,?,1,?)',
+    );
     insert.run('meera', 'demo-home', 'Meera Sharma', 'meera@saathi.demo', password, 'elder', now);
-    insert.run('arjun', 'demo-home', 'Arjun Sharma', 'arjun@saathi.demo', password, 'caregiver', now);
+    insert.run(
+      'arjun',
+      'demo-home',
+      'Arjun Sharma',
+      'arjun@saathi.demo',
+      password,
+      'caregiver',
+      now,
+    );
     insert.run('leela', 'demo-home', 'Leela Rao', 'leela@saathi.demo', password, 'caregiver', now);
-    const contact = db.prepare('INSERT INTO contacts (id,elder_id,user_id,relationship,priority,allow_notes,allow_reminders,drill_opt_in) VALUES (?,?,?,?,?,?,?,1)');
+    const contact = db.prepare(
+      'INSERT INTO contacts (id,elder_id,user_id,relationship,priority,allow_notes,allow_reminders,drill_opt_in) VALUES (?,?,?,?,?,?,?,1)',
+    );
     contact.run('contact-arjun', 'meera', 'arjun', 'Son', 1, 1, 1);
     contact.run('contact-leela', 'meera', 'leela', 'Neighbour', 2, 0, 0);
-    const reminder = db.prepare('INSERT INTO reminders (id,elder_id,client_key,title,trigger_type,offset_minutes,due_at,repeat,status,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)');
-    reminder.run('seed-water', 'meera', 'seed-water', 'Water the balcony plants', 'check_in', 20, null, 'daily', 'waiting', now);
-    reminder.run('seed-walk', 'meera', 'seed-walk', 'A little fresh air', 'fixed', 0, now + 3600000, 'once', 'scheduled', now);
-    db.prepare('INSERT INTO audit VALUES (?,?,?,?,?,?,?,?)').run(id(), 'meera', 'meera', 'care_circle_created', 'Your demo care circle is ready. All people and records are fictional.', 'allow', null, now);
+    const reminder = db.prepare(
+      'INSERT INTO reminders (id,elder_id,client_key,title,trigger_type,offset_minutes,due_at,repeat,status,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)',
+    );
+    reminder.run(
+      'seed-water',
+      'meera',
+      'seed-water',
+      'Water the balcony plants',
+      'check_in',
+      20,
+      null,
+      'daily',
+      'waiting',
+      now,
+    );
+    reminder.run(
+      'seed-walk',
+      'meera',
+      'seed-walk',
+      'A little fresh air',
+      'fixed',
+      0,
+      now + 3600000,
+      'once',
+      'scheduled',
+      now,
+    );
+    db.prepare('INSERT INTO audit VALUES (?,?,?,?,?,?,?,?)').run(
+      id(),
+      'meera',
+      'meera',
+      'care_circle_created',
+      'Your demo care circle is ready. All people and records are fictional.',
+      'allow',
+      null,
+      now,
+    );
   });
 }
 
 export function publicUser(user) {
-  return { id: user.id, name: user.name, email: user.email, role: user.role, timezone: user.timezone, is_demo: !!user.is_demo };
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    timezone: user.timezone,
+    is_demo: !!user.is_demo,
+  };
 }
