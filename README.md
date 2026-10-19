@@ -8,7 +8,7 @@ Care coordination for older adults and the people they trust.
 
 **Daily check-ins · Accountable care requests · Consent-based sharing · Weekly coverage**
 
-[Live demo](https://sahara-circle.onrender.com/) · [Demo walkthrough](#try-the-demo) · [Screenshots](#screenshots) · [Run locally](#run-locally) · [Architecture](docs/ARCHITECTURE.md)
+[Live demo](https://sahara-circle.onrender.com/) · [Watch demo video](https://www.youtube.com/watch?v=diU3GCz2oTM) · [Demo walkthrough](#try-the-demo) · [Screenshots](#screenshots) · [Run locally](#run-locally) · [Architecture](docs/ARCHITECTURE.md)
 
 Prepared for [Next Byte Hacks V5](https://next-byte-hacks-v5.devpost.com/)
 
@@ -51,6 +51,8 @@ Saathi is designed to reduce the uncertainty between asking for help and knowing
 The intended users are older adults living independently and family members or trusted contacts coordinating everyday support. The next validation step is usability testing with those users, measuring whether they can understand request status, complete a handoff, identify a coverage gap, and manage sharing without assistance. Real-world care outcomes have not yet been evaluated.
 
 ## Try the demo
+
+**Watch the project walkthrough: [Saathi Care AI — YouTube Demo](https://www.youtube.com/watch?v=diU3GCz2oTM)**
 
 **Open the deployed app: [Saathi Care AI — Live Demo](https://sahara-circle.onrender.com/)**
 
