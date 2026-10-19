@@ -25,7 +25,5 @@ jobs:
         if: always()
         with:
           name: browser-verification
-          path: |
-            playwright-report/
-            docs/screenshots/
+          path: playwright-report/
           retention-days: 7

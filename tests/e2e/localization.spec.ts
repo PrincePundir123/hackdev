@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { readFileSync, mkdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 const english = JSON.parse(readFileSync('src/locales/en.json', 'utf8'));
 const languages: { code: string; available: boolean; dir: string }[] = JSON.parse(
   readFileSync('shared/languages.json', 'utf8'),
@@ -73,9 +73,6 @@ test('Hindi confirmation saves original text; preferences survive reload and sta
     await page.getByRole('button', { name: hi('Review request'), exact: true }).click();
     await expect(page.getByRole('heading', { name: hi('Does this look right?') })).toBeVisible();
     await expect(page.getByRole('dialog').getByText(original, { exact: true })).toBeVisible();
-    mkdirSync('docs/screenshots', { recursive: true });
-    await page.evaluate(() => document.fonts.ready);
-    await page.screenshot({ path: 'docs/screenshots/language-hindi.png', fullPage: true });
     await page.getByRole('button', { name: hi('Confirm'), exact: true }).click();
     await expect(page.getByRole('dialog')).not.toBeVisible();
     await page.reload();
@@ -116,11 +113,6 @@ test('Hindi confirmation saves original text; preferences survive reload and sta
       ),
     ).toEqual([]);
     await caregiver.getByRole('button', { name: ur('Cancel'), exact: true }).click();
-    await caregiver.evaluate(() => document.fonts.ready);
-    await caregiver.screenshot({
-      path: 'docs/screenshots/language-urdu-mobile.png',
-      fullPage: true,
-    });
     expect(await caregiver.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );

@@ -1,6 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { mkdirSync } from 'node:fs';
 
 const headers = { 'X-Saathi-Client': 'web' };
 async function login(page: Page, name: string) {
@@ -84,8 +83,6 @@ test('caregivers save their hours and the older adult sees precise gaps and an a
         .filter((v) => v.impact === 'serious' || v.impact === 'critical')
         .map((v) => ({ id: v.id, nodes: v.nodes.map((n) => n.target) })),
     ).toEqual([]);
-    mkdirSync('docs/screenshots', { recursive: true });
-    await elder.screenshot({ path: 'docs/screenshots/coverage-planner.png', fullPage: true });
     await arjun.reload();
     await arjun.getByRole('button', { name: 'My weekly hours', exact: true }).click();
     await arjun.getByRole('button', { name: 'Edit my weekly hours' }).click();
@@ -136,7 +133,6 @@ test('mobile schedule changes affect routing and a stale editor cannot overwrite
     expect(
       await mobile.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);
-    await mobile.screenshot({ path: 'docs/screenshots/coverage-mobile.png', fullPage: true });
     await elder.getByRole('button', { name: /^Request help/ }).click();
     await expect(elder.getByRole('dialog').getByText('Leela Rao', { exact: true })).toBeVisible();
     await expect(

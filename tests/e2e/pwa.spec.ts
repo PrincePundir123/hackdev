@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { readFileSync, mkdirSync, mkdtempSync } from 'node:fs';
+import { readFileSync, mkdtempSync } from 'node:fs';
 
 const catalog: { code: string; available: boolean; dir: string }[] = JSON.parse(
   readFileSync('shared/languages.json', 'utf8'),
@@ -125,10 +125,6 @@ test('offline reload uses every enabled language, reveals no care data, and reco
         'Care updates need an internet connection. Private care records are not saved for offline use.'
       ],
     );
-    if (language.code === 'hi') {
-      mkdirSync('docs/screenshots', { recursive: true });
-      await page.screenshot({ path: 'docs/screenshots/pwa-offline-hindi.png', fullPage: true });
-    }
   }
   expect(
     await page.evaluate(async () => {
@@ -237,9 +233,6 @@ test('iPhone install guidance is visible on mobile and standalone mode reports i
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
-    await page
-      .getByTestId('install-app')
-      .screenshot({ path: 'docs/screenshots/pwa-install-mobile.png' });
   } finally {
     await context.close();
   }

@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { readFileSync, mkdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 
 const headers = { 'X-Saathi-Client': 'web' };
 async function login(page: Page, person: string) {
@@ -135,8 +135,6 @@ test('caregiver daily summary follows explicit sharing, reminder completion, and
         .locator('dd'),
     ).toHaveText(String(resolved + 1));
 
-    mkdirSync('docs/screenshots', { recursive: true });
-    await caregiver.screenshot({ path: 'docs/screenshots/daily-summary.png', fullPage: true });
     const scan = await new AxeBuilder({ page: caregiver })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
       .analyze();
@@ -199,12 +197,6 @@ test('Urdu mobile summary preserves restricted data and links to the personal co
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );
-    await page.evaluate(() => document.fonts.ready);
-    await page.screenshot({
-      path: 'docs/screenshots/daily-summary-urdu-mobile.png',
-      fullPage: true,
-      animations: 'disabled',
-    });
     await page
       .getByTestId('summary-coverage')
       .getByRole('button', { name: text('My weekly hours'), exact: true })

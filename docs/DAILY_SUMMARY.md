@@ -22,5 +22,3 @@ The browser clears a failed summary fetch rather than displaying old private sum
 `GET /api/summary/daily` is authenticated and bound to the signed-in account's care circle. It does not accept a target household or historical date. `server/summary.mjs` calculates the response from SQLite records and the existing coverage and consent services. The summary API returns only the request fields required by its list; notes and outcomes are fetched only when the request detail is opened and permission permits them.
 
 This is a live view of **today**, not a saved end-of-day report. Completion counts use each reminder's latest self-reported completion timestamp; they are not a full recurrence history. There is no AI-generated interpretation, scheduled digest, external notification, email delivery or additional provider cost. The server must remain running for automatic reminder and request timers.
-
-Screenshots: [caregiver summary](screenshots/daily-summary.png), [Urdu mobile summary](screenshots/daily-summary-urdu-mobile.png).

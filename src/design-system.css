@@ -1,5 +1,4 @@
-/* Birdie-inspired visual language, adapted for Saathi's interactive care workspace.
-   Keep the original layout rules; this layer owns the shared visual tokens. */
+/* Shared visual tokens and component styles. */
 @import '@fontsource/poppins/400.css';
 @import '@fontsource/poppins/500.css';
 @import '@fontsource/poppins/600.css';

@@ -50,7 +50,7 @@ The build hashes the offline content, translations, worker code, manifest and ic
 
 To obtain a pending update, close all Saathi tabs and installed windows, then reopen. Ordinary online frontend code is fetched through the existing HTTP behavior; no old application shell is retained in the worker.
 
-## Hackathon demonstration
+## Manual check
 
 1. Use the production build or deployed HTTPS site in a normal Chrome/Edge window.
 2. Show the install control or browser installation menu, then open the installed app.
@@ -58,15 +58,11 @@ To obtain a pending update, close all Saathi tabs and installed windows, then re
 4. Disconnect and reload: show the localized offline page and explain that care records and offline actions are not cached.
 5. Reconnect and press **Try again** to reopen the live application.
 
-Include the public URL, repository, screenshots, and demo video in the submission. PWA support is not a cloud deployment: the current persistent SQLite backend still needs a suitable host, or the separately discussed Vercel backend migration.
-
 ## Verification
 
 Five browser tests cover manifest and icon dimensions, production Chrome installability diagnostics in a normal persistent profile, public-cache contents after authenticated requests, offline fallback in all 15 enabled languages, API network failure while offline, online recovery, a check-in that is not queued, simulated prompt dismissal/failure/installation, iPhone menu guidance, and standalone display-mode detection. Axe scans cover the offline page and settings install card.
 
-The native installation dialog events and iPhone user agent are simulated for those interaction tests. Chrome's manifest/installation diagnostics are real; a physical Android/iPhone home-screen installation and native OS launch have not been performed. Verify those on your target device and final HTTPS deployment before recording the submission video.
-
-Screenshots: [desktop install settings](screenshots/pwa-settings-desktop.png), [mobile install guidance](screenshots/pwa-install-mobile.png), [Hindi offline fallback](screenshots/pwa-offline-hindi.png), [Urdu mobile offline fallback](screenshots/pwa-offline-urdu-mobile.png).
+The native installation dialog events and iPhone user agent are simulated for those interaction tests. Chrome's manifest/installation diagnostics are real; verify physical Android and iPhone installation on the final HTTPS deployment.
 
 ## Source files
 

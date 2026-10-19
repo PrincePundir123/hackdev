@@ -1,5 +1,4 @@
 import { test, expect, type Page } from '@playwright/test';
-import { mkdirSync } from 'node:fs';
 
 async function signIn(page: Page, person: string) {
   await page.goto('/');
@@ -78,8 +77,6 @@ test('two-account drill, backup acceptance, private-note filtering and outcome r
     await expect(
       elder.getByText('Called Meera and completed the practice check-in.', { exact: true }),
     ).toBeVisible();
-    mkdirSync('docs/screenshots', { recursive: true });
-    await elder.screenshot({ path: 'docs/screenshots/care-timeline.png', fullPage: true });
   } finally {
     await elderContext.close();
     await backupContext.close();
@@ -102,7 +99,6 @@ test('sharing preview, permission revocation, and responsive navigation', async 
     await expect(
       page.getByRole('dialog').getByText('Private notes hidden', { exact: true }),
     ).toBeVisible();
-    await page.screenshot({ path: 'docs/screenshots/sharing-preview.png', fullPage: true });
     await page.getByRole('button', { name: 'Got it', exact: true }).click();
     const card = page.locator('.contact-card').filter({ hasText: 'Leela Rao' });
     await card.getByRole('button', { name: 'Edit permissions' }).click();
@@ -132,11 +128,6 @@ test('sharing preview, permission revocation, and responsive navigation', async 
     expect(
       await mobile.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);
-    await mobile.screenshot({ path: 'docs/screenshots/mobile.png', fullPage: true });
-    await page.getByRole('button', { name: 'Overview', exact: true }).click();
-    const dismiss = page.getByRole('button', { name: 'Dismiss message' });
-    if (await dismiss.count()) await dismiss.click({ timeout: 1000 }).catch(() => {});
-    await page.screenshot({ path: 'docs/screenshots/overview.png', fullPage: true });
   } finally {
     await context.close();
     await mobileContext.close();

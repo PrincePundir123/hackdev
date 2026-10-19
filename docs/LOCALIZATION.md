@@ -31,5 +31,3 @@ Browser microphone recognition and read-back remain English-only in this prototy
 - Keep placeholders such as `{{p0}}` intact. Preserve boundary spaces in sentence fragments. Add new keys to English and every enabled dictionary together.
 - Use `t()` for application copy. Only pass known generated fields to `systemText()`; personal writing must bypass translation.
 - Run `npm run check:i18n`, `npm test`, `npm run build`, and `npm run test:e2e`. New languages also need script/font checks and fluent review; a passing automated test is not linguistic approval.
-
-Screenshots: [Hindi reminder confirmation](screenshots/language-hindi.png), [Urdu mobile coverage planner](screenshots/language-urdu-mobile.png).
