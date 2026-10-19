@@ -1,0 +1,24 @@
+{
+  "source": "Local production build; isolated fictional demo household",
+  "captures": [
+    "01-welcome",
+    "02-meera-dashboard",
+    "03-request-review",
+    "04-request-timeline",
+    "05-caregiver-dashboard",
+    "06-accepted-request",
+    "07-resolved-request",
+    "08-weekly-hours",
+    "09-coverage-planner",
+    "10-reminder-confirmation",
+    "11-reminders",
+    "12-daily-summary",
+    "13-care-circle",
+    "14-sharing-permissions",
+    "15-sharing-preview",
+    "16-hindi-interface",
+    "17-accessibility-settings",
+    "18-mobile-dashboard"
+  ],
+  "browserErrors": []
+}
