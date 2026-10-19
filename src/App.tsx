@@ -1,4 +1,4 @@
-import { t, systemText, setLanguage, useLanguage } from './i18n';
+import { t, systemText, errorText, setLanguage, useLanguage } from './i18n';
 import LanguagePicker from './LanguagePicker';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -343,7 +343,7 @@ export default function App() {
       {error && (
         <div className="toast error" role="alert">
           <CircleHelp size={20} />
-          {systemText(error)}
+          {errorText(error)}
           <button onClick={() => setError('')} aria-label={t('Dismiss error')}>
             <X size={16} />
           </button>

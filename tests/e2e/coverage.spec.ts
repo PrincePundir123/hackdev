@@ -67,7 +67,7 @@ test('caregivers save their hours and the older adult sees precise gaps and an a
     await expect(
       elder.getByRole('heading', { name: 'Know when your circle is covered.' }),
     ).toBeVisible();
-    await elder.getByRole('button', { name: 'Monday, 15h uncovered', exact: true }).click();
+    await elder.getByRole('button', { name: 'Monday, 15h Gap', exact: true }).click();
     const gap = elder.locator('.coverage-interval').filter({ hasText: '14:00–18:00' });
     await expect(gap.getByText('No responder scheduled', { exact: true })).toBeVisible();
     await expect(

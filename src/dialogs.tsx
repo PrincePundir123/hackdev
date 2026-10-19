@@ -1,4 +1,4 @@
-import { t, systemText, getLanguage, locale } from './i18n';
+import { t, systemText, errorText, getLanguage, locale } from './i18n';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
   ArrowRight,
@@ -401,7 +401,7 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
         )}
         {error && (
           <p className="error-message" role="alert">
-            {systemText(error)}
+            {errorText(error)}
           </p>
         )}
       </div>
@@ -530,7 +530,7 @@ export function HelpDialog({
           </p>
           {error && (
             <p className="error-message" role="alert">
-              {systemText(error)}
+              {errorText(error)}
             </p>
           )}
         </div>
@@ -699,7 +699,7 @@ export function IncidentDialog({
         )}
         {localError && (
           <p className="error-message" role="alert">
-            {systemText(localError)}
+            {errorText(localError)}
           </p>
         )}
       </div>

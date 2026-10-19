@@ -94,7 +94,12 @@ export function openDatabase(path = './data/saathi.sqlite') {
     CREATE INDEX IF NOT EXISTS outbox_due ON outbox(status, next_due_at);
   `);
   // Existing installations keep all records and receive an English default.
-  if (!db.prepare('PRAGMA table_info(users)').all().some((column) => column.name === 'language')) {
+  if (
+    !db
+      .prepare('PRAGMA table_info(users)')
+      .all()
+      .some((column) => column.name === 'language')
+  ) {
     db.exec("ALTER TABLE users ADD COLUMN language TEXT NOT NULL DEFAULT 'en'");
   }
   return db;

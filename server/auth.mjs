@@ -20,7 +20,9 @@ const credentials = z.object({
     .transform((x) => x.toLowerCase().trim()),
   password: z.string().min(12).max(128),
 });
-const languageSchema = z.enum(languages.filter((language) => language.available).map((language) => language.code));
+const languageSchema = z.enum(
+  languages.filter((language) => language.available).map((language) => language.code),
+);
 const registerSchema = credentials.extend({
   language: languageSchema.default('en'),
   name: z.string().trim().min(2).max(70),

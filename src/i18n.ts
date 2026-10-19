@@ -164,3 +164,10 @@ export function systemText(source: string) {
   }
   return source;
 }
+export function errorText(source: string) {
+  const translated = systemText(source);
+  // Unknown provider/browser/schema diagnostics are not a regional translation.
+  return language !== 'en' && translated === source && /[A-Za-z]/.test(source)
+    ? t('Something went wrong. Please try again.')
+    : translated;
+}

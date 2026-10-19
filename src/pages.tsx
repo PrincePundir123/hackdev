@@ -1,4 +1,4 @@
-import { t, systemText, formatDate, languages, pluralSuffix } from './i18n';
+import { t, systemText, errorText, formatDate, languages, pluralSuffix } from './i18n';
 import { useState, type ReactNode } from 'react';
 import {
   ArrowRight,
@@ -620,7 +620,7 @@ export function Circle(props: PageProps) {
       </div>
       {localError && (
         <p className="error-message" role="alert">
-          {systemText(localError)}
+          {errorText(localError)}
         </p>
       )}
       <div className="contact-grid">
@@ -940,7 +940,7 @@ export function Circle(props: PageProps) {
                 </label>
                 {localError && (
                   <p className="error-message" role="alert">
-                    {systemText(localError)}
+                    {errorText(localError)}
                   </p>
                 )}
                 <p className="fine-print">
@@ -1106,7 +1106,7 @@ export function Drills(props: PageProps) {
       </div>
       {error && (
         <p className="error-message" role="alert">
-          {systemText(error)}
+          {errorText(error)}
         </p>
       )}
       <section className="card">

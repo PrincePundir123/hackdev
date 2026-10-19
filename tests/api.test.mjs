@@ -6,21 +6,44 @@ test('display language persists per account and cannot change another person', a
   const f = await setup(t);
   const elder = await f.login('meera');
   const caregiver = await f.login('arjun');
-  assert.equal((await f.request('/api/auth/preferences', { language: 'hi' }, '', 'PATCH')).status, 401);
+  assert.equal(
+    (await f.request('/api/auth/preferences', { language: 'hi' }, '', 'PATCH')).status,
+    401,
+  );
   const saved = await f.request('/api/auth/preferences', { language: 'hi' }, elder, 'PATCH');
   assert.equal(saved.status, 200);
   assert.equal((await saved.json()).user.language, 'hi');
   const again = await f.login('meera');
-  assert.equal((await f.request('/api/auth/me', undefined, again).then((r) => r.json())).user.language, 'hi');
-  assert.equal((await f.request('/api/auth/me', undefined, caregiver).then((r) => r.json())).user.language, 'en');
-  assert.equal((await f.request('/api/auth/preferences', { language: 'unknown' }, elder, 'PATCH')).status, 400);
-  assert.equal((await f.request('/api/auth/preferences', { language: 'ur', user_id: 'arjun' }, elder, 'PATCH')).status, 400);
+  assert.equal(
+    (await f.request('/api/auth/me', undefined, again).then((r) => r.json())).user.language,
+    'hi',
+  );
+  assert.equal(
+    (await f.request('/api/auth/me', undefined, caregiver).then((r) => r.json())).user.language,
+    'en',
+  );
+  assert.equal(
+    (await f.request('/api/auth/preferences', { language: 'unknown' }, elder, 'PATCH')).status,
+    400,
+  );
+  assert.equal(
+    (await f.request('/api/auth/preferences', { language: 'brx' }, elder, 'PATCH')).status,
+    400,
+  );
+  assert.equal(
+    (await f.request('/api/auth/preferences', { language: 'ur', user_id: 'arjun' }, elder, 'PATCH'))
+      .status,
+    400,
+  );
 });
 
 test('new accounts retain their selected display language', async (t) => {
   const f = await setup(t);
   const response = await f.request('/api/auth/register', {
-    name: 'Regional language account', email: 'language@example.test', password: 'LongPassword123!', language: 'hi',
+    name: 'Regional language account',
+    email: 'language@example.test',
+    password: 'LongPassword123!',
+    language: 'hi',
   });
   assert.equal(response.status, 200);
   assert.equal((await response.json()).user.language, 'hi');

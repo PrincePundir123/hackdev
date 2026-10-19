@@ -1,4 +1,4 @@
-import { t, systemText, getLanguage } from './i18n';
+import { t, errorText, getLanguage } from './i18n';
 import LanguagePicker from './LanguagePicker';
 import { useState, type FormEvent } from 'react';
 import {
@@ -275,7 +275,7 @@ export default function AuthPage({
           )}
           {error && (
             <div className="error-message" role="alert">
-              {systemText(error)}
+              {errorText(error)}
             </div>
           )}
           <div className="auth-privacy">

@@ -1,4 +1,4 @@
-import { t, systemText, pluralSuffix } from './i18n';
+import { t, errorText, pluralSuffix } from './i18n';
 import { useEffect, useState } from 'react';
 import {
   CalendarDays,
@@ -234,7 +234,7 @@ function ScheduleEditor({
           </div>
           {error && (
             <div className="error-message" role="alert">
-              <p>{systemText(error)}</p>
+              <p>{errorText(error)}</p>
               <button type="button" className="text-link" onClick={onReload}>
                 {t('Reload latest schedule')}
               </button>
@@ -335,7 +335,7 @@ export default function CoveragePage(props: PageProps) {
       </div>
       {error && (
         <div className="error-message" role="alert">
-          {systemText(error)} {report && t('Showing the last loaded plan; it may be out of date.')}
+          {errorText(error)} {report && t('Showing the last loaded plan; it may be out of date.')}
         </div>
       )}
       {!report ? (

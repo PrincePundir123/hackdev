@@ -134,3 +134,36 @@ test('Hindi confirmation saves original text; preferences survive reload and sta
     await caregiverContext.close();
   }
 });
+
+test('all available account interfaces translate navigation, coverage, and settings', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Continue as Meera' }).click();
+  await expect(page.locator('.topbar')).toBeVisible();
+  try {
+    for (const entry of languages.filter(
+      (language) => language.available && language.code !== 'en',
+    )) {
+      const text = translator(entry.code);
+      await page.locator('.language-picker select').selectOption(entry.code);
+      await expect(page.locator('html')).toHaveAttribute('lang', entry.code);
+      await expect(
+        page.getByRole('button', { name: text('My reminders'), exact: true }),
+      ).toBeVisible();
+      await page.getByRole('button', { name: text('Care coverage'), exact: true }).click();
+      await expect(page.locator('.coverage-calendar')).toBeVisible();
+      await page
+        .getByRole('button', { name: text('Settings & accessibility'), exact: true })
+        .click();
+      await expect(
+        page.getByRole('heading', { name: text('Language settings'), exact: true }),
+      ).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      );
+    }
+  } finally {
+    await saveEnglish(page);
+  }
+});
