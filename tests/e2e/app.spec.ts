@@ -113,7 +113,9 @@ test('sharing preview, permission revocation, and responsive navigation', async 
     const d = await mobile.request.get('/api/dashboard').then((r) => r.json());
     expect(d.incidents).toEqual([]);
     expect(d.reminders).toEqual([]);
+    await expect(mobile.locator('.sidebar')).toHaveAttribute('inert', '');
     await mobile.getByRole('button', { name: 'Open navigation' }).click();
+    await expect(mobile.locator('.sidebar')).not.toHaveAttribute('inert');
     await expect(mobile.locator('.sidebar-close')).toBeFocused();
     await mobile.keyboard.press('Shift+Tab');
     await expect(mobile.locator('.profile-button')).toBeFocused();

@@ -52,9 +52,21 @@ export default function App() {
   const [error, setError] = useState('');
   const [offline, setOffline] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [mobileNavigation, setMobileNavigation] = useState(
+    () => window.matchMedia('(max-width: 760px)').matches,
+  );
   const [modal, setModal] = useState<'reminder' | 'help' | null>(null);
   const [incidentId, setIncidentId] = useState<string | null>(null);
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 760px)');
+    function syncNavigation() {
+      setMobileNavigation(query.matches);
+      if (!query.matches) setMenu(false);
+    }
+    query.addEventListener('change', syncNavigation);
+    return () => query.removeEventListener('change', syncNavigation);
+  }, []);
   useEffect(() => {
     if (!menu) return;
     const previousFocus = document.activeElement as HTMLElement | null;
@@ -241,7 +253,11 @@ export default function App() {
           aria-label={t('Close navigation')}
         />
       )}
-      <aside id="care-navigation" className={`sidebar ${menu ? 'open' : ''}`}>
+      <aside
+        id="care-navigation"
+        className={`sidebar ${menu ? 'open' : ''}`}
+        inert={mobileNavigation && !menu}
+      >
         <div className="sidebar-brand-row">
           <Brand light />
           <button
