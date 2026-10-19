@@ -1,0 +1,238 @@
+@font-face {
+  font-family: 'Saathi Devanagari';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-devanagari/files/noto-sans-devanagari-devanagari-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Saathi Arabic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-arabic/files/noto-sans-arabic-arabic-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Saathi Bengali';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-bengali/files/noto-sans-bengali-bengali-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Saathi Tamil';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-tamil/files/noto-sans-tamil-tamil-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Saathi Telugu';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-telugu/files/noto-sans-telugu-telugu-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Saathi Kannada';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-kannada/files/noto-sans-kannada-kannada-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Saathi Gujarati';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-gujarati/files/noto-sans-gujarati-gujarati-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Saathi Gurmukhi';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-gurmukhi/files/noto-sans-gurmukhi-gurmukhi-400-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Saathi Malayalam';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-malayalam/files/noto-sans-malayalam-malayalam-400-normal.woff2')
+    format('woff2');
+}
+:root {
+  --regional-fonts:
+    'Saathi Devanagari', 'Saathi Bengali', 'Saathi Arabic', 'Saathi Tamil', 'Saathi Telugu',
+    'Saathi Kannada', 'Saathi Gujarati', 'Saathi Gurmukhi', 'Saathi Malayalam', 'Saathi Odia',
+    'Nirmala UI', system-ui, sans-serif;
+  font-family: 'DM Sans', var(--regional-fonts);
+}
+html[lang='ta'] {
+  font-family: 'DM Sans', 'Saathi Tamil', var(--regional-fonts);
+}
+html[lang='te'] {
+  font-family: 'DM Sans', 'Saathi Telugu', var(--regional-fonts);
+}
+html[lang='kn'] {
+  font-family: 'DM Sans', 'Saathi Kannada', var(--regional-fonts);
+}
+html[lang='gu'] {
+  font-family: 'DM Sans', 'Saathi Gujarati', var(--regional-fonts);
+}
+html[lang='pa'] {
+  font-family: 'DM Sans', 'Saathi Gurmukhi', var(--regional-fonts);
+}
+html[lang='ml'] {
+  font-family: 'DM Sans', 'Saathi Malayalam', var(--regional-fonts);
+}
+html[lang='or'] {
+  font-family: 'DM Sans', 'Saathi Odia', var(--regional-fonts);
+}
+@font-face {
+  font-family: 'Saathi Odia';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/noto-sans-oriya/files/noto-sans-oriya-oriya-400-normal.woff2')
+    format('woff2');
+}
+html:not([lang='en']) :is(h1, h2, h3, .brand, .eyebrow) {
+  font-family: inherit;
+  letter-spacing: normal;
+  line-height: 1.45;
+}
+html:not([lang='en']) {
+  line-height: 1.65;
+}
+html:not([lang='en']) :is(.nav-item, .button, .badge, .test-pill, .coverage-week-day) {
+  height: auto;
+  white-space: normal;
+}
+.language-picker {
+  min-width: 0;
+  font-size: 12px;
+}
+.language-picker label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.language-picker select {
+  max-width: 175px;
+  min-height: 36px;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--dark);
+}
+.language-picker p {
+  max-width: 250px;
+  color: #9c3c35;
+}
+.auth-panel-inner > .language-picker {
+  margin-bottom: 24px;
+}
+.auth-panel-inner > .language-picker label {
+  justify-content: flex-end;
+}
+.coverage-week-day strong {
+  overflow-wrap: anywhere;
+}
+/* Logical geometry follows the selected script; decorative artwork stays intact. */
+[dir='rtl'] .sidebar {
+  left: auto;
+  right: 0;
+  border-left: 1px solid var(--line);
+  border-right: 0;
+}
+[dir='rtl'] .main-shell {
+  margin-left: 0;
+  margin-right: 238px;
+}
+[dir='rtl'] :is(.nav-item, .profile-button, .request-card, .reminder-row, .toggle-row) {
+  text-align: right;
+}
+[dir='rtl'] .nav-item.active::before {
+  left: auto;
+  right: 0;
+}
+[dir='rtl'] .nav-count {
+  margin-left: 0;
+  margin-right: auto;
+}
+[dir='rtl'] .toggle-row input {
+  right: auto;
+  left: 0;
+}
+[dir='rtl'] .breadcrumb > svg {
+  transform: scaleX(-1);
+}
+[dir='rtl'] .coverage-timezone small {
+  margin-left: 0;
+  margin-right: auto;
+}
+[dir='rtl']
+  :is(
+    input[type='email'],
+    input[type='password'],
+    input[type='time'],
+    input[type='datetime-local'],
+    .coverage-interval-time
+  ) {
+  direction: ltr;
+}
+[dir='rtl'] .toast {
+  left: auto;
+  right: calc(50% + 100px);
+  transform: translateX(50%);
+}
+@media (max-width: 1000px) and (min-width: 761px) {
+  [dir='rtl'] .main-shell {
+    margin-right: 215px;
+  }
+}
+@media (max-width: 760px) {
+  .topbar {
+    height: auto;
+    min-height: 65px;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-block: 12px;
+  }
+  .topbar-right {
+    flex-wrap: wrap;
+  }
+  .topbar .language-picker label > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .topbar .language-picker select {
+    max-width: 150px;
+  }
+  [dir='rtl'] .sidebar {
+    transform: translateX(100%);
+  }
+  [dir='rtl'] .sidebar.open {
+    transform: translateX(0);
+  }
+  [dir='rtl'] .main-shell {
+    margin: 0;
+  }
+  [dir='rtl'] .toast {
+    right: 50%;
+  }
+}
