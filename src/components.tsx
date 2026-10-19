@@ -158,32 +158,3 @@ export function Toggle({
     </label>
   );
 }
-export function GardenIllustration() {
-  return (
-    <div className="garden" aria-hidden="true">
-      <div className="garden-orbit one" />
-      <div className="garden-orbit two" />
-      <span className="garden-person p1">{t('M')}</span>
-      <span className="garden-person p2">{t('A')}</span>
-      <span className="garden-person p3">{t('L')}</span>
-      <div className="garden-heart">
-        <Heart size={44} fill="currentColor" strokeWidth={1.2} />
-        <span>
-          <Check size={18} />
-        </span>
-      </div>
-      <svg viewBox="0 0 180 90" className="garden-leaves">
-        <path
-          d="M90 90Q82 42 25 22M90 90Q110 35 160 12"
-          fill="none"
-          stroke="#82a993"
-          strokeWidth="2"
-        />
-        <path
-          d="M40 31Q5 37 9 8Q39 4 40 31ZM64 50Q29 58 32 28Q64 24 64 50ZM119 42Q116 8 145 8Q152 31 119 42ZM101 67Q108 37 137 46Q134 74 101 67Z"
-          fill="#a9c2a8"
-        />
-      </svg>
-    </div>
-  );
-}

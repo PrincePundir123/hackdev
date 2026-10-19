@@ -22,16 +22,7 @@ import {
   Users,
 } from 'lucide-react';
 import { api, dateTime, key, stateLabel } from './api';
-import {
-  Avatar,
-  Badge,
-  Empty,
-  GardenIllustration,
-  Modal,
-  SectionTitle,
-  TextLink,
-  Toggle,
-} from './components';
+import { Avatar, Badge, Empty, Modal, SectionTitle, TextLink, Toggle } from './components';
 import type { Contact, DashboardData, Health, Incident, Page, Preview, Reminder } from './types';
 
 export type PageProps = {
@@ -251,7 +242,19 @@ export function Overview(props: PageProps) {
                 <ArrowRight size={17} />
               </button>
             </div>
-            <GardenIllustration />
+            <div className="household-panel">
+              <Avatar name={data.elder.name} variant="sage" size="large" />
+              <strong>{data.elder.name}</strong>
+              <span>{elder ? t('My personal space') : t('My caregiver space')}</span>
+              <button className="button secondary" onClick={() => go('summary')}>
+                {t('Daily summary')}
+                <ArrowRight size={17} />
+              </button>
+              <small>
+                <ShieldCheck size={14} />
+                {t('Sharing is always your choice.')}
+              </small>
+            </div>
           </section>
           <div className="quick-actions">
             {elder ? (

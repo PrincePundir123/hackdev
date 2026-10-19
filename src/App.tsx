@@ -3,7 +3,8 @@ import LanguagePicker from './LanguagePicker';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Bell,
-  CalendarDays,
+  CalendarRange,
+  NotebookText,
   ChevronRight,
   CircleHelp,
   FlaskConical,
@@ -29,10 +30,10 @@ import type { DashboardData, Health, Incident, Page, User } from './types';
 
 const navigation = [
   { id: 'overview', label: 'Overview', icon: LayoutGrid },
-  { id: 'summary', label: 'Daily summary', icon: CalendarDays },
-  { id: 'reminders', label: 'My reminders', icon: CalendarDays },
+  { id: 'summary', label: 'Daily summary', icon: NotebookText },
+  { id: 'reminders', label: 'My reminders', icon: Bell },
   { id: 'circle', label: 'My care circle', icon: Users },
-  { id: 'coverage', label: 'Care coverage', icon: CalendarDays },
+  { id: 'coverage', label: 'Care coverage', icon: CalendarRange },
   { id: 'requests', label: 'Care requests', icon: Heart },
   { id: 'drills', label: 'Practice a drill', icon: FlaskConical },
   { id: 'history', label: 'Sharing history', icon: ShieldCheck },
@@ -211,7 +212,16 @@ export default function App() {
         />
       )}
       <aside className={`sidebar ${menu ? 'open' : ''}`}>
-        <Brand />
+        <div className="sidebar-brand-row">
+          <Brand light />
+          <button
+            className="icon-button sidebar-close"
+            onClick={() => setMenu(false)}
+            aria-label={t('Close navigation')}
+          >
+            <X size={21} />
+          </button>
+        </div>
         <div className="sidebar-home">
           <span className="home-icon">
             <Home size={18} />
@@ -285,6 +295,7 @@ export default function App() {
               className="icon-button mobile-menu"
               onClick={() => setMenu(true)}
               aria-label={t('Open navigation')}
+              aria-expanded={menu}
             >
               <Menu size={22} />
             </button>

@@ -11,7 +11,7 @@ import {
   LoaderCircle,
 } from 'lucide-react';
 import { api } from './api';
-import { Avatar, Brand, GardenIllustration } from './components';
+import { Avatar, Brand } from './components';
 import type { Health, User } from './types';
 
 export default function AuthPage({
@@ -77,7 +77,6 @@ export default function AuthPage({
             <br />
             {t('And keeps your people close.')}
           </p>
-          <GardenIllustration />
           <div className="auth-promises">
             <span>
               <CheckCircle2 size={18} />
