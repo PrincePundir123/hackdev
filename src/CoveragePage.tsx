@@ -366,7 +366,7 @@ export default function CoveragePage(props: PageProps) {
               <span className="eyebrow">{personal ? t('MY STATUS NOW') : t('SCHEDULED NOW')}</span>
               <h2>
                 {personal
-                  ? personalStatus
+                  ? t(personalStatus)
                   : report.now.length
                     ? t('{{p0}} responder{{p1}}', {
                         p0: report.now.length,

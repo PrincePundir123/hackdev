@@ -21,7 +21,7 @@ test('older adult confirms a reminder, checks in, and sees it persist after relo
   await expect(page.getByRole('heading', { name: 'Does this look right?' })).toBeVisible();
   const before = await page.request.get('/api/dashboard').then((r) => r.json());
   expect(before.reminders.some((r: { title: string }) => r.title === 'call my sister')).toBe(false);
-  await page.getByRole('button', { name: 'Confirm reminder' }).click();
+  await page.getByRole('button', { name: 'Confirm', exact: true }).click();
   await expect(page.getByRole('dialog')).not.toBeVisible();
   await page.getByRole('button', { name: 'I am okay', exact: true }).click();
   await expect(page.getByText(/Last check-in:/)).toBeVisible();

@@ -1,4 +1,4 @@
-import { t, systemText, locale, languages, pluralSuffix } from './i18n';
+import { t, systemText, formatDate, languages, pluralSuffix } from './i18n';
 import { useState, type ReactNode } from 'react';
 import {
   ArrowRight,
@@ -189,14 +189,12 @@ export function Overview(props: PageProps) {
   return (
     <>
       <PageHeading
-        eyebrow={new Intl.DateTimeFormat(locale(), {
+        eyebrow={formatDate(Date.now(), {
           weekday: 'long',
           day: 'numeric',
           month: 'long',
           timeZone: data.user.timezone,
-        })
-          .format(new Date())
-          .toUpperCase()}
+        }).toUpperCase()}
         title={t('{{p0}}, {{p1}}.', { p0: t(greeting), p1: first })}
         subtitle={
           elder

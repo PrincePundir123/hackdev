@@ -98,6 +98,9 @@ export default function AuthPage({
       <section className="auth-panel">
         <div className="auth-panel-inner">
           <LanguagePicker />
+          <p className="fine-print">
+            {t('Regional translations are drafts and need fluent-speaker review.')}
+          </p>
           {mode === 'welcome' ? (
             <>
               <span className="eyebrow">{t('WELCOME TO YOUR CARE CIRCLE')}</span>
@@ -121,19 +124,19 @@ export default function AuthPage({
                     {[
                       {
                         id: 'meera',
-                        name: t('Meera Sharma'),
+                        name: 'Meera Sharma',
                         role: t('Older adult · My day'),
                         variant: 'peach',
                       },
                       {
                         id: 'arjun',
-                        name: t('Arjun Sharma'),
+                        name: 'Arjun Sharma',
                         role: t('Son · Primary caregiver'),
                         variant: 'sage',
                       },
                       {
                         id: 'leela',
-                        name: t('Leela Rao'),
+                        name: 'Leela Rao',
                         role: t('Neighbour · Backup caregiver'),
                         variant: 'lavender',
                       },
@@ -147,8 +150,7 @@ export default function AuthPage({
                         <Avatar name={person.name} variant={person.variant} />
                         <span>
                           <strong>
-                            {t('Continue as ')}
-                            {person.name.split(' ')[0]}
+                            {t('Continue as ')} {person.name.split(' ')[0]}
                           </strong>
                           <small>{person.role}</small>
                         </span>

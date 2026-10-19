@@ -1,4 +1,4 @@
-import { locale, t } from './i18n';
+import { formatDate, t } from './i18n';
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -28,20 +28,20 @@ export async function api<T>(
 export const key = () => crypto.randomUUID();
 export function time(timestamp: number | null, timezone?: string) {
   if (!timestamp) return t('Not yet');
-  return new Intl.DateTimeFormat(locale(), {
+  return formatDate(timestamp, {
     hour: 'numeric',
     minute: '2-digit',
     ...(timezone ? { timeZone: timezone } : {}),
-  }).format(timestamp);
+  });
 }
 export function dateTime(timestamp: number, timezone?: string) {
-  return new Intl.DateTimeFormat(locale(), {
+  return formatDate(timestamp, {
     day: 'numeric',
     month: 'short',
     hour: 'numeric',
     minute: '2-digit',
     ...(timezone ? { timeZone: timezone } : {}),
-  }).format(timestamp);
+  });
 }
 export const stateLabel: Record<string, string> = {
   CREATED: 'Created',
