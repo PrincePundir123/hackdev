@@ -18,6 +18,10 @@ The Birdie-inspired redesign was also reviewed in Chrome across all nine older-a
 
 Accessibility automation is limited to the listed screens and does not establish complete WCAG conformance or usability for every older adult. No clinical or real-user trial was performed.
 
+## Production startup verification
+
+The production smoke test passed with demo mode disabled, secure cookies enabled, an isolated temporary SQLite database and an automatically assigned port. It checked health, built HTML and deep links, PWA resources and cache headers, anonymous API rejection, disabled demo login and registration cookie flags. CI now runs this test and formatting checks; `npm run check:release` repeats the complete release gate. See [deployment instructions](DEPLOYMENT.md).
+
 ## PWA evidence
 
 The production build emits a manifest, PNG icons, a revisioned worker and a localized offline fallback. A normal persistent Chrome profile reported no manifest or installability errors. Browser tests verified the exact public-cache allowlist after authenticated API reads, offline reloads in all 15 enabled languages, API failure rather than cached disclosure, online recovery, and a check-in that is not queued while offline. Install-event controls, iPhone guidance and standalone detection were exercised with simulated browser events or environment values; physical-device installation remains unverified. The existing backend architecture and hosting requirements are unchanged. See [PWA behavior and limitations](PWA.md).

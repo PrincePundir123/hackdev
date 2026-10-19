@@ -126,6 +126,8 @@ npm run demo:reset -- --confirm
 
 Only the seeded `demo-home` household and accounts joined to it are reset. Other households are preserved. Demo password sign-in, if needed: `meera@saathi.demo`, `arjun@saathi.demo`, or `leela@saathi.demo` with `SaathiDemo2026!`. These are intentionally public fictional accounts. Do not enter real personal information into them.
 
+See [deployment readiness and final host checks](docs/DEPLOYMENT.md) for the release gate and production configuration.
+
 ## Docker and hosting
 
 ```sh
