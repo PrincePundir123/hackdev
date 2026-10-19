@@ -4,12 +4,14 @@ Verified on **19 October 2026**, using Node **24.13.0**, Windows, and installed 
 
 ## Results
 
+The Birdie-inspired redesign was also reviewed in Chrome across all nine older-adult pages at 1440 × 1050 and 390 × 844, plus the caregiver overview and daily summary. No horizontal document overflow or browser page errors were recorded. Navigation regression checks cover closed-menu inert state, keyboard focus containment, Escape dismissal and focus restoration. See the [design QA and visual comparison](../design-qa.md).
+
 | Check                                | Result                                                                                                                                                      |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TypeScript and Vite production build | Passed                                                                                                                                                      |
 | Backend test suite                   | 42 tests passed, including daily summary permission isolation, timezone dates, ownership, record counts and account language persistence                    |
 | Local request interpretation dataset | 30 supported/ambiguous/unsupported examples exercised within the backend suite                                                                              |
-| Browser suite                        | 11 tests passed in 58.2 seconds, including daily summaries and all 14 enabled regional interfaces                                                           |
+| Browser suite                        | 11 tests passed in 1.1 minutes after the UI redesign, including daily summaries and all 14 enabled regional interfaces                                      |
 | Accessibility scan                   | No serious or critical WCAG A/AA-tagged axe findings on entry, personal dashboard, reminder dialog, coverage planner, weekly-hours editor and daily summary |
 | Source formatting                    | Prettier check passed                                                                                                                                       |
 | Localization source audit            | Passed; no untranslated literal JSX copy outside the brand name                                                                                             |

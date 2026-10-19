@@ -4,6 +4,8 @@
 
 ![Saathi Care dashboard](docs/screenshots/overview.png)
 
+The interface uses a Birdie-inspired navy, aqua and amber visual system across the older-adult and caregiver views, with responsive cards, regional-language layouts and keyboard-accessible mobile navigation. See the [visual comparison and redesign QA](design-qa.md).
+
 ## Run locally
 
 Requires **Node.js 24.x** and npm. SQLite is included with Node; no separate database installation is needed.
