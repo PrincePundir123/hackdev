@@ -81,7 +81,18 @@ test('check-in sharing is explicit, defaults private, and revocation or paused p
     allowed: false,
     received_at: null,
   });
+  f.service.updateContact(f.arjun, 'contact-arjun', {
+    available: true,
+    accepted: true,
+    drill_opt_in: true,
+    external_opt_in: false,
+    allow_checkins: true,
+  });
+  assert.equal(dailySummary(f.service, f.arjun).check_in.allowed, false);
   f.service.updateContact(f.meera, 'contact-arjun', policy);
+  const { allow_checkins, ...legacyPolicy } = policy;
+  f.service.updateContact(f.meera, 'contact-arjun', legacyPolicy);
+  assert.equal(dailySummary(f.service, f.arjun).check_in.allowed, true);
   f.db.prepare("UPDATE contacts SET accepted=0 WHERE user_id='arjun'").run();
   const paused = dailySummary(f.service, f.arjun);
   assert.equal(paused.check_in.allowed, false);
