@@ -122,6 +122,8 @@ The server sends an `Idempotency-Key`; the receiving provider must deduplicate. 
 
 ## Files
 
+`server/summary.mjs` computes the authenticated current-day summary from existing records, using the household timezone and current consent. `contacts.allow_checkins` is added through an idempotent migration with a private default; only older-adult contact updates can change it. The summary reuses request filtering and personal/household coverage scope, excludes drills, and returns minimal request list fields. `src/DailySummaryPage.tsx` refreshes the view every five seconds. Selected request details use their authenticated endpoint directly instead of relying on the dashboard's recent-item limit. See [daily summary](DAILY_SUMMARY.md).
+
 Display-language preferences live on each user account. Existing databases receive an idempotent `users.language` migration with an English default. `PATCH /api/auth/preferences` changes only the authenticated user and validates against the shared available-language catalog. Registration accepts the same language codes; sessions and dashboard responses expose the saved choice.
 
 The browser loads source-keyed regional dictionaries on demand, updates document language/direction, and uses bundled script fonts. User writing bypasses translation. Known generated timeline/audit copy is matched to message templates at display time; generic request titles/outcomes carry explicit system-text flags. See [localization details](LOCALIZATION.md).

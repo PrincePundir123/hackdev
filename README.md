@@ -30,6 +30,7 @@ Open **http://localhost:3001**. Data persists in `data/saathi.sqlite` across res
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Separate accounts  | Password authentication, HTTP-only sessions, isolated households, one-time email-bound invitation codes                                                   |
 | Personal dashboard | Manual check-in, reminder inbox, help requests, care-circle summary                                                                                       |
+| Daily summary      | Today's permitted check-in, reminder progress, real request status and remaining response coverage; explicit check-in sharing defaults off                |
 | Display languages  | Saved account-specific language choice, 14 draft regional interfaces plus English, local translation files and Urdu RTL layout                            |
 | Reminders          | Fixed-time or check-in-relative reminders; daily check-in recurrence; completion, snooze, cancellation, deduplication                                     |
 | Language requests  | Review a proposed reminder or sharing change before confirming; limited English local interpreter works without a key; regional manual entry is available |
@@ -46,6 +47,8 @@ Open **http://localhost:3001**. Data persists in `data/saathi.sqlite` across res
 The implementation uses the simpler persistent-backend option in the blueprint: **React + TypeScript + Vite**, **Express**, **Node SQLite**, and a server-side worker. It does not require AWS infrastructure.
 
 Choose a display language before registration or from the signed-in header. Personal notes remain as written. Eight scheduled languages are still marked **Not yet**; regional translations need fluent-speaker review. See [language availability, privacy, and limitations](docs/LOCALIZATION.md).
+
+Open **Daily summary** for the live daily view. To share check-ins, the older adult must enable **My care circle → Edit permissions → Check-in sharing** for each person. See [daily summary behavior and privacy](docs/DAILY_SUMMARY.md).
 
 ## Try the main story
 

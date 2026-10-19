@@ -4,27 +4,35 @@ Verified on **19 October 2026**, using Node **24.13.0**, Windows, and installed 
 
 ## Results
 
-| Check                                | Result                                                                                                                                        |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| TypeScript and Vite production build | Passed                                                                                                                                        |
-| Backend test suite                   | 36 tests passed, including account language persistence, authorization, catalog completeness and legacy database migration                    |
-| Local request interpretation dataset | 30 supported/ambiguous/unsupported examples exercised within the backend suite                                                                |
-| Browser suite                        | 9 tests passed, including all 14 enabled regional interfaces                                                                                  |
-| Accessibility scan                   | No serious or critical WCAG A/AA-tagged axe findings on entry, personal dashboard, reminder dialog, coverage planner, and weekly-hours editor |
-| Source formatting                    | Prettier check passed                                                                                                                         |
-| Localization source audit            | Passed; no untranslated literal JSX copy outside the brand name                                                                               |
+| Check                                | Result                                                                                                                                                      |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TypeScript and Vite production build | Passed                                                                                                                                                      |
+| Backend test suite                   | 42 tests passed, including daily summary permission isolation, timezone dates, ownership, record counts and account language persistence                    |
+| Local request interpretation dataset | 30 supported/ambiguous/unsupported examples exercised within the backend suite                                                                              |
+| Browser suite                        | 11 tests passed in 58.2 seconds, including daily summaries and all 14 enabled regional interfaces                                                           |
+| Accessibility scan                   | No serious or critical WCAG A/AA-tagged axe findings on entry, personal dashboard, reminder dialog, coverage planner, weekly-hours editor and daily summary |
+| Source formatting                    | Prettier check passed                                                                                                                                       |
+| Localization source audit            | Passed; no untranslated literal JSX copy outside the brand name                                                                                             |
 
 Accessibility automation is limited to the listed screens and does not establish complete WCAG conformance or usability for every older adult. No clinical or real-user trial was performed.
 
 ## Regional-language evidence
 
-All 14 enabled regional dictionaries have the complete 669-key source catalog and preserve every dynamic placeholder. Browser checks loaded each welcome interface, persisted the guest choice, then exercised navigation, coverage and settings for every enabled account language. Hindi reminder entry and confirmation preserved an English/Hindi personal title exactly in the database. Reload retained the preference. A separate caregiver used Urdu while the older adult remained in Hindi; the mobile Urdu planner and schedule editor were usable without horizontal document overflow, and the editor had no serious or critical findings in its axe scan.
+All 14 enabled regional dictionaries have the complete 689-key source catalog and preserve every dynamic placeholder. Browser checks loaded each welcome interface, persisted the guest choice, then exercised navigation, daily summary, coverage and settings for every enabled account language. Hindi reminder entry and confirmation preserved an English/Hindi personal title exactly in the database. Reload retained the preference. A separate caregiver used Urdu while the older adult remained in Hindi; the mobile Urdu planner and schedule editor were usable without horizontal document overflow, and the editor had no serious or critical findings in its axe scan.
 
 The migration test opened a database with the previous users schema, confirmed an English default without changing account records, saved Hindi, and reopened it without adding a duplicate column. API checks rejected unsupported and unavailable language codes, unauthenticated changes, and attempts to target another user.
 
 Screenshots: [Hindi confirmation](screenshots/language-hindi.png) and [Urdu mobile coverage](screenshots/language-urdu-mobile.png). Translation accuracy has not been established by fluent-speaker review. Eight scheduled languages remain unavailable; regional speech and comprehensive regional natural-language interpretation were not verified or claimed. See [availability and limitations](LOCALIZATION.md).
 
 ## Full-flow evidence
+
+### Daily caregiver summary
+
+An older adult recorded a check-in and explicitly enabled its sharing through the care-circle switch. The caregiver's summary changed from **Not shared** to today's received time. Completing a reminder through the older adult's UI increased the caregiver's completed-today count and removed its due title. A real request opened from the summary, was accepted and resolved through the detail dialog, and increased today's resolved count. Summary payloads excluded private notes even for a permitted detail viewer. Revoking check-in/reminder permissions removed their summary data, including after reload. A caregiver could not grant themselves check-in access; older clients omitting the new optional flag preserved its existing setting.
+
+Backend tests covered local-midnight separation, DST date formatting, prior-day completions, more than 100 reminders without truncated counts, exclusion of practice drills, request ownership, personal versus household schedule scope, authentication and household isolation. The Urdu summary at 390px width had no document overflow. The English summary passed its axe A/AA scan with no serious or critical findings. The real localhost app was also checked using a temporary demo session; no care records or account preferences were changed.
+
+Screenshots: [daily caregiver summary](screenshots/daily-summary.png), [Urdu mobile summary](screenshots/daily-summary-urdu-mobile.png). This is a current-day view; historical digests, email/SMS summary delivery and AI narrative generation are not included. See [daily summary details](DAILY_SUMMARY.md).
 
 | Boundary                   | Evidence                                                                                                |
 | -------------------------- | ------------------------------------------------------------------------------------------------------- |
