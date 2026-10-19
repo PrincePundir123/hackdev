@@ -687,5 +687,13 @@
   "No gaps for the rest of today.": "నేడు మిగిలిన సమయానికి విరామాలు లేవు.",
   "Live view of today; personal writing stays unchanged.": "నేటి తాజా సమాచారం; వ్యక్తిగత రాతలు మారవు.",
   "Practice drills are excluded.": "సాధనలు ఇందులో లేవు.",
-  "Share daily check-in times with this person.": "ప్రతిరోజూ క్షేమ సమాచారం నమోదు చేసిన సమయాన్ని ఈ వ్యక్తితో పంచుకోండి."
+  "Share daily check-in times with this person.": "ప్రతిరోజూ క్షేమ సమాచారం నమోదు చేసిన సమయాన్ని ఈ వ్యక్తితో పంచుకోండి.",
+  "Install Saathi": "సాథిని ఇన్‌స్టాల్ చేయండి",
+  "Keep Saathi on your home screen.": "సాథిని మీ హోమ్ స్క్రీన్‌పై ఉంచుకోండి.",
+  "App installed": "యాప్ ఇన్‌స్టాల్ అయింది",
+  "Install app": "యాప్‌ను ఇన్‌స్టాల్ చేయండి",
+  "On iPhone or iPad, open Share and choose Add to Home Screen.": "iPhone లేదా iPadలో షేర్ తెరిచి హోమ్ స్క్రీన్‌కు జోడించు ఎంచుకోండి.",
+  "In your browser, open the menu and look for Install app or Add to Home Screen. Availability depends on your browser.": "బ్రౌజర్ మెనూ తెరిచి యాప్‌ను ఇన్‌స్టాల్ చేయండి లేదా హోమ్ స్క్రీన్‌కు జోడించు కోసం చూడండి. అందుబాటు మీ బ్రౌజర్‌పై ఆధారపడి ఉంటుంది.",
+  "Installation could not start. Try your browser menu.": "ఇన్‌స్టాలేషన్ ప్రారంభం కాలేదు. బ్రౌజర్ మెనూను ప్రయత్నించండి.",
+  "Care updates need an internet connection. Private care records are not saved for offline use.": "సంరక్షణ అప్‌డేట్‌లకు ఇంటర్నెట్ అవసరం. వ్యక్తిగత సంరక్షణ రికార్డులు ఆఫ్‌లైన్ వినియోగం కోసం నిల్వ చేయబడవు."
 }

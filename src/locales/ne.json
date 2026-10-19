@@ -687,5 +687,13 @@
   "No gaps for the rest of today.": "आजको बाँकी समयमा कुनै अन्तराल छैन।",
   "Live view of today; personal writing stays unchanged.": "आजको ताजा जानकारी; व्यक्तिगत लेखाइ परिवर्तन हुँदैन।",
   "Practice drills are excluded.": "अभ्यास यसमा समावेश हुँदैनन्।",
-  "Share daily check-in times with this person.": "यस व्यक्तिसँग हरेक दिन हालखबर दर्ता गरेको समय साझा गर्नुहोस्।"
+  "Share daily check-in times with this person.": "यस व्यक्तिसँग हरेक दिन हालखबर दर्ता गरेको समय साझा गर्नुहोस्।",
+  "Install Saathi": "साथी इन्स्टल गर्नुहोस्",
+  "Keep Saathi on your home screen.": "साथीलाई आफ्नो होम स्क्रिनमा राख्नुहोस्।",
+  "App installed": "एप इन्स्टल गरिएको छ",
+  "Install app": "एप इन्स्टल गर्नुहोस्",
+  "On iPhone or iPad, open Share and choose Add to Home Screen.": "iPhone वा iPad मा सेयर खोलेर होम स्क्रिनमा थप्नुहोस् छान्नुहोस्।",
+  "In your browser, open the menu and look for Install app or Add to Home Screen. Availability depends on your browser.": "ब्राउजरको मेनु खोलेर एप इन्स्टल गर्नुहोस् वा होम स्क्रिनमा थप्नुहोस् खोज्नुहोस्। उपलब्धता तपाईंको ब्राउजरमा निर्भर हुन्छ।",
+  "Installation could not start. Try your browser menu.": "इन्स्टलेसन सुरु हुन सकेन। ब्राउजरको मेनु प्रयोग गर्नुहोस्।",
+  "Care updates need an internet connection. Private care records are not saved for offline use.": "हेरचाहका अपडेटका लागि इन्टरनेट चाहिन्छ। निजी हेरचाह अभिलेख अफलाइन प्रयोगका लागि राखिँदैनन्।"
 }

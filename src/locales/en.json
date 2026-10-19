@@ -687,5 +687,13 @@
   "No gaps for the rest of today.": "No gaps for the rest of today.",
   "Live view of today; personal writing stays unchanged.": "Live view of today; personal writing stays unchanged.",
   "Practice drills are excluded.": "Practice drills are excluded.",
-  "Share daily check-in times with this person.": "Share daily check-in times with this person."
+  "Share daily check-in times with this person.": "Share daily check-in times with this person.",
+  "Install Saathi": "Install Saathi",
+  "Keep Saathi on your home screen.": "Keep Saathi on your home screen.",
+  "App installed": "App installed",
+  "Install app": "Install app",
+  "On iPhone or iPad, open Share and choose Add to Home Screen.": "On iPhone or iPad, open Share and choose Add to Home Screen.",
+  "In your browser, open the menu and look for Install app or Add to Home Screen. Availability depends on your browser.": "In your browser, open the menu and look for Install app or Add to Home Screen. Availability depends on your browser.",
+  "Installation could not start. Try your browser menu.": "Installation could not start. Try your browser menu.",
+  "Care updates need an internet connection. Private care records are not saved for offline use.": "Care updates need an internet connection. Private care records are not saved for offline use."
 }

@@ -687,5 +687,13 @@
   "No gaps for the rest of today.": "अद्य अवशिष्टसमये अन्तरालाः न सन्ति।",
   "Live view of today; personal writing stays unchanged.": "अद्यतनस्य वर्तमानदर्शनम्; वैयक्तिकलेखनम् अपरिवर्तितं तिष्ठति।",
   "Practice drills are excluded.": "अभ्यासाः न समाविष्टाः।",
-  "Share daily check-in times with this person.": "अनेन जनेन सह प्रतिदिनस्य क्षेमवृत्तसमयं संविभजतु।"
+  "Share daily check-in times with this person.": "अनेन जनेन सह प्रतिदिनस्य क्षेमवृत्तसमयं संविभजतु।",
+  "Install Saathi": "साथी संस्थापयतु",
+  "Keep Saathi on your home screen.": "साथी स्वस्य गृहपटलस्थाने स्थापयतु।",
+  "App installed": "अनुप्रयोगः संस्थापितः",
+  "Install app": "अनुप्रयोगं संस्थापयतु",
+  "On iPhone or iPad, open Share and choose Add to Home Screen.": "iPhone अथवा iPad मध्ये संविभाजनं उद्घाट्य गृहपटले योजयतु इति चिनोतु।",
+  "In your browser, open the menu and look for Install app or Add to Home Screen. Availability depends on your browser.": "विचारकस्य सूचीम् उद्घाट्य अनुप्रयोगं संस्थापयतु अथवा गृहपटले योजयतु इति अन्वेषयतु। उपलब्धता विचारकाधीना अस्ति।",
+  "Installation could not start. Try your browser menu.": "संस्थापनं प्रारब्धुं न शक्यते। विचारकस्य सूचीं प्रयतताम्।",
+  "Care updates need an internet connection. Private care records are not saved for offline use.": "परिचर्यावृत्तान्तानां कृते अन्तर्जालसम्पर्कः आवश्यकः। वैयक्तिकपरिचर्याभिलेखाः अन्तर्जालरहितोपयोगाय न सञ्चीयन्ते।"
 }

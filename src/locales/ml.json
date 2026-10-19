@@ -687,5 +687,13 @@
   "No gaps for the rest of today.": "ഇന്നത്തെ ശേഷിക്കുന്ന സമയത്ത് ഇടവേളകളില്ല.",
   "Live view of today; personal writing stays unchanged.": "ഇന്നത്തെ പുതിയ വിവരങ്ങൾ; വ്യക്തിപരമായ എഴുത്ത് മാറില്ല.",
   "Practice drills are excluded.": "പരിശീലനങ്ങൾ ഉൾപ്പെടുത്തിയിട്ടില്ല.",
-  "Share daily check-in times with this person.": "ദിവസവും ക്ഷേമവിവരം രേഖപ്പെടുത്തിയ സമയം ഈ വ്യക്തിയുമായി പങ്കിടുക."
+  "Share daily check-in times with this person.": "ദിവസവും ക്ഷേമവിവരം രേഖപ്പെടുത്തിയ സമയം ഈ വ്യക്തിയുമായി പങ്കിടുക.",
+  "Install Saathi": "സാഥി ഇൻസ്റ്റാൾ ചെയ്യുക",
+  "Keep Saathi on your home screen.": "സാഥിയെ നിങ്ങളുടെ ഹോം സ്ക്രീനിൽ സൂക്ഷിക്കുക.",
+  "App installed": "ആപ്പ് ഇൻസ്റ്റാൾ ചെയ്തിട്ടുണ്ട്",
+  "Install app": "ആപ്പ് ഇൻസ്റ്റാൾ ചെയ്യുക",
+  "On iPhone or iPad, open Share and choose Add to Home Screen.": "iPhone അല്ലെങ്കിൽ iPad-ൽ ഷെയർ തുറന്ന് ഹോം സ്ക്രീനിലേക്ക് ചേർക്കുക തിരഞ്ഞെടുക്കുക.",
+  "In your browser, open the menu and look for Install app or Add to Home Screen. Availability depends on your browser.": "ബ്രൗസറിന്റെ മെനു തുറന്ന് ആപ്പ് ഇൻസ്റ്റാൾ ചെയ്യുക അല്ലെങ്കിൽ ഹോം സ്ക്രീനിലേക്ക് ചേർക്കുക കണ്ടെത്തുക. ലഭ്യത നിങ്ങളുടെ ബ്രൗസറിനെ ആശ്രയിച്ചിരിക്കുന്നു.",
+  "Installation could not start. Try your browser menu.": "ഇൻസ്റ്റലേഷൻ ആരംഭിക്കാനായില്ല. ബ്രൗസറിന്റെ മെനു പരീക്ഷിക്കുക.",
+  "Care updates need an internet connection. Private care records are not saved for offline use.": "പരിചരണ വിവരങ്ങൾ പുതുക്കാൻ ഇന്റർനെറ്റ് വേണം. സ്വകാര്യ പരിചരണ രേഖകൾ ഓഫ്‌ലൈൻ ഉപയോഗത്തിനായി സൂക്ഷിക്കില്ല."
 }

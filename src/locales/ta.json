@@ -687,5 +687,13 @@
   "No gaps for the rest of today.": "இன்றைய மீதமுள்ள நேரத்தில் இடைவெளிகள் இல்லை.",
   "Live view of today; personal writing stays unchanged.": "இன்றைய தற்போதைய தகவல்கள்; தனிப்பட்ட எழுத்துகள் மாறாது.",
   "Practice drills are excluded.": "பயிற்சிகள் சேர்க்கப்படவில்லை.",
-  "Share daily check-in times with this person.": "தினசரி நலப்பதிவு நேரங்களை இவருடன் பகிரவும்."
+  "Share daily check-in times with this person.": "தினசரி நலப்பதிவு நேரங்களை இவருடன் பகிரவும்.",
+  "Install Saathi": "சாத்தியை நிறுவவும்",
+  "Keep Saathi on your home screen.": "சாத்தியை உங்கள் முகப்புத் திரையில் வைத்துக்கொள்ளுங்கள்.",
+  "App installed": "செயலி நிறுவப்பட்டுள்ளது",
+  "Install app": "செயலியை நிறுவவும்",
+  "On iPhone or iPad, open Share and choose Add to Home Screen.": "iPhone அல்லது iPad-இல் பகிர் என்பதைத் திறந்து முகப்புத் திரையில் சேர் என்பதைத் தேர்ந்தெடுக்கவும்.",
+  "In your browser, open the menu and look for Install app or Add to Home Screen. Availability depends on your browser.": "உலாவியின் மெனுவைத் திறந்து செயலியை நிறுவு அல்லது முகப்புத் திரையில் சேர் என்பதைத் தேடவும். கிடைக்கும் வசதி உங்கள் உலாவியைப் பொறுத்தது.",
+  "Installation could not start. Try your browser menu.": "நிறுவலைத் தொடங்க முடியவில்லை. உலாவியின் மெனுவை முயற்சிக்கவும்.",
+  "Care updates need an internet connection. Private care records are not saved for offline use.": "பராமரிப்புப் புதுப்பிப்புகளுக்கு இணைய இணைப்பு தேவை. தனிப்பட்ட பராமரிப்புப் பதிவுகள் இணையமில்லாப் பயன்பாட்டிற்காகச் சேமிக்கப்படுவதில்லை."
 }

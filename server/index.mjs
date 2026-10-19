@@ -6,9 +6,23 @@ import { existsSync } from 'node:fs';
 const { app, care, finish, close } = createApp();
 const dist = resolve('dist');
 if (existsSync(resolve(dist, 'index.html'))) {
-  app.use(express.static(dist, { index: false, maxAge: '1h' }));
+  app.use(
+    express.static(dist, {
+      index: false,
+      maxAge: '1h',
+      setHeaders(res, path) {
+        if (
+          ['sw.js', 'manifest.webmanifest', 'offline.html'].some(
+            (name) => path.endsWith('/' + name) || path.endsWith('\\' + name),
+          )
+        ) {
+          res.setHeader('Cache-Control', 'no-cache');
+        }
+      },
+    }),
+  );
   app.get('/{*path}', (req, res, next) => {
-    if (req.path.startsWith('/api/')) return next();
+    if (req.path === '/api' || req.path.startsWith('/api/')) return next();
     res.setHeader('Cache-Control', 'no-cache');
     res.sendFile(resolve(dist, 'index.html'));
   });
