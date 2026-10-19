@@ -1,7 +1,15 @@
 import parser from 'prettier/plugins/typescript';
 import { readFileSync } from 'node:fs';
 let violations = 0;
-for (const name of ['App', 'AuthPage', 'pages', 'dialogs', 'components', 'CoveragePage']) {
+for (const name of [
+  'App',
+  'AuthPage',
+  'pages',
+  'dialogs',
+  'components',
+  'CoveragePage',
+  'DailySummaryPage',
+]) {
   const ast = await parser.parsers.typescript.parse(readFileSync(`src/${name}.tsx`, 'utf8'));
   function walk(node) {
     if (!node || typeof node !== 'object') return;

@@ -476,6 +476,7 @@ export class CareService {
       can_receive: !!(contact.allow_requests && contact.accepted),
       notes: !!contact.allow_notes,
       reminders: !!contact.allow_reminders,
+      checkins: !!(contact.accepted && contact.allow_checkins),
       sample: request,
       example:
         contact.allow_requests && contact.accepted

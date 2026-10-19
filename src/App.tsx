@@ -24,10 +24,12 @@ import { Avatar, Brand, Loading } from './components';
 import { Overview, Reminders, Circle, Requests, Drills, History, SettingsPage } from './pages';
 import { HelpDialog, ReminderDialog, IncidentDialog } from './dialogs';
 import CoveragePage from './CoveragePage';
-import type { DashboardData, Health, Page, User } from './types';
+import DailySummaryPage from './DailySummaryPage';
+import type { DashboardData, Health, Incident, Page, User } from './types';
 
 const navigation = [
   { id: 'overview', label: 'Overview', icon: LayoutGrid },
+  { id: 'summary', label: 'Daily summary', icon: CalendarDays },
   { id: 'reminders', label: 'My reminders', icon: CalendarDays },
   { id: 'circle', label: 'My care circle', icon: Users },
   { id: 'coverage', label: 'Care coverage', icon: CalendarDays },
@@ -51,6 +53,35 @@ export default function App() {
   const [menu, setMenu] = useState(false);
   const [modal, setModal] = useState<'reminder' | 'help' | null>(null);
   const [incidentId, setIncidentId] = useState<string | null>(null);
+  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
+  useEffect(() => {
+    setSelectedIncident(null);
+    if (!incidentId || !user) return;
+    let active = true;
+    let timer: ReturnType<typeof setTimeout>;
+    async function loadIncident() {
+      try {
+        const result = await api<Incident>(`/incidents/${encodeURIComponent(incidentId!)}`);
+        if (active) setSelectedIncident(result);
+      } catch (err) {
+        if (active) {
+          setSelectedIncident(null);
+          setError((err as Error).message);
+          if (err instanceof ApiError && [401, 403, 404].includes(err.status)) {
+            setIncidentId(null);
+            return;
+          }
+        }
+      } finally {
+        if (active) timer = setTimeout(loadIncident, 2500);
+      }
+    }
+    loadIncident();
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [incidentId, user?.id, revision]);
   useEffect(() => {
     document.documentElement.classList.toggle(
       'large-text',
@@ -313,6 +344,7 @@ export default function App() {
           ) : (
             <>
               {page === 'overview' && <Overview {...props} />}
+              {page === 'summary' && <DailySummaryPage {...props} />}
               {page === 'reminders' && <Reminders {...props} />}
               {page === 'circle' && <Circle {...props} />}
               {page === 'coverage' && <CoveragePage {...props} />}
@@ -369,7 +401,7 @@ export default function App() {
       )}
       {incidentId && props && (
         <IncidentDialog
-          incident={props.data.incidents.find((i) => i.id === incidentId)}
+          incident={selectedIncident?.id === incidentId ? selectedIncident : undefined}
           data={props.data}
           act={act}
           busy={busy}

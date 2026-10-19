@@ -656,6 +656,7 @@ export function Circle(props: PageProps) {
                 [t('Help requests'), c.allow_requests],
                 [t('Private notes & details'), c.allow_notes],
                 [t('Reminder text'), c.allow_reminders],
+                [t('Check-in sharing'), c.allow_checkins],
               ].map(([label, allowed]) => (
                 <div key={String(label)}>
                   <span>{label}</span>
@@ -717,7 +718,9 @@ export function Circle(props: PageProps) {
           <div className="modal-body">
             {elder ? (
               <>
-                {(['allow_requests', 'allow_notes', 'allow_reminders'] as const).map((field) => (
+                {(
+                  ['allow_requests', 'allow_notes', 'allow_reminders', 'allow_checkins'] as const
+                ).map((field) => (
                   <Toggle
                     key={field}
                     checked={!!editing[field]}
@@ -727,14 +730,19 @@ export function Circle(props: PageProps) {
                         allow_requests: t('Basic help requests'),
                         allow_notes: t('Private notes and request details'),
                         allow_reminders: t('Reminder text'),
+                        allow_checkins: t('Check-in sharing'),
                       }[field]
                     }
                     description={
                       field === 'allow_requests'
                         ? t('Allow this person to view and respond to support requests.')
-                        : field === 'allow_notes'
-                          ? t('May include personal information you write in a request or outcome.')
-                          : t('Allow this person to read the contents of your reminders.')
+                        : field === 'allow_checkins'
+                          ? t('Share daily check-in times with this person.')
+                          : field === 'allow_notes'
+                            ? t(
+                                'May include personal information you write in a request or outcome.',
+                              )
+                            : t('Allow this person to read the contents of your reminders.')
                     }
                   />
                 ))}
@@ -800,6 +808,7 @@ export function Circle(props: PageProps) {
                       allow_requests: !!editing.allow_requests,
                       allow_notes: !!editing.allow_notes,
                       allow_reminders: !!editing.allow_reminders,
+                      allow_checkins: !!editing.allow_checkins,
                       priority: editing.priority,
                     }
                   : {
@@ -845,6 +854,9 @@ export function Circle(props: PageProps) {
                 </p>
               )}
               <div className="preview-permissions">
+                <Badge tone={preview.checkins ? 'green' : 'neutral'}>
+                  {t('Check-in sharing')}: {t(preview.checkins ? ' Shared' : 'Not shared')}
+                </Badge>
                 <Badge tone={preview.notes ? 'green' : 'neutral'}>
                   {preview.notes ? t('Private notes allowed') : t('Private notes hidden')}
                 </Badge>

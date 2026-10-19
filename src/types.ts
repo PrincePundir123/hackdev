@@ -19,6 +19,7 @@ export type Contact = {
   allow_requests: number;
   allow_notes: number;
   allow_reminders: number;
+  allow_checkins: number;
   drill_opt_in: number;
   external_opt_in: number;
   version: number;
@@ -104,11 +105,48 @@ export type Preview = {
   can_receive: boolean;
   notes: boolean;
   reminders: boolean;
+  checkins: boolean;
   sample: Incident | null;
   example: { title: string; private_note?: string } | null;
 };
 export type Page =
-  'overview' | 'reminders' | 'circle' | 'coverage' | 'requests' | 'drills' | 'history' | 'settings';
+  | 'overview'
+  | 'summary'
+  | 'reminders'
+  | 'circle'
+  | 'coverage'
+  | 'requests'
+  | 'drills'
+  | 'history'
+  | 'settings';
+
+export type DailySummary = {
+  date: string;
+  generated_at: number;
+  timezone: string;
+  elder: { id: string; name: string };
+  check_in: { allowed: boolean; received_at: number | null };
+  reminders: {
+    allowed: boolean;
+    completed_today: number;
+    due: number;
+    upcoming: number;
+    waiting: number;
+    due_items: { id: string; title: string }[];
+  };
+  requests: {
+    allowed: boolean;
+    open: number;
+    assigned_to_you: number;
+    resolved_today: number;
+    items: Pick<Incident, 'id' | 'title' | 'title_is_system' | 'state'>[];
+  };
+  coverage: {
+    scope: 'personal' | 'household';
+    remaining_gap_minutes: number;
+    gaps: { start: number; end: number }[];
+  };
+};
 
 export type CoverageWindow = { day: number; start: number; end: number };
 export type CoverageContact = {

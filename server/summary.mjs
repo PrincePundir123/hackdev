@@ -38,7 +38,7 @@ export function dailySummary(service, user) {
       )
     : [];
   const due = reminders.filter(
-    (r) => r.status === 'due' || (r.status === 'scheduled' && r.due_at <= now),
+    (r) => r.status === 'due' || (r.status === 'scheduled' && r.due_at != null && r.due_at <= now),
   );
   const upcoming = reminders.filter(
     (r) => r.status === 'scheduled' && r.due_at > now && today(r.due_at),
@@ -88,7 +88,15 @@ export function dailySummary(service, user) {
       items: open
         .sort((a, b) => b.updated_at - a.updated_at)
         .slice(0, 5)
-        .map((incident) => service.view(user, incident)),
+        .map((incident) => {
+          const view = service.view(user, incident);
+          return {
+            id: view.id,
+            title: view.title,
+            title_is_system: view.title_is_system,
+            state: view.state,
+          };
+        }),
     },
     coverage: {
       scope: coverage.scope,
