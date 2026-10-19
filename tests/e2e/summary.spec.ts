@@ -59,7 +59,10 @@ test('caregiver daily summary follows explicit sharing, reminder completion, and
       .then((response) => response.json());
     expect(reminder.title).toBe(title);
     await elder.getByRole('button', { name: 'I am okay', exact: true }).click();
-    await caregiver.getByRole('button', { name: 'Daily summary', exact: true }).click();
+    await caregiver
+      .getByRole('navigation')
+      .getByRole('button', { name: 'Daily summary', exact: true })
+      .click();
     await expect(
       caregiver.getByTestId('summary-checkin').getByText('Not shared', { exact: true }),
     ).toBeVisible();
@@ -154,7 +157,10 @@ test('caregiver daily summary follows explicit sharing, reminder completion, and
       caregiver.getByTestId('summary-reminders').getByText('Not shared', { exact: true }),
     ).toBeVisible();
     await caregiver.reload();
-    await caregiver.getByRole('button', { name: 'Daily summary', exact: true }).click();
+    await caregiver
+      .getByRole('navigation')
+      .getByRole('button', { name: 'Daily summary', exact: true })
+      .click();
     await expect(
       caregiver.getByTestId('summary-checkin').getByText('Not shared', { exact: true }),
     ).toBeVisible();
@@ -180,7 +186,10 @@ test('Urdu mobile summary preserves restricted data and links to the personal co
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await page.getByRole('button', { name: text('Open navigation'), exact: true }).click();
     await expect(page.locator('.sidebar')).toHaveClass(/open/);
-    await page.getByRole('button', { name: text('Daily summary'), exact: true }).click();
+    await page
+      .getByRole('navigation')
+      .getByRole('button', { name: text('Daily summary'), exact: true })
+      .click();
     await expect(
       page.getByRole('heading', { name: text('Today in one place.'), exact: true }),
     ).toBeVisible();

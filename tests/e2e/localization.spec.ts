@@ -151,7 +151,10 @@ test('all available account interfaces translate navigation, coverage, and setti
       await expect(
         page.getByRole('button', { name: text('My reminders'), exact: true }),
       ).toBeVisible();
-      await page.getByRole('button', { name: text('Daily summary'), exact: true }).click();
+      await page
+        .getByRole('navigation')
+        .getByRole('button', { name: text('Daily summary'), exact: true })
+        .click();
       await expect(
         page.getByRole('heading', { name: text('Today in one place.'), exact: true }),
       ).toBeVisible();

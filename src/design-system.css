@@ -1115,3 +1115,156 @@ select {
     margin-inline-start: 0;
   }
 }
+/* Match supporting detail surfaces to the shared workspace palette. */
+.coverage-interval-time,
+.coverage-detail-heading > span,
+.coverage-interval small,
+.coverage-person small,
+.schedule-mode small,
+.schedule-day .schedule-off,
+.schedule-window label {
+  color: var(--muted);
+}
+.coverage-summary-status {
+  color: #17625b;
+}
+.schedule-mode > label {
+  border-color: var(--line);
+  border-radius: 14px;
+}
+.schedule-mode > label:has(input:checked) {
+  background: var(--surface);
+  border-color: #007b7e;
+}
+.coverage-single {
+  background: #f1c775;
+}
+.coverage-backup {
+  background: #59aaa4;
+}
+.coverage-gap {
+  background: #e7ac9d;
+}
+.info-strip,
+.private-note {
+  background: #f0f7fa;
+  border-color: var(--line);
+  color: #405e77;
+}
+.owner-banner,
+.outcome {
+  background: #edf8f3;
+  color: #17625b;
+}
+.owner-banner p,
+.outcome p {
+  color: #17625b;
+}
+.audit-row p,
+.detail-list dt,
+.detail-list dd,
+.settings-about > p {
+  color: var(--muted);
+}
+html[lang='en'] .large-text .welcome-copy h2 {
+  line-height: 1.45;
+}
+@media (max-width: 760px) {
+  .coverage-week {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .coverage-week-day small {
+    font-size: 12px;
+  }
+  .coverage-timezone small {
+    padding-left: 0;
+    padding-inline-start: 24px;
+  }
+  [dir='rtl'] .coverage-person > .badge {
+    margin-left: 0;
+    margin-inline-start: 53px;
+  }
+  .drill-hero {
+    padding: 24px;
+    flex-wrap: wrap;
+  }
+  .drill-steps {
+    gap: 14px;
+  }
+}
+/* Unequal content lengths should not turn a short check-in into a tall empty card. */
+.summary-grid {
+  grid-template-areas: 'checkin reminders' 'requests reminders' 'coverage coverage';
+  align-items: start;
+}
+[data-testid='summary-checkin'] {
+  grid-area: checkin;
+  background: #f0f9f8;
+}
+[data-testid='summary-reminders'] {
+  grid-area: reminders;
+}
+[data-testid='summary-requests'] {
+  grid-area: requests;
+}
+[data-testid='summary-coverage'] {
+  grid-area: coverage;
+}
+[data-testid='summary-requests'] .summary-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 760px) {
+  .summary-grid {
+    grid-template-areas: 'checkin' 'reminders' 'requests' 'coverage';
+  }
+  [data-testid='summary-requests'] .summary-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.proposal-card,
+.sharing-preview {
+  background: #eff9f8;
+  border-color: #c7e5e3;
+  border-radius: 16px;
+}
+.proposal-card h3 {
+  color: var(--navy);
+}
+.proposal-card p,
+.proposal-card small,
+.interpretation-note,
+.timeline p,
+.delivery-status p,
+.delivery-status small {
+  color: var(--muted);
+  font-size: 13px;
+}
+.example-chip {
+  background: #f2f7fa;
+  border-color: var(--line);
+  border-radius: 12px;
+  padding: 12px;
+}
+.modal-actions {
+  background: #f7fafc;
+}
+.timeline-dot {
+  background: #7eacb4;
+  border-color: #deedef;
+}
+.timeline-dot.accepted,
+.timeline-dot.resolved {
+  background: #26877c;
+  border-color: #d6eeea;
+}
+.timeline li::before {
+  background: #d3e4e9;
+}
+.prototype-note {
+  background: #edf5f8;
+  color: var(--muted);
+}
+html.large-text .welcome-copy h2 {
+  line-height: 1.45;
+}

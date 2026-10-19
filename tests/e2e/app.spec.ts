@@ -114,6 +114,15 @@ test('sharing preview, permission revocation, and responsive navigation', async 
     expect(d.incidents).toEqual([]);
     expect(d.reminders).toEqual([]);
     await mobile.getByRole('button', { name: 'Open navigation' }).click();
+    await expect(mobile.locator('.sidebar-close')).toBeFocused();
+    await mobile.keyboard.press('Shift+Tab');
+    await expect(mobile.locator('.profile-button')).toBeFocused();
+    await mobile.keyboard.press('Tab');
+    await expect(mobile.locator('.sidebar-close')).toBeFocused();
+    await mobile.keyboard.press('Escape');
+    await expect(mobile.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+    await expect(mobile.locator('.sidebar')).not.toHaveClass(/open/);
+    await mobile.getByRole('button', { name: 'Open navigation' }).click();
     await mobile.getByRole('button', { name: 'Care requests', exact: true }).click();
     await expect(
       mobile.getByRole('heading', { name: 'Every request, a clear next step.' }),

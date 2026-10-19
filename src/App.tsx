@@ -56,6 +56,36 @@ export default function App() {
   const [incidentId, setIncidentId] = useState<string | null>(null);
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   useEffect(() => {
+    if (!menu) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const sidebar = document.getElementById('care-navigation');
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    sidebar?.querySelector<HTMLButtonElement>('.sidebar-close')?.focus();
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') setMenu(false);
+      if (event.key !== 'Tab' || !sidebar) return;
+      const controls = [
+        ...sidebar.querySelectorAll<HTMLButtonElement>('button:not(:disabled)'),
+      ].filter((element) => element.getClientRects().length > 0);
+      const first = controls[0];
+      const last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    }
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleKey);
+      previousFocus?.focus();
+    };
+  }, [menu]);
+  useEffect(() => {
     setSelectedIncident(null);
     if (!incidentId || !user) return;
     let active = true;
@@ -211,7 +241,7 @@ export default function App() {
           aria-label={t('Close navigation')}
         />
       )}
-      <aside className={`sidebar ${menu ? 'open' : ''}`}>
+      <aside id="care-navigation" className={`sidebar ${menu ? 'open' : ''}`}>
         <div className="sidebar-brand-row">
           <Brand light />
           <button
@@ -296,6 +326,7 @@ export default function App() {
               onClick={() => setMenu(true)}
               aria-label={t('Open navigation')}
               aria-expanded={menu}
+              aria-controls="care-navigation"
             >
               <Menu size={22} />
             </button>
