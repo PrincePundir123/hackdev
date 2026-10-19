@@ -1268,3 +1268,35 @@ html[lang='en'] .large-text .welcome-copy h2 {
 html.large-text .welcome-copy h2 {
   line-height: 1.45;
 }
+.install-card > p {
+  margin-block: 12px;
+}
+.install-card .button {
+  margin-block: 8px;
+}
+.install-instructions {
+  padding: 16px;
+  background: var(--surface);
+  border-radius: 14px;
+  color: var(--muted);
+}
+.install-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #17625b;
+  font-weight: 600;
+}
+.install-card .fine-print {
+  color: var(--muted);
+  font-size: 13px;
+}
+@supports (padding: env(safe-area-inset-bottom)) {
+  .app-footer {
+    padding-bottom: max(22px, env(safe-area-inset-bottom));
+  }
+  .sidebar {
+    padding-top: max(28px, env(safe-area-inset-top));
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
+  }
+}

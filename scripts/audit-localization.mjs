@@ -9,6 +9,7 @@ for (const name of [
   'components',
   'CoveragePage',
   'DailySummaryPage',
+  'InstallApp',
 ]) {
   const ast = await parser.parsers.typescript.parse(readFileSync(`src/${name}.tsx`, 'utf8'));
   function walk(node) {

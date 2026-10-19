@@ -1,5 +1,6 @@
 import { t, systemText, errorText, formatDate, languages, pluralSuffix } from './i18n';
 import { useState, type ReactNode } from 'react';
+import InstallApp from './InstallApp';
 import {
   ArrowRight,
   Bell,
@@ -1228,6 +1229,7 @@ export function SettingsPage(props: PageProps & { health: Health | null }) {
         subtitle={t('A few simple preferences, and a clear picture of how this prototype works.')}
       />
       <div className="settings-grid">
+        <InstallApp />
         <section className="card">
           <SectionTitle title={t('Language settings')} />
           <p>{t('Personal notes stay in the language they were written in.')}</p>

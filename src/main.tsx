@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import { PwaProvider } from './PwaProvider';
 import './styles.css';
 import './coverage.css';
 import './languages.css';
@@ -9,6 +10,8 @@ import './design-system.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <PwaProvider>
+      <App />
+    </PwaProvider>
   </StrictMode>,
 );
