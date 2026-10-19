@@ -1,0 +1,409 @@
+.coverage-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.coverage-timezone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #5c6e54;
+  margin: -3px 0 21px;
+  flex-wrap: wrap;
+}
+.coverage-timezone small {
+  margin-left: auto;
+  font-size: 12px;
+  color: #5c6e54;
+}
+.coverage-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.coverage-stat {
+  padding: 24px;
+}
+.coverage-stat h2 {
+  font-size: 23px;
+  margin: 13px 0 10px;
+}
+.coverage-stat p {
+  font-size: 13px;
+}
+.coverage-stat .eyebrow {
+  letter-spacing: 1.2px;
+}
+.coverage-gap-stat {
+  background: #fff8ee;
+  border-color: #edddc5;
+}
+.coverage-calendar {
+  margin-bottom: 24px;
+}
+.coverage-legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  color: #5c6e54;
+  font-size: 12px;
+  margin: 20px 0;
+}
+.coverage-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.coverage-legend i {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.coverage-gap {
+  background: #e8b5a6;
+}
+.coverage-single {
+  background: #d9c58d;
+}
+.coverage-backup {
+  background: #87ad88;
+}
+.coverage-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 9px;
+}
+.coverage-week-day {
+  border: 1px solid #dfe6d7;
+  background: #fafcf7;
+  border-radius: 9px;
+  text-align: left;
+  padding: 14px 10px;
+  color: #405b34;
+  min-width: 0;
+}
+.coverage-week-day:hover {
+  border-color: #739168;
+}
+.coverage-week-day.selected {
+  background: #ecf4e6;
+  border-color: #658854;
+  box-shadow: 0 0 0 1px #658854;
+}
+.coverage-week-day > strong {
+  font-size: 13px;
+}
+.coverage-week-day small {
+  display: block;
+  font-size: 11px;
+  color: #5c6e54;
+  margin-top: 9px;
+}
+.coverage-track {
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 9px;
+  margin-top: 14px;
+  background: #f0eee7;
+}
+.coverage-track > span {
+  min-width: 0;
+}
+.coverage-detail-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin: 26px 0 6px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.coverage-detail-heading h3 {
+  font-size: 17px;
+}
+.coverage-detail-heading > span {
+  font-size: 12px;
+  color: #5c6e54;
+}
+.coverage-interval {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.coverage-interval:last-child {
+  border: 0;
+  padding-bottom: 5px;
+}
+.coverage-interval-time {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #536747;
+  min-width: 95px;
+}
+.coverage-interval > div {
+  flex: 1;
+  min-width: 0;
+}
+.coverage-interval strong {
+  font-size: 14px;
+  display: block;
+}
+.coverage-interval small {
+  font-size: 12px;
+  color: #5c6e54;
+  display: block;
+  margin-top: 5px;
+}
+.coverage-people {
+  margin-bottom: 24px;
+}
+.coverage-person {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.coverage-person > div {
+  flex: 1;
+  min-width: 0;
+}
+.coverage-person strong {
+  font-size: 14px;
+  display: block;
+}
+.coverage-person small {
+  font-size: 12px;
+  color: #5c6e54;
+  display: block;
+  margin-top: 4px;
+}
+.coverage-summary-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #456535;
+}
+.coverage-summary-status strong {
+  font-size: 14px;
+}
+.coverage-summary > p {
+  font-size: 12px;
+  margin: 10px 0 12px;
+}
+.coverage-circle-link {
+  margin: -6px 0 22px;
+}
+.coverage-editor .info-strip {
+  margin-top: 20px;
+}
+.coverage-editor .info-strip p {
+  font-size: 12px;
+}
+.schedule-mode {
+  border: 0;
+  padding: 0;
+  margin: 0 0 20px;
+}
+.schedule-mode legend {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 13px;
+}
+.schedule-mode > label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid #dfe6d7;
+  border-radius: 9px;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.schedule-mode input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  accent-color: var(--green);
+  padding: 0;
+  margin: 2px 0 0;
+  flex-shrink: 0;
+}
+.schedule-mode strong {
+  display: block;
+  font-size: 14px;
+}
+.schedule-mode small {
+  display: block;
+  font-size: 12px;
+  color: #5c6e54;
+  margin-top: 5px;
+}
+.schedule-days {
+  margin-top: 16px;
+}
+.schedule-day {
+  padding: 17px 0;
+  border-top: 1px solid var(--line);
+}
+.schedule-day-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.schedule-day-heading h3 {
+  font-size: 14px;
+}
+.schedule-day-heading > div {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.schedule-day-heading button {
+  min-height: 36px;
+}
+.schedule-day .schedule-off {
+  font-size: 12px;
+  color: #5c6e54;
+  margin-top: 6px;
+}
+.schedule-window {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+.schedule-window label {
+  display: block;
+  font-size: 12px;
+  color: #536747;
+  flex: 1;
+  min-width: 0;
+}
+.schedule-window input {
+  margin-top: 6px;
+  font-size: 14px;
+  min-width: 0;
+}
+.schedule-window .icon-button {
+  margin-bottom: 2px;
+}
+.coverage-editor .coverage-empty-warning {
+  font-size: 13px;
+  background: #fff3e3;
+  padding: 13px;
+  border-radius: 8px;
+  color: #775827;
+  margin-top: 14px;
+}
+.coverage-editor .error-message p {
+  color: #7d4234;
+  font-size: 13px;
+}
+.coverage-editor .error-message .text-link {
+  margin-top: 10px;
+}
+@media (max-width: 1100px) {
+  .coverage-stats {
+    gap: 12px;
+  }
+  .coverage-stat {
+    padding: 19px;
+  }
+  .coverage-stat h2 {
+    font-size: 20px;
+  }
+  .coverage-week {
+    gap: 6px;
+  }
+  .coverage-week-day {
+    padding: 12px 8px;
+  }
+  .coverage-week-day small {
+    font-size: 10px;
+  }
+}
+@media (max-width: 760px) {
+  .coverage-stats {
+    grid-template-columns: 1fr;
+  }
+  .coverage-stat {
+    padding: 21px;
+  }
+  .coverage-stat h2 {
+    font-size: 23px;
+  }
+  .coverage-week {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 9px;
+  }
+  .coverage-week-day {
+    padding: 14px 10px;
+  }
+  .coverage-week-day small {
+    font-size: 11px;
+  }
+  .coverage-person {
+    flex-wrap: wrap;
+  }
+  .coverage-person > .badge {
+    margin-left: 53px;
+  }
+  .coverage-detail-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .coverage-interval {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .coverage-interval-time {
+    flex-basis: 100%;
+  }
+  .coverage-interval > div {
+    min-width: 170px;
+  }
+  .coverage-timezone small {
+    margin-left: 0;
+    flex-basis: 100%;
+    padding-left: 24px;
+  }
+  .coverage-heading-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .coverage-timezone strong {
+    overflow-wrap: anywhere;
+  }
+  .schedule-window {
+    gap: 8px;
+  }
+  .schedule-window input {
+    padding: 10px 7px;
+  }
+  .schedule-day-heading > div {
+    gap: 10px;
+  }
+}
+@media (max-width: 380px) {
+  .coverage-week {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .schedule-day-heading {
+    flex-wrap: wrap;
+  }
+  .schedule-window .icon-button {
+    min-width: 32px;
+    width: 32px;
+  }
+}

@@ -21,12 +21,14 @@ import { api, ApiError } from './api';
 import { Avatar, Brand, Loading } from './components';
 import { Overview, Reminders, Circle, Requests, Drills, History, SettingsPage } from './pages';
 import { HelpDialog, ReminderDialog, IncidentDialog } from './dialogs';
+import CoveragePage from './CoveragePage';
 import type { DashboardData, Health, Page, User } from './types';
 
 const navigation = [
   { id: 'overview', label: 'Overview', icon: LayoutGrid },
   { id: 'reminders', label: 'My reminders', icon: CalendarDays },
   { id: 'circle', label: 'My care circle', icon: Users },
+  { id: 'coverage', label: 'Care coverage', icon: CalendarDays },
   { id: 'requests', label: 'Care requests', icon: Heart },
   { id: 'drills', label: 'Practice a drill', icon: FlaskConical },
   { id: 'history', label: 'Sharing history', icon: ShieldCheck },
@@ -136,7 +138,11 @@ export default function App() {
   if (!user) return <AuthPage health={health} onLogin={login} />;
   const isElder = user.role === 'elder';
   const currentTitle =
-    page === 'settings' ? 'Settings' : navigation.find((n) => n.id === page)?.label;
+    page === 'settings'
+      ? 'Settings'
+      : page === 'coverage' && !isElder
+        ? 'My weekly hours'
+        : navigation.find((n) => n.id === page)?.label;
   const props = data
     ? {
         data,
@@ -185,7 +191,13 @@ export default function App() {
                 aria-current={page === n.id ? 'page' : undefined}
               >
                 <n.icon size={19} />
-                <span>{!isElder && n.id === 'reminders' ? 'Shared reminders' : n.label}</span>
+                <span>
+                  {!isElder && n.id === 'reminders'
+                    ? 'Shared reminders'
+                    : !isElder && n.id === 'coverage'
+                      ? 'My weekly hours'
+                      : n.label}
+                </span>
                 {n.id === 'requests' && data && data.stats.open > 0 && (
                   <span className="nav-count">{data.stats.open}</span>
                 )}
@@ -282,6 +294,7 @@ export default function App() {
               {page === 'overview' && <Overview {...props} />}
               {page === 'reminders' && <Reminders {...props} />}
               {page === 'circle' && <Circle {...props} />}
+              {page === 'coverage' && <CoveragePage {...props} />}
               {page === 'requests' && <Requests {...props} />}
               {page === 'drills' && <Drills {...props} />}
               {page === 'history' && <History {...props} />}

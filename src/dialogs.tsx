@@ -429,7 +429,9 @@ export function HelpDialog({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const requestKey = useRef(key());
-  const contacts = data.contacts.filter((c) => c.available && c.accepted && c.allow_requests);
+  const contacts = data.contacts.filter(
+    (c) => c.available && c.accepted && c.allow_requests && c.scheduled_now,
+  );
   return (
     <Modal
       title="Reach out to your people"
@@ -496,8 +498,8 @@ export function HelpDialog({
               ))
             ) : (
               <p>
-                No contacts are available. The request will be recorded as having no confirmed
-                responder.
+                No contacts are scheduled and available now. The request will be recorded as having
+                no confirmed responder.
               </p>
             )}
           </div>

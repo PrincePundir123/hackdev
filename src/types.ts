@@ -21,6 +21,7 @@ export type Contact = {
   drill_opt_in: number;
   external_opt_in: number;
   version: number;
+  scheduled_now: boolean;
 };
 export type Reminder = {
   id: string;
@@ -68,6 +69,7 @@ export type DashboardData = {
   user: User;
   elder: { name: string; id: string; timezone: string };
   contacts: Contact[];
+  coverage_now: { id: string; name: string }[];
   reminders: Reminder[];
   reminders_allowed: boolean;
   incidents: Incident[];
@@ -103,4 +105,38 @@ export type Preview = {
   example: { title: string; private_note?: string } | null;
 };
 export type Page =
-  'overview' | 'reminders' | 'circle' | 'requests' | 'drills' | 'history' | 'settings';
+  'overview' | 'reminders' | 'circle' | 'coverage' | 'requests' | 'drills' | 'history' | 'settings';
+
+export type CoverageWindow = { day: number; start: number; end: number };
+export type CoverageContact = {
+  id: string;
+  user_id: string;
+  name: string;
+  relationship: string;
+  priority: number;
+  available: boolean;
+  accepted: boolean;
+  allow_requests: boolean;
+  mode: 'anytime' | 'weekly';
+  version: number;
+  windows: CoverageWindow[];
+};
+export type CoverageResponder = { id: string; name: string; priority: number };
+export type CoverageReport = {
+  scope: 'household' | 'personal';
+  timezone: string;
+  generated_at: number;
+  position: { day: number; minute: number };
+  contacts: CoverageContact[];
+  now: CoverageResponder[];
+  next_gap: CoverageWindow | null;
+  gap_minutes: number;
+  backup_minutes: number;
+  days: {
+    day: number;
+    name: string;
+    gap_minutes: number;
+    backup_minutes: number;
+    segments: { start: number; end: number; responders: CoverageResponder[] }[];
+  }[];
+};

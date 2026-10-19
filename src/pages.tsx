@@ -389,6 +389,31 @@ export function Overview(props: PageProps) {
               </button>
             </section>
           )}
+          <section className="card coverage-summary">
+            <SectionTitle title={elder ? 'Coverage now' : 'My scheduled availability'} />
+            <div className="coverage-summary-status">
+              <Clock3 size={20} />
+              <strong>
+                {data.coverage_now.length
+                  ? elder
+                    ? `${data.coverage_now.length} scheduled responder${data.coverage_now.length === 1 ? '' : 's'}`
+                    : 'Within my response hours'
+                  : elder
+                    ? 'No responder scheduled'
+                    : 'Outside my response hours'}
+              </strong>
+            </div>
+            <p>
+              {data.coverage_now.length
+                ? data.coverage_now.map((c) => c.name).join(', ')
+                : elder
+                  ? 'Review the weekly plan and arrange a willing backup.'
+                  : 'Review your weekly hours or update your availability.'}
+            </p>
+            <TextLink onClick={() => go('coverage')}>
+              {elder ? 'View weekly coverage' : 'Set my weekly hours'}
+            </TextLink>
+          </section>
           <section className="card circle-summary">
             <SectionTitle
               title="Your people"
@@ -405,10 +430,10 @@ export function Overview(props: PageProps) {
                     </small>
                   </div>
                   <span
-                    className={`availability-dot ${c.available && c.accepted && c.allow_requests ? '' : 'away'}`}
+                    className={`availability-dot ${c.available && c.accepted && c.allow_requests && c.scheduled_now ? '' : 'away'}`}
                     title={
-                      c.available && c.accepted && c.allow_requests
-                        ? 'Available for requests'
+                      c.available && c.accepted && c.allow_requests && c.scheduled_now
+                        ? 'Scheduled and available for requests'
                         : 'Not currently available'
                     }
                   />
@@ -559,6 +584,12 @@ export function Circle(props: PageProps) {
           )
         }
       />
+      <div className="coverage-circle-link">
+        <button className="button secondary" onClick={() => props.go('coverage')}>
+          <Clock3 size={17} />
+          {elder ? 'View weekly care coverage' : 'Set my weekly hours'}
+        </button>
+      </div>
       {localError && (
         <p className="error-message" role="alert">
           {localError}
@@ -569,8 +600,20 @@ export function Circle(props: PageProps) {
           <article className="card contact-card" key={c.id}>
             <div className="contact-head">
               <Avatar name={c.name} variant={i ? 'lavender' : 'sage'} size="large" />
-              <Badge tone={c.available && c.accepted ? 'green' : 'neutral'}>
-                {c.available && c.accepted ? 'Available' : 'Away'}
+              <Badge
+                tone={
+                  c.available && c.accepted && c.allow_requests && c.scheduled_now
+                    ? 'green'
+                    : 'neutral'
+                }
+              >
+                {!c.available || !c.accepted
+                  ? 'Away'
+                  : !c.allow_requests
+                    ? 'Requests not shared'
+                    : c.scheduled_now
+                      ? 'Scheduled now'
+                      : 'Outside hours'}
               </Badge>
             </div>
             <h2>{c.name}</h2>
