@@ -10,6 +10,8 @@
 
 ## Suggested 2:45 recording
 
+For an installed-app demonstration, follow the [PWA setup](PWA.md) on the production build or public HTTPS deployment. A brief install/offline segment can supplement the main care workflow; describe the app as online-first and avoid claiming native push or offline help delivery.
+
 | Time      | Show                                                                                |
 | --------- | ----------------------------------------------------------------------------------- |
 | 0:00–0:20 | Explain the coordination gap: sending an alert does not establish who will respond. |

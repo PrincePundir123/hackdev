@@ -6,6 +6,8 @@
 
 The interface uses a Birdie-inspired navy, aqua and amber visual system across the older-adult and caregiver views, with responsive cards, regional-language layouts and keyboard-accessible mobile navigation. See the [visual comparison and redesign QA](design-qa.md).
 
+Saathi is also an **installable, online-first PWA**. Open **Settings & accessibility → Install Saathi** on a supported browser. Installation includes standalone app metadata, standard/maskable icons, iPhone home-screen guidance and a localized offline fallback. Private care data and offline actions are not cached. See [installation, production preview, privacy and demonstration steps](docs/PWA.md).
+
 ## Run locally
 
 Requires **Node.js 24.x** and npm. SQLite is included with Node; no separate database installation is needed.

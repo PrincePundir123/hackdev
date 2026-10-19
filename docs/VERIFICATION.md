@@ -11,16 +11,20 @@ The Birdie-inspired redesign was also reviewed in Chrome across all nine older-a
 | TypeScript and Vite production build | Passed                                                                                                                                                      |
 | Backend test suite                   | 42 tests passed, including daily summary permission isolation, timezone dates, ownership, record counts and account language persistence                    |
 | Local request interpretation dataset | 30 supported/ambiguous/unsupported examples exercised within the backend suite                                                                              |
-| Browser suite                        | 11 tests passed in 1.1 minutes after the UI redesign, including daily summaries and all 14 enabled regional interfaces                                      |
+| Browser suite                        | 16 tests passed, including the existing care flows, regional interfaces and five PWA scenarios                                                              |
 | Accessibility scan                   | No serious or critical WCAG A/AA-tagged axe findings on entry, personal dashboard, reminder dialog, coverage planner, weekly-hours editor and daily summary |
 | Source formatting                    | Prettier check passed                                                                                                                                       |
 | Localization source audit            | Passed; no untranslated literal JSX copy outside the brand name                                                                                             |
 
 Accessibility automation is limited to the listed screens and does not establish complete WCAG conformance or usability for every older adult. No clinical or real-user trial was performed.
 
+## PWA evidence
+
+The production build emits a manifest, PNG icons, a revisioned worker and a localized offline fallback. A normal persistent Chrome profile reported no manifest or installability errors. Browser tests verified the exact public-cache allowlist after authenticated API reads, offline reloads in all 15 enabled languages, API failure rather than cached disclosure, online recovery, and a check-in that is not queued while offline. Install-event controls, iPhone guidance and standalone detection were exercised with simulated browser events or environment values; physical-device installation remains unverified. The existing backend architecture and hosting requirements are unchanged. See [PWA behavior and limitations](PWA.md).
+
 ## Regional-language evidence
 
-All 14 enabled regional dictionaries have the complete 689-key source catalog and preserve every dynamic placeholder. Browser checks loaded each welcome interface, persisted the guest choice, then exercised navigation, daily summary, coverage and settings for every enabled account language. Hindi reminder entry and confirmation preserved an English/Hindi personal title exactly in the database. Reload retained the preference. A separate caregiver used Urdu while the older adult remained in Hindi; the mobile Urdu planner and schedule editor were usable without horizontal document overflow, and the editor had no serious or critical findings in its axe scan.
+All 14 enabled regional dictionaries have the complete 697-key source catalog and preserve every dynamic placeholder. Browser checks loaded each welcome interface, persisted the guest choice, then exercised navigation, daily summary, coverage and settings for every enabled account language. Hindi reminder entry and confirmation preserved an English/Hindi personal title exactly in the database. Reload retained the preference. A separate caregiver used Urdu while the older adult remained in Hindi; the mobile Urdu planner and schedule editor were usable without horizontal document overflow, and the editor had no serious or critical findings in its axe scan.
 
 The migration test opened a database with the previous users schema, confirmed an English default without changing account records, saved Hindi, and reopened it without adding a duplicate column. API checks rejected unsupported and unavailable language codes, unauthenticated changes, and attempts to target another user.
 
