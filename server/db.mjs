@@ -40,6 +40,18 @@ export function openDatabase(path = './data/saathi.sqlite') {
       token_hash TEXT PRIMARY KEY, elder_id TEXT NOT NULL REFERENCES users(id), email TEXT NOT NULL,
       relationship TEXT NOT NULL, expires_at INTEGER NOT NULL, used_at INTEGER
     );
+    CREATE TABLE IF NOT EXISTS coverage_preferences (
+      contact_id TEXT PRIMARY KEY REFERENCES contacts(id) ON DELETE CASCADE,
+      mode TEXT NOT NULL CHECK(mode IN ('anytime','weekly')),
+      version INTEGER NOT NULL DEFAULT 1, updated_at INTEGER NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS coverage_windows (
+      contact_id TEXT NOT NULL REFERENCES contacts(id) ON DELETE CASCADE,
+      day INTEGER NOT NULL CHECK(day BETWEEN 0 AND 6),
+      start_minute INTEGER NOT NULL CHECK(start_minute BETWEEN 0 AND 1439),
+      end_minute INTEGER NOT NULL CHECK(end_minute BETWEEN 1 AND 1440 AND end_minute>start_minute),
+      PRIMARY KEY(contact_id,day,start_minute)
+    );
     CREATE TABLE IF NOT EXISTS events (
       id TEXT PRIMARY KEY, elder_id TEXT NOT NULL REFERENCES users(id), client_key TEXT NOT NULL,
       type TEXT NOT NULL, occurred_at INTEGER NOT NULL, received_at INTEGER NOT NULL,

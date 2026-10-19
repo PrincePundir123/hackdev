@@ -2,6 +2,14 @@ import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { id, hashToken, transaction, publicUser } from './db.mjs';
 import { AppError, requireThat } from './auth.mjs';
+import {
+  coverageSchema,
+  coverageReport,
+  localPosition,
+  normalizeWindows,
+  participates,
+  scheduledAt,
+} from './coverage.mjs';
 
 const terminal = ['RESOLVED', 'CANCELLED', 'NO_RESPONDER'];
 const keySchema = z.string().min(8).max(100);
@@ -72,8 +80,119 @@ export class CareService {
       contact.accepted &&
       contact.available &&
       contact.allow_requests &&
+      this.onSchedule(contact) &&
       (!incident.is_test || contact.drill_opt_in)
     );
+  }
+  plan(contactId) {
+    const preference = this.get('SELECT * FROM coverage_preferences WHERE contact_id=?', contactId);
+    return {
+      mode: preference?.mode || 'anytime',
+      version: preference?.version || 0,
+      windows: this.all(
+        'SELECT day,start_minute AS start,end_minute AS end FROM coverage_windows WHERE contact_id=? ORDER BY day,start_minute',
+        contactId,
+      ).map((w) => ({ ...w })),
+    };
+  }
+  onSchedule(contact) {
+    if (!contact) return false;
+    const elder = this.get('SELECT timezone FROM users WHERE id=?', contact.elder_id);
+    return scheduledAt(this.plan(contact.id), localPosition(this.now(), elder.timezone));
+  }
+  coverage(user) {
+    const elder = this.elder(user);
+    const scope = user.role === 'elder' ? 'household' : 'personal';
+    const contacts = this.contacts(elder.id)
+      .filter((c) => scope === 'household' || c.user_id === user.id)
+      .map((c) => ({
+        id: c.id,
+        user_id: c.user_id,
+        name: c.name,
+        relationship: c.relationship,
+        priority: c.priority,
+        available: !!c.available,
+        accepted: !!c.accepted,
+        allow_requests: !!c.allow_requests,
+        ...this.plan(c.id),
+      }));
+    const position = localPosition(this.now(), elder.timezone);
+    return {
+      scope,
+      timezone: elder.timezone,
+      generated_at: this.now(),
+      position,
+      contacts,
+      ...coverageReport(contacts, position),
+    };
+  }
+  updateCoverage(user, body) {
+    requireThat(user.role === 'caregiver', 403, 'Caregivers set their own scheduled hours.');
+    const contact = this.get('SELECT * FROM contacts WHERE user_id=?', user.id);
+    requireThat(contact, 403, 'You are not linked to a care circle.');
+    const data = coverageSchema.parse(body);
+    return transaction(this.db, () => {
+      const current = this.plan(contact.id);
+      requireThat(
+        data.version === current.version,
+        409,
+        'Your schedule changed in another session. Reload the planner and try again.',
+      );
+      this.run(
+        'INSERT INTO coverage_preferences (contact_id,mode,version,updated_at) VALUES (?,?,?,?) ON CONFLICT(contact_id) DO UPDATE SET mode=excluded.mode,version=excluded.version,updated_at=excluded.updated_at',
+        contact.id,
+        data.mode,
+        current.version + 1,
+        this.now(),
+      );
+      this.run('DELETE FROM coverage_windows WHERE contact_id=?', contact.id);
+      const windows = data.mode === 'weekly' ? normalizeWindows(data.windows) : [];
+      for (const w of windows)
+        this.run(
+          'INSERT INTO coverage_windows VALUES (?,?,?,?)',
+          contact.id,
+          w.day,
+          w.start,
+          w.end,
+        );
+      this.audit(
+        contact.elder_id,
+        user.id,
+        'coverage_updated',
+        `${user.name} updated their response schedule. Accepted requests keep their assigned caregiver.`,
+        'allow',
+      );
+      this.reconcileCoverage(contact.elder_id);
+      return this.coverage(user);
+    });
+  }
+  reconcileCoverage(elderId) {
+    const waiting = this.all(
+      "SELECT * FROM incidents WHERE state='AWAITING_RESPONSE'" +
+        (elderId ? ' AND elder_id=?' : ''),
+      ...(elderId ? [elderId] : []),
+    );
+    for (const incident of waiting) {
+      const pending = this.get(
+        "SELECT * FROM attempts WHERE incident_id=? AND status='pending'",
+        incident.id,
+      );
+      if (!pending) continue;
+      const contact = this.get('SELECT * FROM contacts WHERE id=?', pending.contact_id);
+      if (this.eligible(contact, incident)) continue;
+      this.run("UPDATE attempts SET status='off_schedule' WHERE id=?", pending.id);
+      this.run(
+        "UPDATE outbox SET status='cancelled',updated_at=? WHERE attempt_id=? AND status IN ('pending','retry','sending')",
+        this.now(),
+        pending.id,
+      );
+      this.timeline(
+        incident.id,
+        'schedule',
+        'The invited contact is no longer scheduled or available. Checking the next eligible contact.',
+      );
+      this.advance(incident.id);
+    }
   }
   canRead(user, incident) {
     if (incident.elder_id === user.id) return true;
@@ -117,7 +236,7 @@ export class CareService {
           incident.elder_id,
         );
     const attempts = this.all(
-      'SELECT attempts.*,contacts.user_id,users.name FROM attempts JOIN contacts ON contacts.id=attempts.contact_id JOIN users ON users.id=contacts.user_id WHERE incident_id=? ORDER BY created_at,id',
+      'SELECT attempts.*,contacts.user_id,users.name FROM attempts JOIN contacts ON contacts.id=attempts.contact_id JOIN users ON users.id=contacts.user_id WHERE incident_id=? ORDER BY attempts.created_at,attempts.rowid',
       incident.id,
     );
     const result = {
@@ -164,6 +283,9 @@ export class CareService {
     const elder = this.elder(user);
     const own = user.id === elder.id;
     const link = own ? null : this.get('SELECT * FROM contacts WHERE user_id=?', user.id);
+    const contacts = this.contacts(elder.id)
+      .filter((c) => own || c.user_id === user.id)
+      .map((c) => ({ ...c, scheduled_now: this.onSchedule(c) }));
     const permitted = own || (link.accepted && link.allow_reminders);
     const incidents = this.all(
       'SELECT * FROM incidents WHERE elder_id=? ORDER BY created_at DESC LIMIT 100',
@@ -180,9 +302,10 @@ export class CareService {
     return {
       user: publicUser(user),
       elder: { name: elder.name, id: elder.id, timezone: elder.timezone },
-      contacts: own
-        ? this.contacts(elder.id)
-        : this.contacts(elder.id).filter((c) => c.user_id === user.id),
+      contacts,
+      coverage_now: contacts
+        .filter((c) => participates(c) && c.scheduled_now)
+        .map((c) => ({ id: c.id, name: c.name })),
       reminders: permitted
         ? this.all(
             "SELECT * FROM reminders WHERE elder_id=? ORDER BY CASE status WHEN 'due' THEN 0 WHEN 'scheduled' THEN 1 WHEN 'waiting' THEN 2 ELSE 3 END, due_at LIMIT 100",
@@ -287,7 +410,11 @@ export class CareService {
         contact.elder_id,
       );
       for (const incident of active) {
-        if (!this.eligible(latest, incident)) {
+        const eligibleForCurrentRequest =
+          participates(latest) &&
+          (!incident.is_test || latest.drill_opt_in) &&
+          (incident.owner_id === latest.user_id || this.onSchedule(latest));
+        if (!eligibleForCurrentRequest) {
           this.run(
             "UPDATE attempts SET status='revoked' WHERE contact_id=? AND incident_id=? AND status IN ('pending','accepted')",
             contactId,
@@ -546,9 +673,21 @@ export class CareService {
         (a) => a.contact_id,
       ),
     );
-    const next = this.contacts(incident.elder_id).find(
-      (c) => !tried.has(c.id) && this.eligible(c, incident),
+    const contacts = this.contacts(incident.elder_id);
+    const outsideSchedule = contacts.filter(
+      (c) =>
+        !tried.has(c.id) &&
+        participates(c) &&
+        (!incident.is_test || c.drill_opt_in) &&
+        !this.onSchedule(c),
     );
+    if (outsideSchedule.length)
+      this.timeline(
+        incidentId,
+        'schedule',
+        `${outsideSchedule.length} otherwise eligible contact${outsideSchedule.length === 1 ? ' is' : 's are'} outside scheduled hours and will not be invited now.`,
+      );
+    const next = contacts.find((c) => !tried.has(c.id) && this.eligible(c, incident));
     const now = this.now();
     if (!next) {
       this.run(
@@ -704,6 +843,7 @@ export class CareService {
   tick() {
     transaction(this.db, () => {
       const now = this.now();
+      this.reconcileCoverage();
       for (const reminder of this.all(
         "SELECT * FROM reminders WHERE status='scheduled' AND due_at<=?",
         now,
@@ -839,6 +979,8 @@ export class CareService {
 
 export function installCare(app, service) {
   app.get('/api/dashboard', (req, res) => res.json(service.dashboard(req.user)));
+  app.get('/api/coverage', (req, res) => res.json(service.coverage(req.user)));
+  app.put('/api/coverage/me', (req, res) => res.json(service.updateCoverage(req.user, req.body)));
   app.post('/api/contacts/invite', (req, res) =>
     res.json(service.createInvite(req.user, req.body)),
   );
