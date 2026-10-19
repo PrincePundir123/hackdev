@@ -1,3 +1,5 @@
+import { t, systemText, getLanguage } from './i18n';
+import LanguagePicker from './LanguagePicker';
 import { useState, type FormEvent } from 'react';
 import {
   ArrowRight,
@@ -17,7 +19,7 @@ export default function AuthPage({
   onLogin,
 }: {
   health: Health | null;
-  onLogin: (user: User) => void;
+  onLogin: (user: User) => void | Promise<void>;
 }) {
   const [mode, setMode] = useState<'welcome' | 'login' | 'register'>('welcome');
   const [busy, setBusy] = useState('');
@@ -27,7 +29,7 @@ export default function AuthPage({
     setBusy(user);
     setError('');
     try {
-      onLogin((await api<{ user: User }>('/auth/demo', { user })).user);
+      await onLogin((await api<{ user: User }>('/auth/demo', { user })).user);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -45,13 +47,14 @@ export default function AuthPage({
       ...(mode === 'register'
         ? {
             name: form.get('name'),
+            language: getLanguage(),
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             ...(invite.trim() ? { inviteCode: invite.trim() } : {}),
           }
         : {}),
     };
     try {
-      onLogin((await api<{ user: User }>('/auth/' + mode, payload)).user);
+      await onLogin((await api<{ user: User }>('/auth/' + mode, payload)).user);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -63,69 +66,75 @@ export default function AuthPage({
       <section className="auth-story">
         <Brand light />
         <div className="auth-copy">
-          <span className="eyebrow light">INDEPENDENCE. WITH A LITTLE TOGETHERNESS.</span>
+          <span className="eyebrow light">{t('INDEPENDENCE. WITH A LITTLE TOGETHERNESS.')}</span>
           <h1>
-            A little closer.
+            {t('A little closer.')}
             <br />
-            Every single day.
+            {t('Every single day.')}
           </h1>
           <p>
-            Care that respects your space.
+            {t('Care that respects your space.')}
             <br />
-            And keeps your people close.
+            {t('And keeps your people close.')}
           </p>
           <GardenIllustration />
           <div className="auth-promises">
             <span>
-              <CheckCircle2 size={18} /> Simple everyday support
+              <CheckCircle2 size={18} />
+              {t(' Simple everyday support')}
             </span>
             <span>
-              <ShieldCheck size={18} /> You decide what to share
+              <ShieldCheck size={18} />
+              {t(' You decide what to share')}
             </span>
             <span>
-              <HeartHandshake size={18} /> Someone who follows through
+              <HeartHandshake size={18} />
+              {t(' Someone who follows through')}
             </span>
           </div>
         </div>
-        <p className="auth-foot">Thoughtful technology. Human connection.</p>
+        <p className="auth-foot">{t('Thoughtful technology. Human connection.')}</p>
       </section>
       <section className="auth-panel">
         <div className="auth-panel-inner">
+          <LanguagePicker />
           {mode === 'welcome' ? (
             <>
-              <span className="eyebrow">WELCOME TO YOUR CARE CIRCLE</span>
+              <span className="eyebrow">{t('WELCOME TO YOUR CARE CIRCLE')}</span>
               <h2>
-                Good care starts
+                {t('Good care starts')}
                 <br />
-                with connection.
+                {t('with connection.')}
               </h2>
               <p className="muted auth-description">
-                A calmer way to manage reminders, ask for support, and look out for the people you
-                love.
+                {t(
+                  'A calmer way to manage reminders, ask for support, and look out for the people you love.',
+                )}
               </p>
               {health?.demo && (
                 <>
                   <div className="demo-label">
-                    <span /> EXPLORE A FICTIONAL HOUSEHOLD
+                    <span />
+                    {t(' EXPLORE A FICTIONAL HOUSEHOLD')}
                   </div>
                   <div className="demo-people">
                     {[
                       {
                         id: 'meera',
-                        name: 'Meera Sharma',
-                        role: 'Older adult · My day',
+                        name: t('Meera Sharma'),
+                        role: t('Older adult · My day'),
                         variant: 'peach',
                       },
                       {
                         id: 'arjun',
-                        name: 'Arjun Sharma',
-                        role: 'Son · Primary caregiver',
+                        name: t('Arjun Sharma'),
+                        role: t('Son · Primary caregiver'),
                         variant: 'sage',
                       },
                       {
                         id: 'leela',
-                        name: 'Leela Rao',
-                        role: 'Neighbour · Backup caregiver',
+                        name: t('Leela Rao'),
+                        role: t('Neighbour · Backup caregiver'),
                         variant: 'lavender',
                       },
                     ].map((person) => (
@@ -137,7 +146,10 @@ export default function AuthPage({
                       >
                         <Avatar name={person.name} variant={person.variant} />
                         <span>
-                          <strong>Continue as {person.name.split(' ')[0]}</strong>
+                          <strong>
+                            {t('Continue as ')}
+                            {person.name.split(' ')[0]}
+                          </strong>
                           <small>{person.role}</small>
                         </span>
                         {busy === person.id ? (
@@ -149,21 +161,23 @@ export default function AuthPage({
                     ))}
                   </div>
                   <p className="fine-print">
-                    Demo people and events are synthetic. Try different roles to see the care
-                    process from both sides.
+                    {t(
+                      'Demo people and events are synthetic. Try different roles to see the care process from both sides.',
+                    )}
                   </p>
                   <div className="divider">
-                    <span>or make it yours</span>
+                    <span>{t('or make it yours')}</span>
                   </div>
                 </>
               )}
               <button className="button primary wide" onClick={() => setMode('register')}>
-                Create your care circle <ArrowRight size={17} />
+                {t('Create your care circle ')}
+                <ArrowRight size={17} />
               </button>
               <p className="auth-login">
-                Already have an account?{' '}
+                {t('Already have an account?')}{' '}
                 <button className="inline-link" onClick={() => setMode('login')}>
-                  Sign in
+                  {t('Sign in')}
                 </button>
               </p>
             </>
@@ -176,31 +190,32 @@ export default function AuthPage({
                   setError('');
                 }}
               >
-                <ArrowLeft size={16} /> Back
+                <ArrowLeft size={16} />
+                {t(' Back')}
               </button>
-              <span className="eyebrow">YOUR SPACE, YOUR PEOPLE</span>
-              <h2>{mode === 'login' ? 'Welcome back.' : 'Let’s get connected.'}</h2>
+              <span className="eyebrow">{t('YOUR SPACE, YOUR PEOPLE')}</span>
+              <h2>{mode === 'login' ? t('Welcome back.') : t('Let’s get connected.')}</h2>
               <p className="muted">
                 {mode === 'register'
-                  ? 'Create a personal care circle, or join with an invitation.'
-                  : 'Sign in to your personal care space.'}
+                  ? t('Create a personal care circle, or join with an invitation.')
+                  : t('Sign in to your personal care space.')}
               </p>
               <form onSubmit={submit} className="stack-form">
                 {mode === 'register' && (
                   <label>
-                    Your name
+                    {t('Your name')}
                     <input
                       name="name"
                       autoComplete="name"
                       required
                       minLength={2}
                       maxLength={70}
-                      placeholder="Your full name"
+                      placeholder={t('Your full name')}
                     />
                   </label>
                 )}
                 <label>
-                  Email address
+                  {t('Email address')}
                   <input
                     name="email"
                     type="email"
@@ -210,7 +225,7 @@ export default function AuthPage({
                   />
                 </label>
                 <label>
-                  Password
+                  {t('Password')}
                   <input
                     name="password"
                     type="password"
@@ -218,31 +233,32 @@ export default function AuthPage({
                     required
                     minLength={12}
                     maxLength={128}
-                    placeholder="At least 12 characters"
+                    placeholder={t('At least 12 characters')}
                   />
                 </label>
                 {mode === 'register' && (
                   <label>
-                    Invitation code <span className="muted">(optional)</span>
+                    {t('Invitation code ')}
+                    <span className="muted">{t('(optional)')}</span>
                     <input
                       value={invite}
                       onChange={(e) => setInvite(e.target.value)}
-                      placeholder="Paste a care-circle invitation"
+                      placeholder={t('Paste a care-circle invitation')}
                     />
                     <small>
                       {invite
-                        ? 'Use the email address the invitation was made for.'
-                        : 'Leave blank to create your own care circle.'}
+                        ? t('Use the email address the invitation was made for.')
+                        : t('Leave blank to create your own care circle.')}
                     </small>
                   </label>
                 )}
                 <button className="button primary wide" disabled={!!busy}>
                   {busy ? <LoaderCircle size={17} className="spin" /> : <ArrowRight size={17} />}
-                  {mode === 'login' ? 'Sign in' : 'Create account'}
+                  {mode === 'login' ? t('Sign in') : t('Create account')}
                 </button>
               </form>
               <p className="auth-login">
-                {mode === 'login' ? 'New here?' : 'Already registered?'}{' '}
+                {mode === 'login' ? t('New here?') : t('Already registered?')}{' '}
                 <button
                   className="inline-link"
                   onClick={() => {
@@ -250,21 +266,22 @@ export default function AuthPage({
                     setError('');
                   }}
                 >
-                  {mode === 'login' ? 'Create an account' : 'Sign in'}
+                  {mode === 'login' ? t('Create an account') : t('Sign in')}
                 </button>
               </p>
             </>
           )}
           {error && (
             <div className="error-message" role="alert">
-              {error}
+              {systemText(error)}
             </div>
           )}
           <div className="auth-privacy">
-            <LockKeyhole size={15} /> Personal by default. Shared by your choice.
+            <LockKeyhole size={15} />
+            {t(' Personal by default. Shared by your choice.')}
           </div>
           <p className="prototype-note">
-            A care-coordination prototype. Not an emergency or medical service.
+            {t('A care-coordination prototype. Not an emergency or medical service.')}
           </p>
         </div>
       </section>

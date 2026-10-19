@@ -1,3 +1,5 @@
+import { t, systemText, setLanguage, useLanguage } from './i18n';
+import LanguagePicker from './LanguagePicker';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Bell,
@@ -35,6 +37,7 @@ const navigation = [
 ] as const;
 
 export default function App() {
+  useLanguage();
   const [user, setUser] = useState<User | null>(null);
   const [health, setHealth] = useState<Health | null>(null);
   const [initial, setInitial] = useState(true);
@@ -55,10 +58,17 @@ export default function App() {
     );
     let active = true;
     Promise.allSettled([api<Health>('/health'), api<{ user: User }>('/auth/me')]).then(
-      (results) => {
+      async (results) => {
         if (!active) return;
         if (results[0].status === 'fulfilled') setHealth(results[0].value);
-        if (results[1].status === 'fulfilled') setUser(results[1].value.user);
+        const saved = results[1].status === 'fulfilled' ? results[1].value.user : null;
+        try {
+          await setLanguage(saved?.language || localStorage.getItem('saathi:language') || 'en');
+        } catch {
+          await setLanguage('en');
+        }
+        if (!active) return;
+        if (saved) setUser(saved);
         setInitial(false);
       },
     );
@@ -115,7 +125,8 @@ export default function App() {
       setBusy(false);
     }
   }
-  function login(next: User) {
+  async function login(next: User) {
+    await setLanguage(next.language);
     setData(null);
     setUser(next);
     setPage('overview');
@@ -159,13 +170,13 @@ export default function App() {
   return (
     <div className="app-layout">
       <a className="skip-link" href="#main-content">
-        Skip to content
+        {t('Skip to content')}
       </a>
       {menu && (
         <button
           className="nav-scrim"
           onClick={() => setMenu(false)}
-          aria-label="Close navigation"
+          aria-label={t('Close navigation')}
         />
       )}
       <aside className={`sidebar ${menu ? 'open' : ''}`}>
@@ -175,12 +186,12 @@ export default function App() {
             <Home size={18} />
           </span>
           <div>
-            <strong>{isElder ? 'My personal space' : 'My caregiver space'}</strong>
-            <small>{isElder ? 'Care on your terms' : 'Connection with intention'}</small>
+            <strong>{isElder ? t('My personal space') : t('My caregiver space')}</strong>
+            <small>{isElder ? t('Care on your terms') : t('Connection with intention')}</small>
           </div>
         </div>
-        <span className="nav-label">YOUR EVERYDAY</span>
-        <nav aria-label="Main navigation">
+        <span className="nav-label">{t('YOUR EVERYDAY')}</span>
+        <nav aria-label={t('Main navigation')}>
           {navigation
             .filter((n) => isElder || !['drills', 'history'].includes(n.id))
             .map((n) => (
@@ -193,10 +204,10 @@ export default function App() {
                 <n.icon size={19} />
                 <span>
                   {!isElder && n.id === 'reminders'
-                    ? 'Shared reminders'
+                    ? t('Shared reminders')
                     : !isElder && n.id === 'coverage'
-                      ? 'My weekly hours'
-                      : n.label}
+                      ? t('My weekly hours')
+                      : t(n.label)}
                 </span>
                 {n.id === 'requests' && data && data.stats.open > 0 && (
                   <span className="nav-count">{data.stats.open}</span>
@@ -207,11 +218,11 @@ export default function App() {
         <div className="sidebar-bottom">
           <div className="privacy-note">
             <ShieldCheck size={22} />
-            <strong>Your circle. Your choice.</strong>
+            <strong>{t('Your circle. Your choice.')}</strong>
             <p>
-              Only the people you choose.
+              {t('Only the people you choose.')}
               <br />
-              Only what you choose to share.
+              {t('Only what you choose to share.')}
             </p>
           </div>
           <button
@@ -219,18 +230,18 @@ export default function App() {
             onClick={() => go('settings')}
           >
             <Settings size={18} />
-            Settings & accessibility
+            {t('Settings & accessibility')}
           </button>
           <button
             className="profile-button"
             onClick={logout}
             disabled={busy}
-            aria-label={`Sign out ${user.name}`}
+            aria-label={t('Sign out {{p0}}', { p0: user.name })}
           >
             <Avatar name={user.name} variant={isElder ? 'peach' : 'sage'} />
             <span>
               <strong>{user.name}</strong>
-              <small>{isElder ? 'Personal account' : 'Caregiver account'}</small>
+              <small>{isElder ? t('Personal account') : t('Caregiver account')}</small>
             </span>
             <LogOut size={17} />
           </button>
@@ -242,23 +253,31 @@ export default function App() {
             <button
               className="icon-button mobile-menu"
               onClick={() => setMenu(true)}
-              aria-label="Open navigation"
+              aria-label={t('Open navigation')}
             >
               <Menu size={22} />
             </button>
-            <span>My care space</span>
+            <span>{t('My care space')}</span>
             <ChevronRight size={14} />
-            <strong>{currentTitle}</strong>
+            <strong>{t(currentTitle || '')}</strong>
           </div>
           <div className="topbar-right">
+            <LanguagePicker
+              user={user}
+              onSaved={(next) => {
+                setUser(next);
+                refresh();
+              }}
+            />
             {user.is_demo && (
               <span className="test-pill">
-                <span /> DEMO HOUSEHOLD
+                <span />
+                {t(' DEMO HOUSEHOLD')}
               </span>
             )}
             <button
               className="icon-button notification-button"
-              aria-label="View care requests"
+              aria-label={t('View care requests')}
               onClick={() => go('requests')}
             >
               <Bell size={20} />
@@ -271,9 +290,11 @@ export default function App() {
           <div className="connection-banner" role="alert">
             <WifiOff size={17} />
             <span>
-              Connection unavailable. Updates may be stale. New actions are not queued offline.
+              {t(
+                'Connection unavailable. Updates may be stale. New actions are not queued offline.',
+              )}
             </span>
-            <button onClick={refresh}>Retry</button>
+            <button onClick={refresh}>{t('Retry')}</button>
           </div>
         )}
         <main id="main-content" className="workspace">
@@ -281,9 +302,9 @@ export default function App() {
             offline ? (
               <div className="empty">
                 <WifiOff />
-                <h2>We couldn’t reach your care space.</h2>
+                <h2>{t('We couldn’t reach your care space.')}</h2>
                 <button className="button secondary" onClick={refresh}>
-                  Try again
+                  {t('Try again')}
                 </button>
               </div>
             ) : (
@@ -304,16 +325,17 @@ export default function App() {
         </main>
         <footer className="app-footer">
           <span>
-            <Heart size={13} /> A little care goes a long way.
+            <Heart size={13} />
+            {t(' A little care goes a long way.')}
           </span>
-          <span>Care coordination prototype · Not an emergency service</span>
+          <span>{t('Care coordination prototype · Not an emergency service')}</span>
         </footer>
       </div>
       {notice && (
         <div className="toast" role="status">
           <ShieldCheck size={20} />
-          {notice}
-          <button onClick={() => setNotice('')} aria-label="Dismiss message">
+          {systemText(notice)}
+          <button onClick={() => setNotice('')} aria-label={t('Dismiss message')}>
             <X size={16} />
           </button>
         </div>
@@ -321,8 +343,8 @@ export default function App() {
       {error && (
         <div className="toast error" role="alert">
           <CircleHelp size={20} />
-          {error}
-          <button onClick={() => setError('')} aria-label="Dismiss error">
+          {systemText(error)}
+          <button onClick={() => setError('')} aria-label={t('Dismiss error')}>
             <X size={16} />
           </button>
         </div>
