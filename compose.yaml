@@ -1,0 +1,14 @@
+services:
+  saathi:
+    build: .
+    ports:
+      - '127.0.0.1:3001:3001'
+    environment:
+      DEMO_MODE: 'true'
+      COOKIE_SECURE: 'false'
+      APP_URL: 'http://localhost:3001'
+    volumes:
+      - saathi-data:/app/data
+    restart: unless-stopped
+volumes:
+  saathi-data:
