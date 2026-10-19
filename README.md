@@ -8,7 +8,7 @@ Care coordination for older adults and the people they trust.
 
 **Daily check-ins · Accountable care requests · Consent-based sharing · Weekly coverage**
 
-[Explore the demo](#try-the-demo) · [Screenshots](#screenshots) · [Run locally](#run-locally) · [Architecture](docs/ARCHITECTURE.md)
+[Live demo](https://sahara-circle.onrender.com/) · [Demo walkthrough](#try-the-demo) · [Screenshots](#screenshots) · [Run locally](#run-locally) · [Architecture](docs/ARCHITECTURE.md)
 
 Prepared for [Next Byte Hacks V5](https://next-byte-hacks-v5.devpost.com/)
 
@@ -52,7 +52,9 @@ The intended users are older adults living independently and family members or t
 
 ## Try the demo
 
-Run the app locally, then choose a fictional demo profile on the welcome screen. **No API key is required for the core demo.**
+**Open the deployed app: [Saathi Care AI — Live Demo](https://sahara-circle.onrender.com/)**
+
+Choose a fictional demo profile on the welcome screen to explore the care workflow. **No API key is required for the core demo.** Local setup instructions are available [below](#run-locally).
 
 | Profile   | Role              | What to explore                                                                   |
 | --------- | ----------------- | --------------------------------------------------------------------------------- |
