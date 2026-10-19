@@ -102,6 +102,14 @@ export function openDatabase(path = './data/saathi.sqlite') {
   ) {
     db.exec("ALTER TABLE users ADD COLUMN language TEXT NOT NULL DEFAULT 'en'");
   }
+  if (
+    !db
+      .prepare('PRAGMA table_info(contacts)')
+      .all()
+      .some((column) => column.name === 'allow_checkins')
+  ) {
+    db.exec('ALTER TABLE contacts ADD COLUMN allow_checkins INTEGER NOT NULL DEFAULT 0');
+  }
   return db;
 }
 

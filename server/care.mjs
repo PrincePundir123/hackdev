@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { id, hashToken, transaction, publicUser } from './db.mjs';
 import { AppError, requireThat } from './auth.mjs';
+import { dailySummary } from './summary.mjs';
 import {
   coverageSchema,
   coverageReport,
@@ -382,6 +383,7 @@ export class CareService {
             allow_requests: z.boolean(),
             allow_notes: z.boolean(),
             allow_reminders: z.boolean(),
+            allow_checkins: z.boolean().optional(),
             priority: z.number().int().min(1).max(8),
           })
         : z.object({
@@ -986,6 +988,7 @@ export class CareService {
 }
 
 export function installCare(app, service) {
+  app.get('/api/summary/daily', (req, res) => res.json(dailySummary(service, req.user)));
   app.get('/api/dashboard', (req, res) => res.json(service.dashboard(req.user)));
   app.get('/api/coverage', (req, res) => res.json(service.coverage(req.user)));
   app.put('/api/coverage/me', (req, res) => res.json(service.updateCoverage(req.user, req.body)));
