@@ -6,6 +6,8 @@ test('welcome headline and brand contrast with the dark panel on desktop and mob
 }) => {
   for (const viewport of [
     { width: 1440, height: 900 },
+    { width: 1024, height: 768 },
+    { width: 320, height: 740 },
     { width: 390, height: 844 },
   ]) {
     await page.setViewportSize(viewport);
@@ -15,6 +17,11 @@ test('welcome headline and brand contrast with the dark panel on desktop and mob
     await expect(headline).toHaveCSS('color', 'rgb(255, 255, 255)');
     await expect(page.locator('.auth-story .brand')).toHaveCSS('color', 'rgb(255, 255, 255)');
     await expect(page.locator('.auth-story')).toHaveCSS('background-color', 'rgb(0, 38, 77)');
+    const panel = await page.locator('.auth-story').boundingBox();
+    const title = await headline.boundingBox();
+    expect(title!.x).toBeGreaterThanOrEqual(panel!.x);
+    expect(title!.x + title!.width).toBeLessThanOrEqual(panel!.x + panel!.width);
+    expect(title!.y + title!.height).toBeLessThanOrEqual(panel!.y + panel!.height);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
       true,
     );

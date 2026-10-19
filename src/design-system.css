@@ -948,28 +948,34 @@ select:focus {
 /* Entry uses the same palette and real account choices rather than decorative artwork. */
 .auth-layout {
   background: #f8fafc;
-  grid-template-columns: 48% 52%;
+  grid-template-columns: minmax(0, 42%) minmax(0, 58%);
   min-height: 100vh;
 }
 .auth-story {
   background: var(--navy);
+  background-image: radial-gradient(ellipse at 100% 0%, #164c6b 0%, transparent 60%);
   color: white;
-  padding: 56px 64px 44px;
+  padding: 40px clamp(28px, 4vw, 64px);
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  min-height: 680px;
+  align-self: start;
 }
 .auth-story::before {
   display: none;
 }
 .auth-copy {
   margin: auto 0;
-  padding: 56px 0;
+  padding: 40px 0;
 }
 .auth-copy h1 {
   color: white;
   font-family: 'Poppins', sans-serif;
-  font-size: clamp(38px, 4vw, 56px);
+  font-size: clamp(32px, 3.1vw, 46px);
   font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -1.5px;
+  letter-spacing: -1.2px;
 }
 .auth-story .eyebrow {
   color: var(--aqua);
@@ -980,25 +986,31 @@ select:focus {
 }
 .auth-copy > p {
   color: #d0e4f2;
-  font-size: 19px;
+  font-size: 17px;
   line-height: 1.7;
   margin-top: 24px;
 }
 .auth-promises {
-  margin-top: 44px;
-  gap: 16px;
+  margin-top: 32px;
+  gap: 0;
+  display: flex;
 }
 .auth-promises span {
-  padding: 18px 22px;
-  border: 1.5px solid #1a4a76;
-  background: #0b345b;
-  border-radius: 18px;
-  font-size: 14.5px;
+  padding: 14px 0;
+  border: 0;
+  border-bottom: 1px solid #ffffff26;
+  background: transparent;
+  border-radius: 0;
+  font-size: 14px;
   font-weight: 500;
   color: white;
 }
 .auth-promises svg {
   color: var(--aqua);
+  flex-shrink: 0;
+}
+.auth-promises span:last-child {
+  border-bottom: 0;
 }
 .auth-foot {
   color: #c0d8e8;
@@ -1282,12 +1294,17 @@ select:focus {
   }
   .auth-story {
     padding: 28px 25px;
+    position: relative;
+    height: auto;
+    min-height: 0;
+    border-radius: 0 0 28px 28px;
   }
   .auth-copy {
-    padding: 32px 0 5px;
+    margin: 0;
+    padding: 26px 0 0;
   }
   .auth-copy h1 {
-    font-size: 32px;
+    font-size: clamp(27px, 7vw, 34px);
     letter-spacing: -0.8px;
   }
   .auth-copy h1 br {
@@ -1295,8 +1312,14 @@ select:focus {
   }
   .auth-copy > p {
     display: block;
-    font-size: 15px;
-    margin-top: 16px;
+    font-size: 14px;
+    margin-top: 12px;
+  }
+  .auth-promises {
+    display: none;
+  }
+  .auth-foot {
+    display: none;
   }
   .auth-panel {
     padding: 32px 25px;
