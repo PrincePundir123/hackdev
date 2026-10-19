@@ -36,6 +36,7 @@ Open **http://localhost:3001**. Data persists in `data/saathi.sqlite` across res
 | Speech             | Optional English browser speech input and read-back; text entry is always available                                          |
 | Consent            | Per-contact request, private-note, and reminder permissions; server-filtered preview; revocation on subsequent reads/actions |
 | Care response      | Primary/backup ordering, accept/decline, timeout, named ownership, overdue follow-up, explicit outcome, cancellation         |
+| Care coverage      | Caregiver-owned weekly hours, exact gap and backup periods, household timezone, and schedule-aware invitation routing        |
 | Persistence        | SQLite transactions, durable deadlines, indexed due work, event deduplication, audit and incident timelines                  |
 | Drills             | Synthetic events, accelerated timers, explicit contact opt-in, JSON report export, no external drill messages                |
 | Notifications      | Live in-app caregiver inbox; optional opt-in webhook with bounded retries and separate provider status                       |
@@ -54,6 +55,19 @@ The implementation uses the simpler persistent-backend option in the blueprint: 
 7. As Meera, inspect the timeline and sharing history, or export the drill report.
 
 Acceptance and resolution are different. An unanswered request remains visibly unresolved. Permissions are enforced by the API, not just hidden in the interface.
+
+## Plan weekly care coverage
+
+1. Sign in as a caregiver (Arjun or Leela in the demo), open **My weekly hours**, and choose **Edit my weekly hours**.
+2. Select **Only during my weekly hours**. Add one or more windows to each day you can respond, then save. **All day** adds a full-day window. An end time of `00:00` means midnight at the end of that day; split overnight hours across two days.
+3. As the older adult, open **Care coverage**. Select a day to see exact gaps, single-responder periods, and periods with a backup. The dashboard also shows who is currently scheduled.
+4. Requests skip people outside their scheduled hours. An unanswered invitation hands off if its recipient goes off schedule. Accepted responsibilities continue beyond the scheduled period until outcome or handoff.
+
+Schedules repeat weekly in the **household's timezone**, which is displayed in both the planner and editor. Caregivers set only their own hours and see only their own schedule; the older adult sees the combined plan. The availability switch, participation, and request-sharing permission still apply, so pausing participation removes that contact from the displayed coverage. Overlaps are merged; simultaneous edits cannot silently overwrite a newer save.
+
+Existing contacts retain **Any time I am marked available** until they explicitly set weekly hours. A weekly schedule with no windows means no new invitations. The plan describes scheduled availability, not guaranteed assistance; it does not automatically reopen requests that already exhausted their responders. Gaps are shown in the planner rather than sent as external alerts.
+
+![Weekly care coverage](docs/screenshots/coverage-planner.png)
 
 ## Your own household
 

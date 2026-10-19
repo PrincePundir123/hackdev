@@ -58,6 +58,18 @@ SQLite `BEGIN IMMEDIATE` transactions serialize state changes and prevent two re
 
 These are demonstration configuration choices, not clinically established emergency thresholds. The app performs no automatic emergency dispatch.
 
+## Weekly coverage
+
+`coverage_preferences` and `coverage_windows` store each contact's chosen availability mode and local weekday intervals. The schema is added with `CREATE TABLE IF NOT EXISTS`, preserving existing accounts and records. Schedule rows cascade when a contact is deleted, including scoped demo resets.
+
+`GET /api/coverage` returns the combined household plan to the older adult and only the signed-in caregiver's own plan to a caregiver. `PUT /api/coverage/me` derives the target contact from the session; a caller cannot edit another person by supplying their ID. Saves carry a schedule version and reject stale writes with 409. Windows use Monday=0 through Sunday=6, minutes from local midnight, inclusive start/exclusive end, and `1440` for end-of-day. Intervals must stay within one day; overnight commitments are entered as two windows. Overlapping and adjacent intervals are merged.
+
+All schedules follow the older adult's household timezone. `Intl.DateTimeFormat` determines the local weekday and minute for routing, including local clock changes. Weekly duration summaries describe the typical local wall-clock week, not elapsed UTC hours on a daylight-saving transition week. The planner splits exact interval boundaries to distinguish zero, one, and multiple eligible responders; it does not approximate coverage in hourly buckets.
+
+The current availability, participation, and request permission switches govern eligibility in both the forecast and routing. Existing contacts default to anytime availability, while a saved empty weekly plan has no coverage. Pending requests are rechecked on schedule saves and by the worker; a recipient going off schedule loses the unanswered invitation and the next currently eligible contact is considered. Acceptance is checked against current hours. Accepted ownership persists through schedule edits/end of hours, so a scheduled boundary does not abandon an active commitment. Explicit withdrawal of participation or request permission still triggers the existing handoff behavior. Read permission does not expire just because a scheduled period ends; the caregiver can finish accepted follow-up.
+
+Gaps are advisory information in the planner. A `NO_RESPONDER` incident stays visible and is not automatically restarted when a later window opens. Drill routing uses the same scheduled hours plus drill opt-in; external messages remain disabled for drills.
+
 ## Reminders
 
 - Fixed reminders accept one future UTC instant; the browser's manual date/time input is converted to UTC. Language clock times use the household timezone.
@@ -70,25 +82,27 @@ These are demonstration configuration choices, not clinically established emerge
 
 All JSON mutations require `Content-Type: application/json` and `X-Saathi-Client: web`. Other than health, sign-in, registration, and the configurable demo sign-in, endpoints require a session.
 
-| Method     | Path                               | Purpose                                                               |
-| ---------- | ---------------------------------- | --------------------------------------------------------------------- |
-| GET        | `/api/health`                      | Service and integration mode; no secrets                              |
-| POST       | `/api/auth/register`               | Register older adult, or caregiver using email-bound invite code      |
-| POST       | `/api/auth/login`                  | Password sign-in                                                      |
-| POST       | `/api/auth/demo`                   | Fictional demo role; disabled when demo mode is off                   |
-| GET / POST | `/api/auth/me`, `/api/auth/logout` | Current account / revoke current session                              |
-| GET        | `/api/dashboard`                   | Household-scoped and field-filtered current state                     |
-| POST       | `/api/contacts/invite`             | Older adult generates a three-day, single-use invitation              |
-| PATCH      | `/api/contacts/:id`                | Older adult edits permission/order; caregiver edits own participation |
-| GET        | `/api/contacts/:id/preview`        | Older adult inspects allowed view; records a preview audit event      |
-| POST       | `/api/interpret`                   | Return a proposal only; no state change                               |
-| POST       | `/api/check-ins`                   | Idempotent manual check-in                                            |
-| POST       | `/api/reminders`                   | Save a reviewed reminder                                              |
-| PATCH      | `/api/reminders/:id`               | Complete, snooze ten minutes, or cancel                               |
-| POST       | `/api/incidents`                   | Confirm a support request                                             |
-| POST       | `/api/drills`                      | Synthetic support event; no external notifications                    |
-| GET        | `/api/incidents/:id`               | Current policy-filtered incident                                      |
-| POST       | `/api/incidents/:id/respond`       | Accept, decline, resolve with outcome, or cancel                      |
+| Method     | Path                               | Purpose                                                                  |
+| ---------- | ---------------------------------- | ------------------------------------------------------------------------ |
+| GET        | `/api/health`                      | Service and integration mode; no secrets                                 |
+| POST       | `/api/auth/register`               | Register older adult, or caregiver using email-bound invite code         |
+| POST       | `/api/auth/login`                  | Password sign-in                                                         |
+| POST       | `/api/auth/demo`                   | Fictional demo role; disabled when demo mode is off                      |
+| GET / POST | `/api/auth/me`, `/api/auth/logout` | Current account / revoke current session                                 |
+| GET        | `/api/dashboard`                   | Household-scoped and field-filtered current state                        |
+| GET        | `/api/coverage`                    | Household coverage for the older adult; own schedule only for caregivers |
+| PUT        | `/api/coverage/me`                 | Caregiver saves own versioned weekly hours or any-time mode              |
+| POST       | `/api/contacts/invite`             | Older adult generates a three-day, single-use invitation                 |
+| PATCH      | `/api/contacts/:id`                | Older adult edits permission/order; caregiver edits own participation    |
+| GET        | `/api/contacts/:id/preview`        | Older adult inspects allowed view; records a preview audit event         |
+| POST       | `/api/interpret`                   | Return a proposal only; no state change                                  |
+| POST       | `/api/check-ins`                   | Idempotent manual check-in                                               |
+| POST       | `/api/reminders`                   | Save a reviewed reminder                                                 |
+| PATCH      | `/api/reminders/:id`               | Complete, snooze ten minutes, or cancel                                  |
+| POST       | `/api/incidents`                   | Confirm a support request                                                |
+| POST       | `/api/drills`                      | Synthetic support event; no external notifications                       |
+| GET        | `/api/incidents/:id`               | Current policy-filtered incident                                         |
+| POST       | `/api/incidents/:id/respond`       | Accept, decline, resolve with outcome, or cancel                         |
 
 ## Optional outbound webhook
 

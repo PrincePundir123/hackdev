@@ -1,17 +1,17 @@
 # Verification record
 
-Verified on **18 October 2026**, using Node **24.13.0**, Windows, and installed Google Chrome in headless mode. All test data is synthetic.
+Verified on **19 October 2026**, using Node **24.13.0**, Windows, and installed Google Chrome in headless mode. All test data is synthetic.
 
 ## Results
 
-| Check                                | Result                                                                                                 |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| TypeScript and Vite production build | Passed                                                                                                 |
-| Backend test suite                   | 21 tests passed                                                                                        |
-| Local request interpretation dataset | 30 supported/ambiguous/unsupported examples exercised within the backend suite                         |
-| Browser suite                        | 4 tests passed; final run completed in 29 seconds                                                      |
-| Accessibility scan                   | No serious or critical WCAG A/AA-tagged axe findings on entry, personal dashboard, and reminder dialog |
-| Source formatting                    | Prettier check passed                                                                                  |
+| Check                                | Result                                                                                                                                        |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| TypeScript and Vite production build | Passed                                                                                                                                        |
+| Backend test suite                   | 32 tests passed                                                                                                                               |
+| Local request interpretation dataset | 30 supported/ambiguous/unsupported examples exercised within the backend suite                                                                |
+| Browser suite                        | 6 tests passed; final run completed in 40.8 seconds                                                                                           |
+| Accessibility scan                   | No serious or critical WCAG A/AA-tagged axe findings on entry, personal dashboard, reminder dialog, coverage planner, and weekly-hours editor |
+| Source formatting                    | Prettier check passed                                                                                                                         |
 
 Accessibility automation is limited to the listed screens and does not establish complete WCAG conformance or usability for every older adult. No clinical or real-user trial was performed.
 
@@ -31,6 +31,17 @@ Accessibility automation is limited to the listed screens and does not establish
 | Restart → deadlines        | Closing and reopening the SQLite database preserves reminders and pending escalation state              |
 
 ## Additional backend cases
+
+- Exact weekly gap and backup calculations, overlap merging, weekday boundaries, and household timezone handling (including repeated local times during a clock change).
+- Only the linked caregiver can edit their own schedule; stale versions and invalid/overnight ranges are rejected.
+- Off-schedule primary contacts are skipped; pending invitations hand off when scheduled hours end, while accepted responsibilities persist.
+- Coverage respects current participation, availability, and sharing permissions. Caregivers see only their own schedule, while the older adult sees combined coverage.
+
+## Coverage browser evidence
+
+Two separate caregiver accounts saved Monday hours of 18:00–22:00 and 09:00–14:00. The older adult's planner correctly displayed the 14:00–18:00 gap and the names attached to covered periods. Saved hours survived browser reload. At 390px width the planner had no horizontal document overflow. A caregiver with an empty weekly plan was skipped when the older adult requested help, and an editor opened before another save was rejected rather than overwriting newer hours. The planner and schedule editor passed the automated accessibility checks above. New tables were also verified through the running localhost API without resetting existing data.
+
+## Original backend coverage
 
 - Wrong password, expired/removed session, missing mutation protection header, and disabled demo mode.
 - Isolated households and role boundaries: a caregiver cannot create older-adult reminders or edit another contact's policy.
