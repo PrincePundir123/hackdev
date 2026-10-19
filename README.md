@@ -26,23 +26,26 @@ Open **http://localhost:3001**. Data persists in `data/saathi.sqlite` across res
 
 ## What is implemented
 
-| Feature            | Behavior                                                                                                                     |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| Separate accounts  | Password authentication, HTTP-only sessions, isolated households, one-time email-bound invitation codes                      |
-| Personal dashboard | Manual check-in, reminder inbox, help requests, care-circle summary                                                          |
-| Reminders          | Fixed-time or check-in-relative reminders; daily check-in recurrence; completion, snooze, cancellation, deduplication        |
-| Language requests  | Review a proposed reminder or sharing change before confirming; local interpreter works without a key                        |
-| Optional live AI   | OpenAI-compatible chat-completions adapter with validation, timeout, request limits, and labelled fallback                   |
-| Speech             | Optional English browser speech input and read-back; text entry is always available                                          |
-| Consent            | Per-contact request, private-note, and reminder permissions; server-filtered preview; revocation on subsequent reads/actions |
-| Care response      | Primary/backup ordering, accept/decline, timeout, named ownership, overdue follow-up, explicit outcome, cancellation         |
-| Care coverage      | Caregiver-owned weekly hours, exact gap and backup periods, household timezone, and schedule-aware invitation routing        |
-| Persistence        | SQLite transactions, durable deadlines, indexed due work, event deduplication, audit and incident timelines                  |
-| Drills             | Synthetic events, accelerated timers, explicit contact opt-in, JSON report export, no external drill messages                |
-| Notifications      | Live in-app caregiver inbox; optional opt-in webhook with bounded retries and separate provider status                       |
-| Accessibility      | Responsive layouts, labelled controls, native focus-trapping dialogs, keyboard focus, reduced motion, larger-text setting    |
+| Feature            | Behavior                                                                                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Separate accounts  | Password authentication, HTTP-only sessions, isolated households, one-time email-bound invitation codes                                                   |
+| Personal dashboard | Manual check-in, reminder inbox, help requests, care-circle summary                                                                                       |
+| Display languages  | Saved account-specific language choice, 14 draft regional interfaces plus English, local translation files and Urdu RTL layout                            |
+| Reminders          | Fixed-time or check-in-relative reminders; daily check-in recurrence; completion, snooze, cancellation, deduplication                                     |
+| Language requests  | Review a proposed reminder or sharing change before confirming; limited English local interpreter works without a key; regional manual entry is available |
+| Optional live AI   | OpenAI-compatible chat-completions adapter with validation, timeout, request limits, and labelled fallback                                                |
+| Speech             | Optional English browser speech input and read-back; text entry is always available                                                                       |
+| Consent            | Per-contact request, private-note, and reminder permissions; server-filtered preview; revocation on subsequent reads/actions                              |
+| Care response      | Primary/backup ordering, accept/decline, timeout, named ownership, overdue follow-up, explicit outcome, cancellation                                      |
+| Care coverage      | Caregiver-owned weekly hours, exact gap and backup periods, household timezone, and schedule-aware invitation routing                                     |
+| Persistence        | SQLite transactions, durable deadlines, indexed due work, event deduplication, audit and incident timelines                                               |
+| Drills             | Synthetic events, accelerated timers, explicit contact opt-in, JSON report export, no external drill messages                                             |
+| Notifications      | Live in-app caregiver inbox; optional opt-in webhook with bounded retries and separate provider status                                                    |
+| Accessibility      | Responsive layouts, labelled controls, native focus-trapping dialogs, keyboard focus, reduced motion, larger-text setting                                 |
 
 The implementation uses the simpler persistent-backend option in the blueprint: **React + TypeScript + Vite**, **Express**, **Node SQLite**, and a server-side worker. It does not require AWS infrastructure.
+
+Choose a display language before registration or from the signed-in header. Personal notes remain as written. Eight scheduled languages are still marked **Not yet**; regional translations need fluent-speaker review. See [language availability, privacy, and limitations](docs/LOCALIZATION.md).
 
 ## Try the main story
 

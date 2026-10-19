@@ -122,6 +122,10 @@ The server sends an `Idempotency-Key`; the receiving provider must deduplicate. 
 
 ## Files
 
+Display-language preferences live on each user account. Existing databases receive an idempotent `users.language` migration with an English default. `PATCH /api/auth/preferences` changes only the authenticated user and validates against the shared available-language catalog. Registration accepts the same language codes; sessions and dashboard responses expose the saved choice.
+
+The browser loads source-keyed regional dictionaries on demand, updates document language/direction, and uses bundled script fonts. User writing bypasses translation. Known generated timeline/audit copy is matched to message templates at display time; generic request titles/outcomes carry explicit system-text flags. See [localization details](LOCALIZATION.md).
+
 `server/db.mjs` defines storage and synthetic fixtures; `auth.mjs` owns identity; `care.mjs` owns policy, actions, and deadlines; `ai.mjs` owns language interpretation. `src/App.tsx` handles session and refreshed state, `pages.tsx` contains role-specific views, and `dialogs.tsx` contains reviewed writes and incident actions.
 
 No database, `.env`, audio recording, or provider key belongs in source control. There is no production-grade automated retention or account deletion workflow yet. The demo reset tool is scoped to the fictional household. Back up persistent storage before operating with any meaningful user data.

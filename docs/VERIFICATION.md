@@ -7,13 +7,22 @@ Verified on **19 October 2026**, using Node **24.13.0**, Windows, and installed 
 | Check                                | Result                                                                                                                                        |
 | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | TypeScript and Vite production build | Passed                                                                                                                                        |
-| Backend test suite                   | 32 tests passed                                                                                                                               |
+| Backend test suite                   | 36 tests passed, including account language persistence, authorization, catalog completeness and legacy database migration                    |
 | Local request interpretation dataset | 30 supported/ambiguous/unsupported examples exercised within the backend suite                                                                |
-| Browser suite                        | 6 tests passed; final run completed in 40.8 seconds                                                                                           |
+| Browser suite                        | 9 tests passed, including all 14 enabled regional interfaces                                                                                  |
 | Accessibility scan                   | No serious or critical WCAG A/AA-tagged axe findings on entry, personal dashboard, reminder dialog, coverage planner, and weekly-hours editor |
 | Source formatting                    | Prettier check passed                                                                                                                         |
+| Localization source audit            | Passed; no untranslated literal JSX copy outside the brand name                                                                               |
 
 Accessibility automation is limited to the listed screens and does not establish complete WCAG conformance or usability for every older adult. No clinical or real-user trial was performed.
+
+## Regional-language evidence
+
+All 14 enabled regional dictionaries have the complete 669-key source catalog and preserve every dynamic placeholder. Browser checks loaded each welcome interface, persisted the guest choice, then exercised navigation, coverage and settings for every enabled account language. Hindi reminder entry and confirmation preserved an English/Hindi personal title exactly in the database. Reload retained the preference. A separate caregiver used Urdu while the older adult remained in Hindi; the mobile Urdu planner and schedule editor were usable without horizontal document overflow, and the editor had no serious or critical findings in its axe scan.
+
+The migration test opened a database with the previous users schema, confirmed an English default without changing account records, saved Hindi, and reopened it without adding a duplicate column. API checks rejected unsupported and unavailable language codes, unauthenticated changes, and attempts to target another user.
+
+Screenshots: [Hindi confirmation](screenshots/language-hindi.png) and [Urdu mobile coverage](screenshots/language-urdu-mobile.png). Translation accuracy has not been established by fluent-speaker review. Eight scheduled languages remain unavailable; regional speech and comprehensive regional natural-language interpretation were not verified or claimed. See [availability and limitations](LOCALIZATION.md).
 
 ## Full-flow evidence
 
