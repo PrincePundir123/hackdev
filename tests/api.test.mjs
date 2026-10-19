@@ -2,6 +2,33 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createApp } from '../server/app.mjs';
 
+test('coverage APIs isolate caregiver schedules and reject unauthorized or stale writes', async (t) => {
+  const f = await setup(t);
+  const meera = await f.login('meera');
+  const arjun = await f.login('arjun');
+  const leela = await f.login('leela');
+  assert.equal((await f.request('/api/coverage')).status, 401);
+  const initial = await f.request('/api/coverage', undefined, arjun).then((r) => r.json());
+  assert.equal(initial.contacts.length, 1);
+  assert.equal(initial.contacts[0].user_id, 'arjun');
+  const payload = { version: 0, mode: 'weekly', windows: [{ day: 0, start: 540, end: 840 }] };
+  assert.equal((await f.request('/api/coverage/me', payload, meera, 'PUT')).status, 403);
+  const result = await f.request(
+    '/api/coverage/me',
+    { ...payload, user_id: 'leela', contact_id: 'contact-leela' },
+    arjun,
+    'PUT',
+  );
+  assert.equal(result.status, 200);
+  const other = await f.request('/api/coverage', undefined, leela).then((r) => r.json());
+  assert.equal(other.contacts[0].mode, 'anytime');
+  assert.equal((await f.request('/api/coverage/me', payload, arjun, 'PUT')).status, 409);
+  const updated = await f.request('/api/coverage', undefined, arjun).then((r) => r.json());
+  assert.equal(updated.contacts[0].windows[0].start, 540);
+  const household = await f.request('/api/coverage', undefined, meera).then((r) => r.json());
+  assert.equal(household.contacts.length, 2);
+});
+
 async function setup(t) {
   const instance = createApp({ databasePath: ':memory:', demo: true, secureCookie: false });
   instance.finish();
