@@ -243,6 +243,8 @@ export class CareService {
       id: incident.id,
       elder_id: incident.elder_id,
       title: 'A check-in has been requested',
+      title_is_system: true,
+      outcome_is_system: true,
       state: incident.state,
       owner_id: incident.owner_id,
       owner_name: incident.owner_id
@@ -269,6 +271,8 @@ export class CareService {
     if (isOwner || contact?.allow_notes)
       Object.assign(result, {
         title: incident.title,
+        title_is_system: false,
+        outcome_is_system: false,
         private_note: incident.private_note,
         outcome: incident.outcome,
       });
@@ -685,7 +689,9 @@ export class CareService {
       this.timeline(
         incidentId,
         'schedule',
-        `${outsideSchedule.length} otherwise eligible contact${outsideSchedule.length === 1 ? ' is' : 's are'} outside scheduled hours and will not be invited now.`,
+        outsideSchedule.length === 1
+          ? 'One otherwise eligible contact is outside scheduled hours and will not be invited now.'
+          : `${outsideSchedule.length} otherwise eligible contacts are outside scheduled hours and will not be invited now.`,
       );
     const next = contacts.find((c) => !tried.has(c.id) && this.eligible(c, incident));
     const now = this.now();
@@ -727,7 +733,9 @@ export class CareService {
       incident.elder_id,
       next.user_id,
       'request_shared',
-      `A ${next.allow_notes ? 'permitted detailed' : 'minimal'} request was placed in ${next.name}'s inbox.`,
+      next.allow_notes
+        ? `A permitted detailed request was placed in ${next.name}’s inbox.`
+        : `A minimal request was placed in ${next.name}’s inbox.`,
       'allow',
       next.version,
     );

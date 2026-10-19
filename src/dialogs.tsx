@@ -1,3 +1,4 @@
+import { t, systemText, getLanguage, locale } from './i18n';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
   ArrowRight,
@@ -42,7 +43,7 @@ type SpeechWindow = Window & {
 export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: DialogProps) {
   const [text, setText] = useState('');
   const [result, setResult] = useState<Interpretation | null>(null);
-  const [manual, setManual] = useState(false);
+  const [manual, setManual] = useState(getLanguage() !== 'en');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [title, setTitle] = useState('');
@@ -61,7 +62,9 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
     [],
   );
   const Speech =
-    (window as SpeechWindow).SpeechRecognition || (window as SpeechWindow).webkitSpeechRecognition;
+    getLanguage() === 'en' &&
+    ((window as SpeechWindow).SpeechRecognition ||
+      (window as SpeechWindow).webkitSpeechRecognition);
   function record() {
     if (listening) {
       recognition.current?.stop();
@@ -180,10 +183,10 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
     <Modal
       title={
         proposed && proposed.intent !== 'clarify'
-          ? 'Does this look right?'
-          : 'A little help remembering'
+          ? t('Does this look right?')
+          : t('A little help remembering')
       }
-      subtitle="You ask. We help. You always have the final say."
+      subtitle={t('You ask. We help. You always have the final say.')}
       onClose={onClose}
     >
       <div className="modal-body">
@@ -191,64 +194,74 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
           <>
             <div className="interpretation-note">
               <Sparkles size={16} />
-              <span>{result?.notice}</span>
+              <span>{systemText(result?.notice || '')}</span>
             </div>
             {proposed.intent === 'reminder' ? (
               <div className="proposal-card">
-                <span className="eyebrow">YOUR REMINDER</span>
+                <span className="eyebrow">{t('YOUR REMINDER')}</span>
                 <h3>{proposed.title}</h3>
                 <p>
                   <Clock3 size={17} />
                   {proposed.trigger_type === 'check_in'
-                    ? `${proposed.offset_minutes} minutes after your morning check-in`
+                    ? t('{{p0}} minutes after your morning check-in', {
+                        p0: proposed.offset_minutes,
+                      })
                     : dateTime(proposed.due_at!, data.user.timezone)}
                 </p>
                 <Badge tone="green">
-                  {proposed.repeat === 'daily' ? 'Every check-in day' : 'One time'}
+                  {proposed.repeat === 'daily' ? t('Every check-in day') : t('One time')}
                 </Badge>
                 {proposed.trigger_type === 'check_in' && (
-                  <small>This waits for you to tap “I am okay.” No wearable is used.</small>
+                  <small>{t('This waits for you to tap “I am okay.” No wearable is used.')}</small>
                 )}
               </div>
             ) : (
               <div className="proposal-card">
                 <ShieldCheck size={25} />
                 <h3>
-                  {proposed.allowed ? 'Allow sharing' : 'Stop sharing'} with{' '}
-                  {data.contacts.find((c) => c.id === proposed.contact_id)?.name}
+                  {proposed.allowed ? t('Allow sharing') : t('Stop sharing')}
+                  {t(' with')} {data.contacts.find((c) => c.id === proposed.contact_id)?.name}
                 </h3>
                 <p>
                   {
                     {
-                      allow_notes: 'Private notes and request details',
-                      allow_reminders: 'Reminder contents',
-                      allow_requests: 'Basic help requests and response access',
+                      allow_notes: t('Private notes and request details'),
+                      allow_reminders: t('Reminder contents'),
+                      allow_requests: t('Basic help requests and response access'),
                     }[proposed.field]
                   }
                 </p>
                 <small>
-                  Applies to future access. Information already seen cannot be recalled.
+                  {t('Applies to future access. Information already seen cannot be recalled.')}
                 </small>
               </div>
             )}
-            {'speechSynthesis' in window && (
+            {getLanguage() === 'en' && 'speechSynthesis' in window && (
               <button className="text-link" onClick={speak}>
                 <Volume2 size={16} />
-                Read this back
+                {t('Read this back')}
               </button>
             )}
           </>
         ) : (
           <>
+            {getLanguage() !== 'en' && (
+              <p className="fine-print">
+                {t(
+                  'For this language, use Enter details to create a reminder. Natural-language support requires a connected AI service.',
+                )}
+              </p>
+            )}
             <div className="tabs compact">
               <button
                 className={!manual ? 'selected' : ''}
+                disabled={getLanguage() !== 'en' && !liveAI}
                 onClick={() => {
                   setManual(false);
                   setResult(null);
                 }}
               >
-                Ask naturally
+                {t('Ask naturally')}
               </button>
               <button
                 className={manual ? 'selected' : ''}
@@ -257,36 +270,36 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
                   setResult(null);
                 }}
               >
-                Enter details
+                {t('Enter details')}
               </button>
             </div>
             {manual ? (
               <form id="reminder-manual" onSubmit={reviewManual} className="stack-form">
                 <label>
-                  What should we remind you about?
+                  {t('What should we remind you about?')}
                   <input
                     required
                     minLength={2}
                     maxLength={160}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Water the balcony plants"
+                    placeholder={t('Water the balcony plants')}
                   />
                 </label>
                 <label>
-                  When?
+                  {t('When?')}
                   <select
                     value={trigger}
                     onChange={(e) => setTrigger(e.target.value as 'fixed' | 'check_in')}
                   >
-                    <option value="check_in">After my morning check-in</option>
-                    <option value="fixed">At a specific time</option>
+                    <option value="check_in">{t('After my morning check-in')}</option>
+                    <option value="fixed">{t('At a specific time')}</option>
                   </select>
                 </label>
                 {trigger === 'check_in' ? (
                   <div className="form-pair">
                     <label>
-                      Minutes after check-in
+                      {t('Minutes after check-in')}
                       <input
                         type="number"
                         min={0}
@@ -297,19 +310,19 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
                       />
                     </label>
                     <label>
-                      Repeat
+                      {t('Repeat')}
                       <select
                         value={repeat}
                         onChange={(e) => setRepeat(e.target.value as 'once' | 'daily')}
                       >
-                        <option value="once">One time</option>
-                        <option value="daily">Every check-in day</option>
+                        <option value="once">{t('One time')}</option>
+                        <option value="daily">{t('Every check-in day')}</option>
                       </select>
                     </label>
                   </div>
                 ) : (
                   <label>
-                    Date and time
+                    {t('Date and time')}
                     <input
                       type="datetime-local"
                       required
@@ -317,7 +330,7 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
                       onChange={(e) => setAt(e.target.value)}
                     />
                     <small>
-                      Entered in this device’s timezone:{' '}
+                      {t('Entered in this device’s timezone:')}{' '}
                       {Intl.DateTimeFormat().resolvedOptions().timeZone}.
                     </small>
                   </label>
@@ -326,7 +339,7 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
             ) : (
               <form id="reminder-natural" onSubmit={interpret}>
                 <label className="field">
-                  What’s on your mind?
+                  {t('What’s on your mind?')}
                   <textarea
                     autoFocus
                     value={text}
@@ -334,7 +347,9 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
                     required
                     minLength={3}
                     maxLength={1000}
-                    placeholder="Remind me to water the plants 20 minutes after my morning check-in"
+                    placeholder={t(
+                      'Remind me to water the plants 20 minutes after my morning check-in',
+                    )}
                     rows={4}
                   />
                 </label>
@@ -346,15 +361,16 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
                     disabled={!Speech}
                   >
                     <Mic size={17} />
-                    {listening ? 'Stop listening' : 'Use my voice'}
+                    {listening ? t('Stop listening') : t('Use my voice')}
                   </button>
                   <span>
-                    {Speech ? 'English · Tap to record' : 'Voice unavailable in this browser'}
+                    {Speech ? t('English · Tap to record') : t('Voice unavailable in this browser')}
                   </span>
                 </div>
                 <p className="fine-print">
-                  Optional browser speech may send audio to its provider. Review the transcript
-                  before continuing.
+                  {t(
+                    'Optional browser speech may send audio to its provider. Review the transcript before continuing.',
+                  )}
                 </p>
                 <button
                   type="button"
@@ -363,28 +379,29 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
                     setText('Remind me to water the plants 20 minutes after my morning check-in')
                   }
                 >
-                  Try a morning reminder <ArrowRight size={13} />
+                  {t('Try a morning reminder ')}
+                  <ArrowRight size={13} />
                 </button>
               </form>
             )}
             {proposed?.intent === 'clarify' && (
               <div className="clarification" role="status">
                 <Info size={18} />
-                <p>{proposed.message}</p>
+                <p>{systemText(proposed.message)}</p>
               </div>
             )}
           </>
         )}
         {liveAI && !manual && (
           <p className="fine-print">
-            Your request text and care-circle contact names are processed by the connected AI
-            service when you select Review request. Use Enter details to create a reminder without
-            AI.
+            {t(
+              'Your request text and care-circle contact names are processed by the connected AI service when you select Review request. Use Enter details to create a reminder without AI.',
+            )}
           </p>
         )}
         {error && (
           <p className="error-message" role="alert">
-            {error}
+            {systemText(error)}
           </p>
         )}
       </div>
@@ -392,25 +409,25 @@ export function ReminderDialog({ data, onClose, refresh, notify, liveAI }: Dialo
         {proposed && proposed.intent !== 'clarify' ? (
           <>
             <button className="button secondary" disabled={busy} onClick={() => setResult(null)}>
-              Edit request
+              {t('Edit request')}
             </button>
             <button className="button primary" disabled={busy} onClick={confirm}>
-              {busy ? <LoaderCircle className="spin" size={17} /> : <Check size={17} />}Confirm{' '}
-              {proposed.intent === 'reminder' ? 'reminder' : 'change'}
+              {busy ? <LoaderCircle className="spin" size={17} /> : <Check size={17} />}
+              {t('Confirm')}
             </button>
           </>
         ) : (
           <>
             <button className="button secondary" onClick={onClose}>
-              Cancel
+              {t('Cancel')}
             </button>
             <button
               form={manual ? 'reminder-manual' : 'reminder-natural'}
               className="button primary"
               disabled={busy || listening}
             >
-              {busy ? <LoaderCircle size={17} className="spin" /> : <Sparkles size={17} />}Review
-              request
+              {busy ? <LoaderCircle size={17} className="spin" /> : <Sparkles size={17} />}
+              {t('Review request')}
             </button>
           </>
         )}
@@ -434,8 +451,8 @@ export function HelpDialog({
   );
   return (
     <Modal
-      title="Reach out to your people"
-      subtitle="Let’s make sure the right people hear from you."
+      title={t('Reach out to your people')}
+      subtitle={t('Let’s make sure the right people hear from you.')}
       onClose={onClose}
     >
       <form
@@ -463,7 +480,7 @@ export function HelpDialog({
       >
         <div className="modal-body stack-form">
           <label>
-            How can your circle help?
+            {t('How can your circle help?')}
             <input
               name="title"
               required
@@ -473,16 +490,17 @@ export function HelpDialog({
             />
           </label>
           <label>
-            Private details <span className="muted">(optional)</span>
+            {t('Private details ')}
+            <span className="muted">{t('(optional)')}</span>
             <textarea
               name="private_note"
               maxLength={1000}
               rows={3}
-              placeholder="Only contacts allowed to see private notes can read this."
+              placeholder={t('Only contacts allowed to see private notes can read this.')}
             />
           </label>
           <div className="recipient-preview">
-            <span className="eyebrow">YOUR APPROVED RESPONSE ORDER</span>
+            <span className="eyebrow">{t('YOUR APPROVED RESPONSE ORDER')}</span>
             {contacts.length ? (
               contacts.map((c, i) => (
                 <div className="recipient" key={c.id}>
@@ -490,36 +508,39 @@ export function HelpDialog({
                   <span>
                     <strong>{c.name}</strong>
                     <small>
-                      {i === 0 ? 'Contacted first' : 'If the previous contact cannot respond'} ·{' '}
-                      {c.allow_notes ? 'Details allowed' : 'Basic request only'}
+                      {i === 0 ? t('Contacted first') : t('If the previous contact cannot respond')}{' '}
+                      · {c.allow_notes ? t('Details allowed') : t('Basic request only')}
                     </small>
                   </span>
                 </div>
               ))
             ) : (
               <p>
-                No contacts are scheduled and available now. The request will be recorded as having
-                no confirmed responder.
+                {t(
+                  'No contacts are scheduled and available now. The request will be recorded as having no confirmed responder.',
+                )}
               </p>
             )}
           </div>
           <p className="fine-print">
-            <LockKeyhole size={13} /> Contacts without note permission see a generic check-in
-            request. Requests appear in their app inbox; this does not call emergency services.
+            <LockKeyhole size={13} />
+            {t(
+              ' Contacts without note permission see a generic check-in request. Requests appear in their app inbox; this does not call emergency services.',
+            )}
           </p>
           {error && (
             <p className="error-message" role="alert">
-              {error}
+              {systemText(error)}
             </p>
           )}
         </div>
         <div className="modal-actions">
           <button type="button" className="button secondary" onClick={onClose}>
-            Cancel
+            {t('Cancel')}
           </button>
           <button className="button primary" disabled={busy}>
             <HeartHandshake size={17} />
-            {busy ? 'Sending…' : 'Confirm help request'}
+            {busy ? t('Sending…') : t('Confirm help request')}
           </button>
         </div>
       </form>
@@ -550,14 +571,15 @@ export function IncidentDialog({
   if (!incident)
     return (
       <Modal
-        title="Loading request"
-        subtitle="Checking the latest access and request state."
+        title={t('Loading request')}
+        subtitle={t('Checking the latest access and request state.')}
         onClose={onClose}
       >
         <div className="modal-body">
           <p>
-            If the request no longer appears, your sharing permission may have changed. Close this
-            dialog and refresh your care requests.
+            {t(
+              'If the request no longer appears, your sharing permission may have changed. Close this dialog and refresh your care requests.',
+            )}
           </p>
         </div>
       </Modal>
@@ -586,16 +608,16 @@ export function IncidentDialog({
   }
   return (
     <Modal
-      title={incident.title}
+      title={incident.title_is_system ? t(incident.title) : incident.title}
       subtitle={dateTime(incident.created_at, data.elder.timezone)}
       onClose={onClose}
     >
       <div className="modal-body">
         <div className="incident-status">
           <Badge tone={incident.state === 'RESOLVED' ? 'green' : 'amber'}>
-            {stateLabel[incident.state] || incident.state}
+            {t(stateLabel[incident.state] || incident.state)}
           </Badge>
-          {incident.is_test && <Badge tone="lavender">TEST · ACCELERATED TIMING</Badge>}
+          {incident.is_test && <Badge tone="lavender">{t('TEST · ACCELERATED TIMING')}</Badge>}
         </div>
         {incident.private_note && (
           <div className="private-note">
@@ -606,31 +628,39 @@ export function IncidentDialog({
         {incident.next_due_at && (
           <div className="deadline">
             <Clock3 size={16} />
-            {incident.state === 'AWAITING_RESPONSE' ? 'Response window' : 'Follow-up window'}:{' '}
-            {seconds >= 60 ? `${Math.floor(seconds / 60)}m ` : ''}
-            {seconds % 60}s
+            {incident.state === 'AWAITING_RESPONSE'
+              ? t('Response window')
+              : t('Follow-up window')}:{' '}
+            {seconds >= 60 ? t('{{p0}}m ', { p0: Math.floor(seconds / 60) }) : ''}
+            {new Intl.NumberFormat(locale(), {
+              style: 'unit',
+              unit: 'second',
+              unitDisplay: 'narrow',
+            }).format(seconds % 60)}
           </div>
         )}
         {incident.owner_name && (
           <div className="owner-banner">
             <Check size={19} />
-            {incident.owner_name} accepted responsibility.{' '}
-            {incident.state !== 'RESOLVED' && 'An outcome is still needed.'}
+            {incident.owner_name}
+            {t(' accepted responsibility.')}{' '}
+            {incident.state !== 'RESOLVED' && t('An outcome is still needed.')}
           </div>
         )}
         {incident.state === 'NO_RESPONDER' && (
           <div className="error-message">
-            No responder confirmed. Use your existing manual contact plan; this prototype does not
-            dispatch assistance.
+            {t(
+              'No responder confirmed. Use your existing manual contact plan; this prototype does not dispatch assistance.',
+            )}
           </div>
         )}
-        <h3 className="timeline-title">The care timeline</h3>
+        <h3 className="timeline-title">{t('The care timeline')}</h3>
         <ol className="timeline">
           {incident.timeline.map((event, i) => (
             <li key={i}>
               <span className={`timeline-dot ${event.kind}`} />
               <div>
-                <p>{event.text}</p>
+                <p>{systemText(event.text)}</p>
                 <small>{dateTime(event.created_at, data.elder.timezone)}</small>
               </div>
             </li>
@@ -638,29 +668,29 @@ export function IncidentDialog({
         </ol>
         {incident.outcome && (
           <div className="outcome">
-            <strong>Recorded outcome</strong>
-            <p>{incident.outcome}</p>
+            <strong>{t('Recorded outcome')}</strong>
+            <p>{incident.outcome_is_system ? t(incident.outcome) : incident.outcome}</p>
           </div>
         )}
         {incident.deliveries && incident.deliveries.length > 0 && (
           <div className="delivery-status">
-            <h3>External delivery attempts</h3>
+            <h3>{t('External delivery attempts')}</h3>
             {incident.deliveries.map((d, i) => (
               <p key={i}>
-                {d.name}: {d.status.replaceAll('_', ' ')}
-                {d.last_error ? ` — ${d.last_error}` : ''}
+                {d.name}: {t(d.status.replaceAll('_', ' '))}
+                {d.last_error ? t(' — {{p0}}', { p0: d.last_error }) : ''}
               </p>
             ))}
-            <small>Provider acceptance does not establish delivery or human response.</small>
+            <small>{t('Provider acceptance does not establish delivery or human response.')}</small>
           </div>
         )}
         {canResolve && (
           <label className="field">
-            Record the outcome
+            {t('Record the outcome')}
             <textarea
               value={outcome}
               onChange={(e) => setOutcome(e.target.value)}
-              placeholder="What happened after you accepted?"
+              placeholder={t('What happened after you accepted?')}
               maxLength={500}
               minLength={3}
               rows={3}
@@ -669,7 +699,7 @@ export function IncidentDialog({
         )}
         {localError && (
           <p className="error-message" role="alert">
-            {localError}
+            {systemText(localError)}
           </p>
         )}
       </div>
@@ -677,26 +707,27 @@ export function IncidentDialog({
         {pending && incident.state === 'AWAITING_RESPONSE' && (
           <>
             <button className="button secondary" disabled={busy} onClick={() => respond('decline')}>
-              I cannot respond
+              {t('I cannot respond')}
             </button>
             <button className="button primary" disabled={busy} onClick={() => respond('accept')}>
-              <Check size={17} />I will respond
+              <Check size={17} />
+              {t('I will respond')}
             </button>
           </>
         )}
         {canResolve && (
           <button className="button primary" disabled={busy} onClick={() => respond('resolve')}>
-            Record outcome & resolve
+            {t('Record outcome & resolve')}
           </button>
         )}
         {canCancel && (
           <button className="button secondary" disabled={busy} onClick={() => respond('cancel')}>
-            Cancel request
+            {t('Cancel request')}
           </button>
         )}
         {!pending && !canResolve && !canCancel && (
           <button className="button primary" onClick={onClose}>
-            Close
+            {t('Close')}
           </button>
         )}
       </div>

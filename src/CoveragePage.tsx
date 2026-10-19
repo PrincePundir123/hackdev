@@ -1,3 +1,4 @@
+import { t, systemText, pluralSuffix } from './i18n';
 import { useEffect, useState } from 'react';
 import {
   CalendarDays,
@@ -23,7 +24,11 @@ function clock(minute: number) {
 function duration(minutes: number) {
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;
-  return `${hours ? `${hours}h` : ''}${hours && rest ? ' ' : ''}${rest ? `${rest}m` : ''}` || '0h';
+  return (
+    [hours ? t('{{p0}}h', { p0: hours }) : '', rest ? t('{{p0}}m', { p0: rest }) : '']
+      .filter(Boolean)
+      .join(' ') || t('{{p0}}h', { p0: 0 })
+  );
 }
 function editableTime(minutes: number) {
   return clock(minutes === 1440 ? 0 : minutes);
@@ -69,8 +74,8 @@ function ScheduleEditor({
   }
   return (
     <Modal
-      title="My weekly response hours"
-      subtitle={`All hours use ${timezone}, the household’s timezone.`}
+      title={t('My weekly response hours')}
+      subtitle={t('All hours use {{p0}}, the household’s timezone.', { p0: timezone })}
       onClose={onClose}
     >
       <form
@@ -99,7 +104,7 @@ function ScheduleEditor({
       >
         <div className="modal-body coverage-editor">
           <fieldset className="schedule-mode">
-            <legend>When can you receive new requests?</legend>
+            <legend>{t('When can you receive new requests?')}</legend>
             <label>
               <input
                 type="radio"
@@ -109,8 +114,8 @@ function ScheduleEditor({
                 onChange={() => setMode('anytime')}
               />
               <span>
-                <strong>Any time I am marked available</strong>
-                <small>Use my availability switch without limiting days or hours.</small>
+                <strong>{t('Any time I am marked available')}</strong>
+                <small>{t('Use my availability switch without limiting days or hours.')}</small>
               </span>
             </label>
             <label>
@@ -122,92 +127,99 @@ function ScheduleEditor({
                 onChange={() => setMode('weekly')}
               />
               <span>
-                <strong>Only during my weekly hours</strong>
-                <small>New invitations follow the hours I set below.</small>
+                <strong>{t('Only during my weekly hours')}</strong>
+                <small>{t('New invitations follow the hours I set below.')}</small>
               </span>
             </label>
           </fieldset>
           {mode === 'weekly' && (
             <>
               <p className="fine-print">
-                Leave a day empty when you are not scheduled. An end time of 00:00 means midnight at
-                the end of that day. For overnight hours, add a second window on the next day.
-                Overlapping hours are merged when saved.
+                {t(
+                  'Leave a day empty when you are not scheduled. An end time of 00:00 means midnight at the end of that day. For overnight hours, add a second window on the next day. Overlapping hours are merged when saved.',
+                )}
               </p>
               <div className="schedule-days">
-                {weekdays.map((day, dayIndex) => (
-                  <section className="schedule-day" key={day}>
-                    <div className="schedule-day-heading">
-                      <h3>{day}</h3>
-                      <div>
-                        <button
-                          type="button"
-                          className="text-link"
-                          aria-label={`Add ${day} hours`}
-                          disabled={windows.length >= 56}
-                          onClick={() => add(dayIndex)}
-                        >
-                          <Plus size={14} />
-                          Add hours
-                        </button>
-                        <button
-                          type="button"
-                          className="text-link"
-                          aria-label={`Add all day ${day}`}
-                          disabled={windows.length >= 56}
-                          onClick={() => add(dayIndex, true)}
-                        >
-                          All day
-                        </button>
+                {weekdays.map((sourceDay, dayIndex) => {
+                  const day = t(sourceDay);
+                  return (
+                    <section className="schedule-day" key={day}>
+                      <div className="schedule-day-heading">
+                        <h3>{day}</h3>
+                        <div>
+                          <button
+                            type="button"
+                            className="text-link"
+                            aria-label={t('Add {{p0}} hours', { p0: day })}
+                            disabled={windows.length >= 56}
+                            onClick={() => add(dayIndex)}
+                          >
+                            <Plus size={14} />
+                            {t('Add hours')}
+                          </button>
+                          <button
+                            type="button"
+                            className="text-link"
+                            aria-label={t('Add all day {{p0}}', { p0: day })}
+                            disabled={windows.length >= 56}
+                            onClick={() => add(dayIndex, true)}
+                          >
+                            {t('All day')}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                    {!windows.some((w) => w.day === dayIndex) && (
-                      <p className="schedule-off">Not scheduled</p>
-                    )}
-                    {windows.map(
-                      (window, index) =>
-                        window.day === dayIndex && (
-                          <div className="schedule-window" key={index}>
-                            <label>
-                              From
-                              <input
-                                aria-label={`${day} start ${index + 1}`}
-                                type="time"
-                                required
-                                value={editableTime(window.start)}
-                                onChange={(e) => change(index, 'start', e.target.value)}
-                              />
-                            </label>
-                            <label>
-                              Until
-                              <input
-                                aria-label={`${day} end ${index + 1}`}
-                                type="time"
-                                required
-                                value={editableTime(window.end)}
-                                onChange={(e) => change(index, 'end', e.target.value)}
-                              />
-                            </label>
-                            <button
-                              type="button"
-                              className="icon-button"
-                              aria-label={`Remove ${day} window ${index + 1}`}
-                              onClick={() =>
-                                setWindows((previous) => previous.filter((_, i) => i !== index))
-                              }
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                        ),
-                    )}
-                  </section>
-                ))}
+                      {!windows.some((w) => w.day === dayIndex) && (
+                        <p className="schedule-off">{t('Not scheduled')}</p>
+                      )}
+                      {windows.map(
+                        (window, index) =>
+                          window.day === dayIndex && (
+                            <div className="schedule-window" key={index}>
+                              <label>
+                                {t('From')}
+                                <input
+                                  aria-label={t('{{p0}} start {{p1}}', { p0: day, p1: index + 1 })}
+                                  type="time"
+                                  required
+                                  value={editableTime(window.start)}
+                                  onChange={(e) => change(index, 'start', e.target.value)}
+                                />
+                              </label>
+                              <label>
+                                {t('Until')}
+                                <input
+                                  aria-label={t('{{p0}} end {{p1}}', { p0: day, p1: index + 1 })}
+                                  type="time"
+                                  required
+                                  value={editableTime(window.end)}
+                                  onChange={(e) => change(index, 'end', e.target.value)}
+                                />
+                              </label>
+                              <button
+                                type="button"
+                                className="icon-button"
+                                aria-label={t('Remove {{p0}} window {{p1}}', {
+                                  p0: day,
+                                  p1: index + 1,
+                                })}
+                                onClick={() =>
+                                  setWindows((previous) => previous.filter((_, i) => i !== index))
+                                }
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            </div>
+                          ),
+                      )}
+                    </section>
+                  );
+                })}
               </div>
               {!windows.length && (
                 <p className="coverage-empty-warning">
-                  No hours selected. Saving this plan means you will not receive new requests until
-                  you add hours or switch to any-time availability.
+                  {t(
+                    'No hours selected. Saving this plan means you will not receive new requests until you add hours or switch to any-time availability.',
+                  )}
                 </p>
               )}
             </>
@@ -215,26 +227,27 @@ function ScheduleEditor({
           <div className="info-strip">
             <Info size={18} />
             <p>
-              Your availability switch, participation, and sharing permissions still apply. An
-              accepted request stays yours when your scheduled hours end.
+              {t(
+                'Your availability switch, participation, and sharing permissions still apply. An accepted request stays yours when your scheduled hours end.',
+              )}
             </p>
           </div>
           {error && (
             <div className="error-message" role="alert">
-              <p>{error}</p>
+              <p>{systemText(error)}</p>
               <button type="button" className="text-link" onClick={onReload}>
-                Reload latest schedule
+                {t('Reload latest schedule')}
               </button>
             </div>
           )}
         </div>
         <div className="modal-actions">
           <button type="button" className="button secondary" disabled={busy} onClick={onClose}>
-            Cancel
+            {t('Cancel')}
           </button>
           <button className="button primary" disabled={busy}>
-            {busy ? <LoaderCircle size={17} className="spin" /> : <Check size={17} />}Save weekly
-            hours
+            {busy ? <LoaderCircle size={17} className="spin" /> : <Check size={17} />}
+            {t('Save weekly hours')}
           </button>
         </div>
       </form>
@@ -288,20 +301,26 @@ export default function CoveragePage(props: PageProps) {
     <>
       <div className="page-heading">
         <div>
-          <span className="eyebrow">MAKE ROOM FOR EACH OTHER</span>
+          <span className="eyebrow">{t('MAKE ROOM FOR EACH OTHER')}</span>
           <h1>
-            {personal ? 'Your hours. A clearer care plan.' : 'Know when your circle is covered.'}
+            {personal
+              ? t('Your hours. A clearer care plan.')
+              : t('Know when your circle is covered.')}
           </h1>
           <p>
             {personal
-              ? 'Choose when you can receive new requests. Your circle can plan around your hours.'
-              : 'See scheduled responders, backup periods, and gaps before someone needs support.'}
+              ? t(
+                  'Choose when you can receive new requests. Your circle can plan around your hours.',
+                )
+              : t(
+                  'See scheduled responders, backup periods, and gaps before someone needs support.',
+                )}
           </p>
         </div>
         <div className="coverage-heading-actions">
           <button
             className="icon-button"
-            aria-label="Refresh coverage"
+            aria-label={t('Refresh coverage')}
             onClick={() => setRevision((n) => n + 1)}
           >
             <RefreshCw size={19} />
@@ -309,20 +328,20 @@ export default function CoveragePage(props: PageProps) {
           {personal && own && (
             <button className="button primary" onClick={() => setEditing(true)}>
               <CalendarDays size={17} />
-              Edit my weekly hours
+              {t('Edit my weekly hours')}
             </button>
           )}
         </div>
       </div>
       {error && (
         <div className="error-message" role="alert">
-          {error} {report && 'Showing the last loaded plan; it may be out of date.'}
+          {systemText(error)} {report && t('Showing the last loaded plan; it may be out of date.')}
         </div>
       )}
       {!report ? (
         error ? (
           <button className="button secondary" onClick={() => setRevision((n) => n + 1)}>
-            Try again
+            {t('Try again')}
           </button>
         ) : (
           <Loading />
@@ -332,75 +351,86 @@ export default function CoveragePage(props: PageProps) {
           <div className="coverage-timezone">
             <Clock3 size={16} />
             <span>
-              Weekly plan in <strong>{report.timezone}</strong>
+              {t('Weekly plan in ')}
+              <strong>{report.timezone}</strong>
             </span>
-            <small>Updated {time(report.generated_at, report.timezone)}</small>
+            <small>
+              {t('Updated ')}
+              {time(report.generated_at, report.timezone)}
+            </small>
           </div>
           <div className="coverage-stats">
             <section
               className={`card coverage-stat ${report.now.length ? '' : 'coverage-gap-stat'}`}
             >
-              <span className="eyebrow">{personal ? 'MY STATUS NOW' : 'SCHEDULED NOW'}</span>
+              <span className="eyebrow">{personal ? t('MY STATUS NOW') : t('SCHEDULED NOW')}</span>
               <h2>
                 {personal
                   ? personalStatus
                   : report.now.length
-                    ? `${report.now.length} responder${report.now.length === 1 ? '' : 's'}`
-                    : 'No responder scheduled'}
+                    ? t('{{p0}} responder{{p1}}', {
+                        p0: report.now.length,
+                        p1: pluralSuffix(report.now.length),
+                      })
+                    : t('No responder scheduled')}
               </h2>
               <p>
                 {report.now.length
                   ? personal
-                    ? 'New requests can be routed to you while you remain available.'
+                    ? t('New requests can be routed to you while you remain available.')
                     : report.now.map((c) => c.name).join(', ')
                   : personal
-                    ? 'New requests will skip you until you are scheduled and available.'
-                    : 'Review your contacts and arrange a willing backup.'}
+                    ? t('New requests will skip you until you are scheduled and available.')
+                    : t('Review your contacts and arrange a willing backup.')}
               </p>
             </section>
             <section className="card coverage-stat">
               <span className="eyebrow">
-                {personal ? 'TIME NOT SCHEDULED / WEEK' : 'UNCOVERED TIME / WEEK'}
+                {personal ? t('TIME NOT SCHEDULED / WEEK') : t('UNCOVERED TIME / WEEK')}
               </span>
               <h2>{duration(report.gap_minutes)}</h2>
               <p>
                 {personal
-                  ? 'Time outside your hours, including periods when participation is paused.'
-                  : 'Periods with no available, participating contact permitted to receive help requests.'}
+                  ? t('Time outside your hours, including periods when participation is paused.')
+                  : t(
+                      'Periods with no available, participating contact permitted to receive help requests.',
+                    )}
               </p>
             </section>
             <section className="card coverage-stat">
-              <span className="eyebrow">{personal ? 'NEXT TIME OFF' : 'NEXT COVERAGE GAP'}</span>
+              <span className="eyebrow">
+                {personal ? t('NEXT TIME OFF') : t('NEXT COVERAGE GAP')}
+              </span>
               <h2>
                 {nextGap
-                  ? `${weekdays[nextGap.day].slice(0, 3)} ${clock(nextGap.start)}`
-                  : 'No gap in this plan'}
+                  ? t('{{p0}} {{p1}}', { p0: t(weekdays[nextGap.day]), p1: clock(nextGap.start) })
+                  : t('No gap in this plan')}
               </h2>
               <p>
                 {nextGap
-                  ? `${clock(nextGap.start)}–${clock(nextGap.end)}${nextGap.day === report.position.day && nextGap.start <= report.position.minute && report.position.minute < nextGap.end ? ' · Includes now' : ' · Repeating weekly plan'}`
-                  : 'Availability switches and permissions can change this view.'}
+                  ? `${clock(nextGap.start)}–${clock(nextGap.end)}${nextGap.day === report.position.day && nextGap.start <= report.position.minute && report.position.minute < nextGap.end ? t(' · Includes now') : t(' · Repeating weekly plan')}`
+                  : t('Availability switches and permissions can change this view.')}
               </p>
             </section>
           </div>
           <section className="card coverage-calendar">
             <SectionTitle
-              title={personal ? 'My typical week' : 'Your circle’s typical week'}
-              subtitle="Choose a day for exact hours. Colours are explained by labels."
+              title={personal ? t('My typical week') : t('Your circle’s typical week')}
+              subtitle={t('Choose a day for exact hours. Colours are explained by labels.')}
             />
             <div className="coverage-legend">
               <span>
                 <i className="coverage-gap" />
-                {personal ? 'Not scheduled' : 'No responder'}
+                {personal ? t('Not scheduled') : t('No responder')}
               </span>
               <span>
                 <i className="coverage-single" />
-                {personal ? 'Scheduled' : 'One responder'}
+                {personal ? t('Scheduled') : t('One responder')}
               </span>
               {!personal && (
                 <span>
                   <i className="coverage-backup" />
-                  Two or more
+                  {t('Two or more')}
                 </span>
               )}
             </div>
@@ -410,10 +440,14 @@ export default function CoveragePage(props: PageProps) {
                   key={d.day}
                   className={`coverage-week-day ${day?.day === d.day ? 'selected' : ''}`}
                   aria-pressed={day?.day === d.day}
-                  aria-label={`${d.name}, ${duration(d.gap_minutes)} ${personal ? 'not scheduled' : 'uncovered'}`}
+                  aria-label={t('{{p0}}, {{p1}} {{p2}}', {
+                    p0: t(d.name),
+                    p1: duration(d.gap_minutes),
+                    p2: personal ? t('Not scheduled') : t('Gap'),
+                  })}
                   onClick={() => setSelectedDay(d.day)}
                 >
-                  <strong>{d.name.slice(0, 3)}</strong>
+                  <strong>{t(d.name)}</strong>
                   <span className="coverage-track" aria-hidden="true">
                     {d.segments.map((s) => (
                       <span
@@ -431,10 +465,13 @@ export default function CoveragePage(props: PageProps) {
                   </span>
                   <small>
                     {d.gap_minutes
-                      ? `${duration(d.gap_minutes)} ${personal ? 'off' : 'gap'}`
+                      ? t('{{p0}} {{p1}}', {
+                          p0: duration(d.gap_minutes),
+                          p1: personal ? t('Off') : t('Gap'),
+                        })
                       : personal
-                        ? 'All day'
-                        : 'Covered'}
+                        ? t('All day')
+                        : t('Covered')}
                   </small>
                 </button>
               ))}
@@ -442,11 +479,14 @@ export default function CoveragePage(props: PageProps) {
             {day && (
               <div className="coverage-day-detail">
                 <div className="coverage-detail-heading">
-                  <h3>{day.name}</h3>
+                  <h3>{t(day.name)}</h3>
                   <span>
                     {personal
-                      ? `${duration(1440 - day.gap_minutes)} scheduled`
-                      : `${duration(day.gap_minutes)} uncovered · ${duration(day.backup_minutes)} with backup`}
+                      ? t('{{p0}} scheduled', { p0: duration(1440 - day.gap_minutes) })
+                      : t('{{p0}} uncovered · {{p1}} with backup', {
+                          p0: duration(day.gap_minutes),
+                          p1: duration(day.backup_minutes),
+                        })}
                   </span>
                 </div>
                 {day.segments.map((segment) => (
@@ -459,19 +499,19 @@ export default function CoveragePage(props: PageProps) {
                         {segment.responders.length
                           ? segment.responders.map((c) => c.name).join(', ')
                           : personal
-                            ? 'Not scheduled'
-                            : 'No responder scheduled'}
+                            ? t('Not scheduled')
+                            : t('No responder scheduled')}
                       </strong>
                       <small>
                         {segment.responders.length
                           ? personal
-                            ? 'Within your planned hours'
+                            ? t('Within your planned hours')
                             : segment.responders.length === 1
-                              ? 'One responder; no scheduled backup'
-                              : 'Multiple responders, routed in your contact order'
+                              ? t('One responder; no scheduled backup')
+                              : t('Multiple responders, routed in your contact order')
                           : personal
-                            ? 'You will not receive new invitations during this time.'
-                            : 'Ask a trusted contact whether they can cover this period.'}
+                            ? t('You will not receive new invitations during this time.')
+                            : t('Ask a trusted contact whether they can cover this period.')}
                       </small>
                     </div>
                     <Badge
@@ -485,13 +525,13 @@ export default function CoveragePage(props: PageProps) {
                     >
                       {!segment.responders.length
                         ? personal
-                          ? 'Off'
-                          : 'Gap'
+                          ? t('Off')
+                          : t('Gap')
                         : personal
-                          ? 'Scheduled'
+                          ? t('Scheduled')
                           : segment.responders.length === 1
-                            ? 'Single'
-                            : 'Backup'}
+                            ? t('Single')
+                            : t('Backup')}
                     </Badge>
                   </div>
                 ))}
@@ -500,16 +540,18 @@ export default function CoveragePage(props: PageProps) {
           </section>
           <section className="card coverage-people">
             <SectionTitle
-              title={personal ? 'My participation' : 'The people behind the plan'}
+              title={personal ? t('My participation') : t('The people behind the plan')}
               subtitle={
                 personal
-                  ? 'Only your own schedule is visible in your caregiver account.'
-                  : 'Each caregiver sets their own hours. Sharing and availability still decide eligibility.'
+                  ? t('Only your own schedule is visible in your caregiver account.')
+                  : t(
+                      'Each caregiver sets their own hours. Sharing and availability still decide eligibility.',
+                    )
               }
               action={
                 <button className="text-link" onClick={() => props.go('circle')}>
                   <Users size={15} />
-                  {personal ? 'My availability' : 'Manage care circle'}
+                  {personal ? t('My availability') : t('Manage care circle')}
                 </button>
               }
             />
@@ -522,38 +564,44 @@ export default function CoveragePage(props: PageProps) {
                     <small>
                       {contact.relationship} ·{' '}
                       {contact.mode === 'anytime'
-                        ? 'Any time while marked available'
-                        : `${contact.windows.length} weekly window${contact.windows.length === 1 ? '' : 's'}`}
+                        ? t('Any time while marked available')
+                        : t('{{p0}} weekly window{{p1}}', {
+                            p0: contact.windows.length,
+                            p1: pluralSuffix(contact.windows.length),
+                          })}
                     </small>
                   </div>
                   <Badge tone={report.now.some((c) => c.id === contact.id) ? 'green' : 'neutral'}>
                     {!contact.accepted
-                      ? 'Participation paused'
+                      ? t('Participation paused')
                       : !contact.allow_requests
-                        ? 'Requests not shared'
+                        ? t('Requests not shared')
                         : !contact.available
-                          ? 'Marked away'
+                          ? t('Marked away')
                           : report.now.some((c) => c.id === contact.id)
-                            ? 'Scheduled now'
-                            : 'Outside hours'}
+                            ? t('Scheduled now')
+                            : t('Outside hours')}
                   </Badge>
                 </div>
               ))
             ) : (
               <p>
-                No contacts have joined your care circle yet. Invite someone you trust to start
-                planning.
+                {t(
+                  'No contacts have joined your care circle yet. Invite someone you trust to start planning.',
+                )}
               </p>
             )}
           </section>
           <div className="info-strip">
             <ShieldCheck size={20} />
             <p>
-              This is a repeating weekly plan based on current availability and permissions, not a
-              guarantee of response. All hours use {report.timezone}, including clock changes there.
-              Requests skip off-schedule contacts; accepted responsibilities continue until
-              follow-up or handoff. A request already marked “No responder confirmed” is not
-              automatically reopened.
+              {t(
+                'This is a repeating weekly plan based on current availability and permissions, not a guarantee of response. All hours use ',
+              )}
+              {report.timezone}
+              {t(
+                ', including clock changes there. Requests skip off-schedule contacts; accepted responsibilities continue until follow-up or handoff. A request already marked “No responder confirmed” is not automatically reopened.',
+              )}
             </p>
           </div>
         </>

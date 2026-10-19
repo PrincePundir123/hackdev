@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { Heart, X, LoaderCircle, Check, ArrowUpRight, ShieldCheck } from 'lucide-react';
 
@@ -10,7 +11,7 @@ export function Brand({ light = false }: { light?: boolean }) {
       </span>
       <span>
         saathi<span className="brand-dot">.</span>
-        <small>CARE, CONNECTED</small>
+        <small>{t('CARE, CONNECTED')}</small>
       </span>
     </div>
   );
@@ -52,7 +53,7 @@ export function Loading() {
   return (
     <div className="loading" role="status">
       <LoaderCircle className="spin" size={26} />
-      <span>Getting your care circle ready…</span>
+      <span>{t('Getting your care circle ready…')}</span>
     </div>
   );
 }
@@ -119,7 +120,7 @@ export function Modal({
           <h2 id={titleId}>{title}</h2>
           {subtitle && <p>{subtitle}</p>}
         </div>
-        <button className="icon-button" aria-label="Close dialog" onClick={onClose}>
+        <button className="icon-button" aria-label={t('Close dialog')} onClick={onClose}>
           <X size={20} />
         </button>
       </div>
@@ -162,9 +163,9 @@ export function GardenIllustration() {
     <div className="garden" aria-hidden="true">
       <div className="garden-orbit one" />
       <div className="garden-orbit two" />
-      <span className="garden-person p1">M</span>
-      <span className="garden-person p2">A</span>
-      <span className="garden-person p3">L</span>
+      <span className="garden-person p1">{t('M')}</span>
+      <span className="garden-person p2">{t('A')}</span>
+      <span className="garden-person p3">{t('L')}</span>
       <div className="garden-heart">
         <Heart size={44} fill="currentColor" strokeWidth={1.2} />
         <span>

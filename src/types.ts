@@ -44,6 +44,8 @@ export type Attempt = {
 export type Incident = {
   id: string;
   title: string;
+  title_is_system?: boolean;
+  outcome_is_system?: boolean;
   elder_id: string;
   private_note?: string;
   state: string;

@@ -1,3 +1,4 @@
+import { t, systemText, locale, languages, pluralSuffix } from './i18n';
 import { useState, type ReactNode } from 'react';
 import {
   ArrowRight,
@@ -95,17 +96,17 @@ function RequestCard({
       </span>
       <span className="request-copy">
         <span className="request-title">
-          {incident.title}
-          {incident.is_test && <Badge tone="lavender">TEST</Badge>}
+          {incident.title_is_system ? t(incident.title) : incident.title}
+          {incident.is_test && <Badge tone="lavender">{t('TEST')}</Badge>}
         </span>
         <small>
           {dateTime(incident.created_at, timezone)} ·{' '}
           {incident.owner_name
-            ? `Accepted by ${incident.owner_name.split(' ')[0]}`
-            : 'No caregiver assigned yet'}
+            ? t('Accepted by {{p0}}', { p0: incident.owner_name.split(' ')[0] })
+            : t('No caregiver assigned yet')}
         </small>
       </span>
-      <Badge tone={tone}>{stateLabel[incident.state] || incident.state}</Badge>
+      <Badge tone={tone}>{t(stateLabel[incident.state] || incident.state)}</Badge>
       <ChevronRight size={18} />
     </button>
   );
@@ -115,10 +116,10 @@ function ReminderRow({ reminder, props }: { reminder: Reminder; props: PageProps
   const elder = props.data.user.role === 'elder';
   const timing =
     reminder.status === 'waiting'
-      ? `${reminder.offset_minutes} min after morning check-in`
+      ? t('{{p0}} min after morning check-in', { p0: reminder.offset_minutes })
       : reminder.due_at
         ? dateTime(reminder.due_at, props.data.elder.timezone)
-        : 'Waiting for check-in';
+        : t('Waiting for check-in');
   return (
     <div className={`reminder-row ${closed ? 'closed' : ''}`}>
       <span
@@ -131,22 +132,22 @@ function ReminderRow({ reminder, props }: { reminder: Reminder; props: PageProps
         <small>
           <Clock3 size={12} />
           {timing}
-          {reminder.repeat === 'daily' && ' · Daily'}
+          {reminder.repeat === 'daily' && t(' · Daily')}
         </small>
       </div>
       <Badge tone={reminder.status === 'due' ? 'amber' : closed ? 'neutral' : 'green'}>
         {reminder.status === 'waiting'
-          ? 'After check-in'
+          ? t('After check-in')
           : reminder.status === 'scheduled'
-            ? 'Upcoming'
+            ? t('Upcoming')
             : reminder.status === 'completed'
-              ? 'Done'
-              : reminder.status}
+              ? t('Done')
+              : t(reminder.status)}
       </Badge>
       {elder && !closed && (
         <div className="reminder-actions">
           <button
-            aria-label={`Mark ${reminder.title} done`}
+            aria-label={t('Mark {{p0}} done', { p0: reminder.title })}
             className="icon-button done-button"
             disabled={props.busy}
             onClick={async () => {
@@ -162,7 +163,7 @@ function ReminderRow({ reminder, props }: { reminder: Reminder; props: PageProps
               disabled={props.busy}
               onClick={() => props.act(`/reminders/${reminder.id}`, { action: 'snooze' }, 'PATCH')}
             >
-              10 min later
+              {t('10 min later')}
             </button>
           )}
         </div>
@@ -188,7 +189,7 @@ export function Overview(props: PageProps) {
   return (
     <>
       <PageHeading
-        eyebrow={new Intl.DateTimeFormat('en-IN', {
+        eyebrow={new Intl.DateTimeFormat(locale(), {
           weekday: 'long',
           day: 'numeric',
           month: 'long',
@@ -196,15 +197,18 @@ export function Overview(props: PageProps) {
         })
           .format(new Date())
           .toUpperCase()}
-        title={`${greeting}, ${first}.`}
+        title={t('{{p0}}, {{p1}}.', { p0: t(greeting), p1: first })}
         subtitle={
           elder
-            ? 'A new day, a little support, and your people by your side.'
-            : `A thoughtful space to support ${data.elder.name.split(' ')[0]}, together.`
+            ? t('A new day, a little support, and your people by your side.')
+            : t('A thoughtful space to support {{p0}}, together.', {
+                p0: data.elder.name.split(' ')[0],
+              })
         }
         action={
           <span className="soft-label">
-            <Sun size={17} /> A little closer, every day
+            <Sun size={17} />
+            {t(' A little closer, every day')}
           </span>
         }
       />
@@ -213,33 +217,39 @@ export function Overview(props: PageProps) {
           <section className="welcome-card">
             <div className="welcome-copy">
               <Badge tone="white">
-                <Heart size={12} /> YOUR EVERYDAY COMPANION
+                <Heart size={12} />
+                {t(' YOUR EVERYDAY COMPANION')}
               </Badge>
               <h2>
                 {elder ? (
                   <>
-                    Your day.
+                    {t('Your day.')}
                     <br />
-                    At your own pace.
+                    {t('At your own pace.')}
                   </>
                 ) : (
                   <>
-                    A caring connection.
-                    <br />A clear next step.
+                    {t('A caring connection.')}
+                    <br />
+                    {t('A clear next step.')}
                   </>
                 )}
               </h2>
               <p>
                 {elder
-                  ? 'A gentle reminder, a friendly check-in, or a helping hand. We’re right here.'
-                  : 'See the requests you are allowed to receive, and let your circle know when you can help.'}
+                  ? t(
+                      'A gentle reminder, a friendly check-in, or a helping hand. We’re right here.',
+                    )
+                  : t(
+                      'See the requests you are allowed to receive, and let your circle know when you can help.',
+                    )}
               </p>
               <button
                 className="button primary"
                 onClick={elder ? openReminder : () => go('requests')}
               >
                 {elder ? <Sparkles size={17} /> : <HeartHandshake size={17} />}
-                {elder ? 'Ask your companion' : 'View care requests'}
+                {elder ? t('Ask your companion') : t('View care requests')}
                 <ArrowRight size={17} />
               </button>
             </div>
@@ -253,8 +263,8 @@ export function Overview(props: PageProps) {
                     <Plus size={22} />
                   </span>
                   <span>
-                    <strong>Add a reminder</strong>
-                    <small>A little nudge, right on time</small>
+                    <strong>{t('Add a reminder')}</strong>
+                    <small>{t('A little nudge, right on time')}</small>
                   </span>
                   <ChevronRight size={17} />
                 </button>
@@ -263,8 +273,8 @@ export function Overview(props: PageProps) {
                     <HeartHandshake size={22} />
                   </span>
                   <span>
-                    <strong>Request help</strong>
-                    <small>Reach your trusted people</small>
+                    <strong>{t('Request help')}</strong>
+                    <small>{t('Reach your trusted people')}</small>
                   </span>
                   <ChevronRight size={17} />
                 </button>
@@ -276,8 +286,8 @@ export function Overview(props: PageProps) {
                     <Users size={22} />
                   </span>
                   <span>
-                    <strong>My availability</strong>
-                    <small>Let your circle know</small>
+                    <strong>{t('My availability')}</strong>
+                    <small>{t('Let your circle know')}</small>
                   </span>
                   <ChevronRight size={17} />
                 </button>
@@ -286,8 +296,8 @@ export function Overview(props: PageProps) {
                     <Bell size={22} />
                   </span>
                   <span>
-                    <strong>Shared reminders</strong>
-                    <small>Only what’s shared with you</small>
+                    <strong>{t('Shared reminders')}</strong>
+                    <small>{t('Only what’s shared with you')}</small>
                   </span>
                   <ChevronRight size={17} />
                 </button>
@@ -296,9 +306,9 @@ export function Overview(props: PageProps) {
           </div>
           <section className="card">
             <SectionTitle
-              title={elder ? 'Your little reminders' : 'Shared reminders'}
-              subtitle="Small things that make the day feel easier."
-              action={<TextLink onClick={() => go('reminders')}>View all</TextLink>}
+              title={elder ? t('Your little reminders') : t('Shared reminders')}
+              subtitle={t('Small things that make the day feel easier.')}
+              action={<TextLink onClick={() => go('reminders')}>{t('View all')}</TextLink>}
             />
             {reminders.length ? (
               reminders
@@ -306,19 +316,21 @@ export function Overview(props: PageProps) {
                 .map((r) => <ReminderRow key={r.id} reminder={r} props={props} />)
             ) : (
               <Empty
-                title={data.reminders_allowed ? 'A little breathing room' : 'Reminders are private'}
+                title={
+                  data.reminders_allowed ? t('A little breathing room') : t('Reminders are private')
+                }
               >
                 {data.reminders_allowed
-                  ? 'No reminders waiting. Add something you would like a gentle nudge for.'
-                  : 'The older adult decides whether to share reminders with you.'}
+                  ? t('No reminders waiting. Add something you would like a gentle nudge for.')
+                  : t('The older adult decides whether to share reminders with you.')}
               </Empty>
             )}
           </section>
           <section className="card">
             <SectionTitle
-              title="Care, in motion"
-              subtitle="Know who is responding and what happens next."
-              action={<TextLink onClick={() => go('requests')}>All requests</TextLink>}
+              title={t('Care, in motion')}
+              subtitle={t('Know who is responding and what happens next.')}
+              action={<TextLink onClick={() => go('requests')}>{t('All requests')}</TextLink>}
             />
             {pending.length ? (
               pending
@@ -337,8 +349,8 @@ export function Overview(props: PageProps) {
                   <CheckCircle2 size={22} />
                 </span>
                 <div>
-                  <strong>No requests waiting for a response</strong>
-                  <p>When support is requested, you’ll see its progress here.</p>
+                  <strong>{t('No requests waiting for a response')}</strong>
+                  <p>{t('When support is requested, you’ll see its progress here.')}</p>
                 </div>
               </div>
             )}
@@ -350,11 +362,11 @@ export function Overview(props: PageProps) {
               <span className="sun-icon">
                 <Sun size={27} />
               </span>
-              <h2>A moment for you.</h2>
+              <h2>{t('A moment for you.')}</h2>
               <p>
-                Let your care space know
+                {t('Let your care space know')}
                 <br />
-                you’ve checked in today.
+                {t('you’ve checked in today.')}
               </p>
               <button
                 className="button primary wide"
@@ -364,60 +376,70 @@ export function Overview(props: PageProps) {
                     notify('Your check-in is saved. Event-linked reminders are ready.');
                 }}
               >
-                <Check size={18} /> I am okay
+                <Check size={18} />
+                {t(' I am okay')}
               </button>
               <span className="checkin-time">
                 {data.last_check_in
-                  ? `Last check-in: ${dateTime(data.last_check_in, data.elder.timezone)}`
-                  : 'Your first check-in is a tap away'}
+                  ? t('Last check-in: {{p0}}', {
+                      p0: dateTime(data.last_check_in, data.elder.timezone),
+                    })
+                  : t('Your first check-in is a tap away')}
               </span>
-              <small>A self-reported update, at your own pace.</small>
+              <small>{t('A self-reported update, at your own pace.')}</small>
             </section>
           ) : (
             <section className="checkin-card">
               <span className="sun-icon">
                 <HeartHandshake size={27} />
               </span>
-              <h2>Your presence matters.</h2>
+              <h2>{t('Your presence matters.')}</h2>
               <p>
                 {pending.length
-                  ? `${pending.length} open request${pending.length === 1 ? '' : 's'} in your care space.`
-                  : 'There are no open requests right now.'}
+                  ? t('{{p0}} open request{{p1}} in your care space.', {
+                      p0: pending.length,
+                      p1: pluralSuffix(pending.length),
+                    })
+                  : t('There are no open requests right now.')}
               </p>
               <button className="button primary wide" onClick={() => go('requests')}>
-                Open caregiver inbox <ArrowRight size={17} />
+                {t('Open caregiver inbox ')}
+                <ArrowRight size={17} />
               </button>
             </section>
           )}
           <section className="card coverage-summary">
-            <SectionTitle title={elder ? 'Coverage now' : 'My scheduled availability'} />
+            <SectionTitle title={elder ? t('Coverage now') : t('My scheduled availability')} />
             <div className="coverage-summary-status">
               <Clock3 size={20} />
               <strong>
                 {data.coverage_now.length
                   ? elder
-                    ? `${data.coverage_now.length} scheduled responder${data.coverage_now.length === 1 ? '' : 's'}`
-                    : 'Within my response hours'
+                    ? t('{{p0}} scheduled responder{{p1}}', {
+                        p0: data.coverage_now.length,
+                        p1: pluralSuffix(data.coverage_now.length),
+                      })
+                    : t('Within my response hours')
                   : elder
-                    ? 'No responder scheduled'
-                    : 'Outside my response hours'}
+                    ? t('No responder scheduled')
+                    : t('Outside my response hours')}
               </strong>
             </div>
             <p>
               {data.coverage_now.length
                 ? data.coverage_now.map((c) => c.name).join(', ')
                 : elder
-                  ? 'Review the weekly plan and arrange a willing backup.'
-                  : 'Review your weekly hours or update your availability.'}
+                  ? t('Review the weekly plan and arrange a willing backup.')
+                  : t('Review your weekly hours or update your availability.')}
             </p>
             <TextLink onClick={() => go('coverage')}>
-              {elder ? 'View weekly coverage' : 'Set my weekly hours'}
+              {elder ? t('View weekly coverage') : t('Set my weekly hours')}
             </TextLink>
           </section>
           <section className="card circle-summary">
             <SectionTitle
-              title="Your people"
-              action={<TextLink onClick={() => go('circle')}>Manage</TextLink>}
+              title={t('Your people')}
+              action={<TextLink onClick={() => go('circle')}>{t('Manage')}</TextLink>}
             />
             {data.contacts.length ? (
               data.contacts.map((c, i) => (
@@ -426,33 +448,35 @@ export function Overview(props: PageProps) {
                   <div>
                     <strong>{c.name}</strong>
                     <small>
-                      {c.relationship} · {c.priority === 1 ? 'Primary' : 'Backup'}
+                      {c.relationship} · {c.priority === 1 ? t('Primary') : t('Backup')}
                     </small>
                   </div>
                   <span
                     className={`availability-dot ${c.available && c.accepted && c.allow_requests && c.scheduled_now ? '' : 'away'}`}
                     title={
                       c.available && c.accepted && c.allow_requests && c.scheduled_now
-                        ? 'Scheduled and available for requests'
-                        : 'Not currently available'
+                        ? t('Scheduled and available for requests')
+                        : t('Not currently available')
                     }
                   />
                 </div>
               ))
             ) : (
-              <p className="muted">Invite someone you trust to start your circle.</p>
+              <p className="muted">{t('Invite someone you trust to start your circle.')}</p>
             )}
             <div className="circle-note">
-              <LockKeyhole size={14} /> Sharing is always your choice.
+              <LockKeyhole size={14} />
+              {t(' Sharing is always your choice.')}
             </div>
           </section>
           <section className="small-promise">
             <ShieldCheck size={27} />
             <div>
-              <h3>A little privacy. A lot of dignity.</h3>
-              <p>See exactly what each person can see. Change your mind any time.</p>
+              <h3>{t('A little privacy. A lot of dignity.')}</h3>
+              <p>{t('See exactly what each person can see. Change your mind any time.')}</p>
               <button className="text-link" onClick={() => go('circle')}>
-                Explore sharing <ArrowRight size={14} />
+                {t('Explore sharing ')}
+                <ArrowRight size={14} />
               </button>
             </div>
           </section>
@@ -475,26 +499,30 @@ export function Reminders(props: PageProps) {
   return (
     <>
       <PageHeading
-        eyebrow="THE SMALL THINGS MATTER"
-        title={elder ? 'A gentle nudge.' : 'Shared reminders.'}
+        eyebrow={t('THE SMALL THINGS MATTER')}
+        title={elder ? t('A gentle nudge.') : t('Shared reminders.')}
         subtitle={
           elder
-            ? 'Make space for your day. Let us remember the little things.'
-            : 'An invitation into someone’s day, shared on their terms.'
+            ? t('Make space for your day. Let us remember the little things.')
+            : t('An invitation into someone’s day, shared on their terms.')
         }
         action={
           elder && (
             <button className="button primary" onClick={props.openReminder}>
               <Plus size={17} />
-              Add reminder
+              {t('Add reminder')}
             </button>
           )
         }
       />
-      <div className="tabs" aria-label="Reminder filters">
+      <div className="tabs" aria-label={t('Reminder filters')}>
         {['active', 'done', 'all'].map((f) => (
           <button key={f} onClick={() => setFilter(f)} className={filter === f ? 'selected' : ''}>
-            {f === 'active' ? 'Upcoming & waiting' : f === 'done' ? 'Marked done' : 'All reminders'}
+            {f === 'active'
+              ? t('Upcoming & waiting')
+              : f === 'done'
+                ? t('Marked done')
+                : t('All reminders')}
           </button>
         ))}
       </div>
@@ -509,7 +537,7 @@ export function Reminders(props: PageProps) {
                   disabled={props.busy}
                   onClick={() => props.act(`/reminders/${r.id}`, { action: 'cancel' }, 'PATCH')}
                 >
-                  Cancel reminder
+                  {t('Cancel reminder')}
                 </button>
               )}
             </div>
@@ -518,21 +546,22 @@ export function Reminders(props: PageProps) {
           <Empty
             title={
               props.data.reminders_allowed
-                ? 'Nothing on this list yet'
-                : 'This part of the day is private'
+                ? t('Nothing on this list yet')
+                : t('This part of the day is private')
             }
           >
             {props.data.reminders_allowed
-              ? 'Add a reminder or try a different filter.'
-              : 'You can see reminders only when sharing is enabled by the older adult.'}
+              ? t('Add a reminder or try a different filter.')
+              : t('You can see reminders only when sharing is enabled by the older adult.')}
           </Empty>
         )}
       </section>
       <div className="info-strip">
         <Info size={19} />
         <p>
-          Morning reminders wait for a manual check-in. “Done” is a personal update, not proof that
-          a task or medication was completed.
+          {t(
+            'Morning reminders wait for a manual check-in. “Done” is a personal update, not proof that a task or medication was completed.',
+          )}
         </p>
       </div>
     </>
@@ -562,12 +591,12 @@ export function Circle(props: PageProps) {
   return (
     <>
       <PageHeading
-        eyebrow="THE PEOPLE WHO SHOW UP"
-        title={elder ? 'Your circle, your choice.' : 'Your place in the circle.'}
+        eyebrow={t('THE PEOPLE WHO SHOW UP')}
+        title={elder ? t('Your circle, your choice.') : t('Your place in the circle.')}
         subtitle={
           elder
-            ? 'Keep your people close, and your personal details in your hands.'
-            : 'Choose your availability and the ways you want to participate.'
+            ? t('Keep your people close, and your personal details in your hands.')
+            : t('Choose your availability and the ways you want to participate.')
         }
         action={
           elder && (
@@ -579,7 +608,8 @@ export function Circle(props: PageProps) {
                 setLocalError('');
               }}
             >
-              <Plus size={17} /> Invite a contact
+              <Plus size={17} />
+              {t(' Invite a contact')}
             </button>
           )
         }
@@ -587,12 +617,12 @@ export function Circle(props: PageProps) {
       <div className="coverage-circle-link">
         <button className="button secondary" onClick={() => props.go('coverage')}>
           <Clock3 size={17} />
-          {elder ? 'View weekly care coverage' : 'Set my weekly hours'}
+          {elder ? t('View weekly care coverage') : t('Set my weekly hours')}
         </button>
       </div>
       {localError && (
         <p className="error-message" role="alert">
-          {localError}
+          {systemText(localError)}
         </p>
       )}
       <div className="contact-grid">
@@ -608,34 +638,38 @@ export function Circle(props: PageProps) {
                 }
               >
                 {!c.available || !c.accepted
-                  ? 'Away'
+                  ? t('Away')
                   : !c.allow_requests
-                    ? 'Requests not shared'
+                    ? t('Requests not shared')
                     : c.scheduled_now
-                      ? 'Scheduled now'
-                      : 'Outside hours'}
+                      ? t('Scheduled now')
+                      : t('Outside hours')}
               </Badge>
             </div>
             <h2>{c.name}</h2>
             <p className="muted">
               {c.relationship} ·{' '}
-              {c.priority === 1 ? 'Primary responder' : `Backup responder ${c.priority - 1}`}
+              {c.priority === 1
+                ? t('Primary responder')
+                : t('Backup responder {{p0}}', { p0: c.priority - 1 })}
             </p>
             <div className="permission-list">
               {[
-                ['Help requests', c.allow_requests],
-                ['Private notes & details', c.allow_notes],
-                ['Reminder text', c.allow_reminders],
+                [t('Help requests'), c.allow_requests],
+                [t('Private notes & details'), c.allow_notes],
+                [t('Reminder text'), c.allow_reminders],
               ].map(([label, allowed]) => (
                 <div key={String(label)}>
                   <span>{label}</span>
                   {allowed ? (
                     <span className="allowed">
-                      <Check size={14} /> Shared
+                      <Check size={14} />
+                      {t(' Shared')}
                     </span>
                   ) : (
                     <span className="private">
-                      <LockKeyhole size={13} /> Private
+                      <LockKeyhole size={13} />
+                      {t(' Private')}
                     </span>
                   )}
                 </div>
@@ -643,12 +677,12 @@ export function Circle(props: PageProps) {
             </div>
             <div className="contact-actions">
               <button className="button secondary" onClick={() => setEditing(c)}>
-                {elder ? 'Edit permissions' : 'My availability'}
+                {elder ? t('Edit permissions') : t('My availability')}
               </button>
               {elder && (
                 <button
                   className="icon-button"
-                  aria-label={`Preview sharing with ${c.name}`}
+                  aria-label={t('Preview sharing with {{p0}}', { p0: c.name })}
                   disabled={loading}
                   onClick={() => showPreview(c.id)}
                 >
@@ -660,21 +694,26 @@ export function Circle(props: PageProps) {
         ))}
       </div>
       {!props.data.contacts.length && (
-        <Empty title="A care circle starts with one person">
-          Invite someone you trust. They choose whether to join using the invitation code.
+        <Empty title={t('A care circle starts with one person')}>
+          {t('Invite someone you trust. They choose whether to join using the invitation code.')}
         </Empty>
       )}
       <div className="info-strip">
         <ShieldCheck size={21} />
         <p>
-          Changes apply to future access and messages. Information a contact has already seen cannot
-          be recalled. Permission checks happen on the server, for every request.
+          {t(
+            'Changes apply to future access and messages. Information a contact has already seen cannot be recalled. Permission checks happen on the server, for every request.',
+          )}
         </p>
       </div>
       {editing && (
         <Modal
-          title={elder ? `Sharing with ${editing.name.split(' ')[0]}` : 'My availability'}
-          subtitle={elder ? 'Small choices. Meaningful control.' : 'Your time matters, too.'}
+          title={
+            elder
+              ? t('Sharing with {{p0}}', { p0: editing.name.split(' ')[0] })
+              : t('My availability')
+          }
+          subtitle={elder ? t('Small choices. Meaningful control.') : t('Your time matters, too.')}
           onClose={() => setEditing(null)}
         >
           <div className="modal-body">
@@ -687,29 +726,31 @@ export function Circle(props: PageProps) {
                     onChange={(value) => setEditing({ ...editing, [field]: Number(value) })}
                     label={
                       {
-                        allow_requests: 'Basic help requests',
-                        allow_notes: 'Private notes and request details',
-                        allow_reminders: 'Reminder text',
+                        allow_requests: t('Basic help requests'),
+                        allow_notes: t('Private notes and request details'),
+                        allow_reminders: t('Reminder text'),
                       }[field]
                     }
                     description={
                       field === 'allow_requests'
-                        ? 'Allow this person to view and respond to support requests.'
+                        ? t('Allow this person to view and respond to support requests.')
                         : field === 'allow_notes'
-                          ? 'May include personal information you write in a request or outcome.'
-                          : 'Allow this person to read the contents of your reminders.'
+                          ? t('May include personal information you write in a request or outcome.')
+                          : t('Allow this person to read the contents of your reminders.')
                     }
                   />
                 ))}
                 <label className="field">
-                  Contact order
+                  {t('Contact order')}
                   <select
                     value={editing.priority}
                     onChange={(e) => setEditing({ ...editing, priority: Number(e.target.value) })}
                   >
                     {Array.from({ length: 8 }, (_, i) => (
                       <option key={i} value={i + 1}>
-                        {i === 0 ? '1 — Primary contact' : `${i + 1} — Backup contact`}
+                        {i === 0
+                          ? t('1 — Primary contact')
+                          : t('{{p0}} — Backup contact', { p0: i + 1 })}
                       </option>
                     ))}
                   </select>
@@ -725,17 +766,21 @@ export function Circle(props: PageProps) {
                       onChange={(value) => setEditing({ ...editing, [field]: Number(value) })}
                       label={
                         {
-                          available: 'Available to respond',
-                          accepted: 'Participate in this care circle',
-                          drill_opt_in: 'Receive test drills',
-                          external_opt_in: 'Allow configured external notifications',
+                          available: t('Available to respond'),
+                          accepted: t('Participate in this care circle'),
+                          drill_opt_in: t('Receive test drills'),
+                          external_opt_in: t('Allow configured external notifications'),
                         }[field]
                       }
                       description={
                         field === 'external_opt_in'
-                          ? 'Optional. A configured provider receives only a generic request and identifiers; delivery is not guaranteed.'
+                          ? t(
+                              'Optional. A configured provider receives only a generic request and identifiers; delivery is not guaranteed.',
+                            )
                           : field === 'drill_opt_in'
-                            ? 'Clearly labelled rehearsals with accelerated response timers. No external messages are sent for drills.'
+                            ? t(
+                                'Clearly labelled rehearsals with accelerated response timers. No external messages are sent for drills.',
+                              )
                             : undefined
                       }
                     />
@@ -746,7 +791,7 @@ export function Circle(props: PageProps) {
           </div>
           <div className="modal-actions">
             <button className="button secondary" onClick={() => setEditing(null)}>
-              Cancel
+              {t('Cancel')}
             </button>
             <button
               className="button primary"
@@ -771,67 +816,72 @@ export function Circle(props: PageProps) {
                 }
               }}
             >
-              Save changes
+              {t('Save changes')}
             </button>
           </div>
         </Modal>
       )}
       {preview && (
         <Modal
-          title={`${preview.name.split(' ')[0]}’s view`}
-          subtitle="A preview from the same server-side sharing rules."
+          title={t('{{p0}}’s view', { p0: preview.name.split(' ')[0] })}
+          subtitle={t('A preview from the same server-side sharing rules.')}
           onClose={() => setPreview(null)}
         >
           <div className="modal-body">
             <div className="sharing-preview">
-              <span className="eyebrow">WHAT THIS PERSON CAN RECEIVE</span>
+              <span className="eyebrow">{t('WHAT THIS PERSON CAN RECEIVE')}</span>
               <h3>
                 {preview.can_receive
-                  ? preview.sample?.title || preview.example?.title
-                  : 'Help requests are not shared'}
+                  ? preview.sample
+                    ? preview.sample.title_is_system
+                      ? t(preview.sample.title)
+                      : preview.sample.title
+                    : t(preview.example?.title || '')
+                  : t('Help requests are not shared')}
               </h3>
               {preview.can_receive && (
                 <p>
                   {preview.sample?.private_note ||
-                    preview.example?.private_note ||
-                    'Private notes are hidden from this contact.'}
+                    t(preview.example?.private_note || '') ||
+                    t('Private notes are hidden from this contact.')}
                 </p>
               )}
               <div className="preview-permissions">
                 <Badge tone={preview.notes ? 'green' : 'neutral'}>
-                  {preview.notes ? 'Private notes allowed' : 'Private notes hidden'}
+                  {preview.notes ? t('Private notes allowed') : t('Private notes hidden')}
                 </Badge>
                 <Badge tone={preview.reminders ? 'green' : 'neutral'}>
-                  {preview.reminders ? 'Reminders allowed' : 'Reminders hidden'}
+                  {preview.reminders ? t('Reminders allowed') : t('Reminders hidden')}
                 </Badge>
               </div>
             </div>
             <p className="fine-print">
-              Test requests additionally require the contact to opt in to drills.
+              {t('Test requests additionally require the contact to opt in to drills.')}
             </p>
           </div>
           <div className="modal-actions">
             <button className="button primary" onClick={() => setPreview(null)}>
-              Got it
+              {t('Got it')}
             </button>
           </div>
         </Modal>
       )}
       {invite && (
         <Modal
-          title="Invite someone you trust"
-          subtitle="They decide whether to join your care circle."
+          title={t('Invite someone you trust')}
+          subtitle={t('They decide whether to join your care circle.')}
           onClose={() => setInvite(false)}
         >
           {inviteCode ? (
             <div className="modal-body">
               <p>
-                Share this one-time code privately with the invited person. It expires in three
-                days. They should choose “Create account” and use the invited email address.
+                {t(
+                  'Share this one-time code privately with the invited person. It expires in three days. They should choose “Create account” and use the invited email address.',
+                )}
               </p>
               <textarea
                 className="invite-code"
-                aria-label="Invitation code"
+                aria-label={t('Invitation code')}
                 readOnly
                 value={inviteCode}
               />
@@ -846,10 +896,12 @@ export function Circle(props: PageProps) {
                   }
                 }}
               >
-                Copy invitation code
+                {t('Copy invitation code')}
               </button>
               <p className="fine-print">
-                No email has been sent. The person joins only when they accept with this code.
+                {t(
+                  'No email has been sent. The person joins only when they accept with this code.',
+                )}
               </p>
             </div>
           ) : (
@@ -875,35 +927,36 @@ export function Circle(props: PageProps) {
             >
               <div className="modal-body stack-form">
                 <label>
-                  Email address
+                  {t('Email address')}
                   <input name="email" type="email" required placeholder="person@example.com" />
                 </label>
                 <label>
-                  Relationship
+                  {t('Relationship')}
                   <input
                     name="relationship"
                     required
                     minLength={2}
                     maxLength={50}
-                    placeholder="Daughter, friend, neighbour…"
+                    placeholder={t('Daughter, friend, neighbour…')}
                   />
                 </label>
                 {localError && (
                   <p className="error-message" role="alert">
-                    {localError}
+                    {systemText(localError)}
                   </p>
                 )}
                 <p className="fine-print">
-                  New contacts can receive basic requests. Private notes and reminders stay private
-                  until you choose otherwise.
+                  {t(
+                    'New contacts can receive basic requests. Private notes and reminders stay private until you choose otherwise.',
+                  )}
                 </p>
               </div>
               <div className="modal-actions">
                 <button type="button" className="button secondary" onClick={() => setInvite(false)}>
-                  Cancel
+                  {t('Cancel')}
                 </button>
                 <button className="button primary" disabled={loading}>
-                  Create invitation
+                  {t('Create invitation')}
                 </button>
               </div>
             </form>
@@ -926,14 +979,16 @@ export function Requests(props: PageProps) {
   return (
     <>
       <PageHeading
-        eyebrow="CARE THAT FOLLOWS THROUGH"
-        title="Every request, a clear next step."
-        subtitle="An invitation is the beginning. A named responder and a recorded outcome complete the picture."
+        eyebrow={t('CARE THAT FOLLOWS THROUGH')}
+        title={t('Every request, a clear next step.')}
+        subtitle={t(
+          'An invitation is the beginning. A named responder and a recorded outcome complete the picture.',
+        )}
         action={
           props.data.user.role === 'elder' && (
             <button className="button primary" onClick={props.openHelp}>
               <HeartHandshake size={17} />
-              Request help
+              {t('Request help')}
             </button>
           )
         }
@@ -941,7 +996,7 @@ export function Requests(props: PageProps) {
       <div className="tabs">
         {['all', 'open', 'resolved'].map((f) => (
           <button key={f} className={filter === f ? 'selected' : ''} onClick={() => setFilter(f)}>
-            {f === 'all' ? 'All requests' : f === 'open' ? 'Needs attention' : 'Resolved'}
+            {f === 'all' ? t('All requests') : f === 'open' ? t('Needs attention') : t('Resolved')}
           </button>
         ))}
       </div>
@@ -956,16 +1011,17 @@ export function Requests(props: PageProps) {
             />
           ))
         ) : (
-          <Empty title="A quiet moment">
-            Requests that you are allowed to see will appear here, with a clear timeline.
+          <Empty title={t('A quiet moment')}>
+            {t('Requests that you are allowed to see will appear here, with a clear timeline.')}
           </Empty>
         )}
       </section>
       <div className="info-strip">
         <Info size={20} />
         <p>
-          Notifications are available in the caregiver inbox while connected. “Accepted” means
-          someone agreed to respond; it does not establish that help arrived.
+          {t(
+            'Notifications are available in the caregiver inbox while connected. “Accepted” means someone agreed to respond; it does not establish that help arrived.',
+          )}
         </p>
       </div>
     </>
@@ -1005,32 +1061,43 @@ export function Drills(props: PageProps) {
   return (
     <>
       <PageHeading
-        eyebrow="PRACTICE BUILDS CONFIDENCE"
-        title="A small rehearsal. A clearer plan."
-        subtitle="Test how your circle responds, using fictional events and accelerated timers."
+        eyebrow={t('PRACTICE BUILDS CONFIDENCE')}
+        title={t('A small rehearsal. A clearer plan.')}
+        subtitle={t(
+          'Test how your circle responds, using fictional events and accelerated timers.',
+        )}
       />
       <section className="drill-hero">
         <span className="drill-symbol">
           <FlaskConical size={34} />
         </span>
         <div>
-          <Badge tone="lavender">TEST MODE · NO REAL SENSOR EVENT</Badge>
-          <h2>Let’s walk through it, together.</h2>
+          <Badge tone="lavender">{t('TEST MODE · NO REAL SENSOR EVENT')}</Badge>
+          <h2>{t('Let’s walk through it, together.')}</h2>
           <p>
-            Invite the primary contact. Wait 10 seconds. Hand off to an opted-in backup if nobody
-            accepts. Then record a follow-up.
+            {t(
+              'Invite the primary contact. Wait 10 seconds. Hand off to an opted-in backup if nobody accepts. Then record a follow-up.',
+            )}
           </p>
           <button className="button primary" disabled={starting} onClick={start}>
             <FlaskConical size={17} />
-            {starting ? 'Starting…' : 'Start a practice drill'}
+            {starting ? t('Starting…') : t('Start a practice drill')}
           </button>
         </div>
       </section>
       <div className="drill-steps">
         {[
-          ['01', 'A gentle request', 'A synthetic event starts the same persistent workflow.'],
-          ['02', 'A clear handoff', 'Only approved contacts who opted into drills are invited.'],
-          ['03', 'A visible outcome', 'Acceptance and resolution are recorded separately.'],
+          [
+            '01',
+            t('A gentle request'),
+            t('A synthetic event starts the same persistent workflow.'),
+          ],
+          [
+            '02',
+            t('A clear handoff'),
+            t('Only approved contacts who opted into drills are invited.'),
+          ],
+          ['03', t('A visible outcome'), t('Acceptance and resolution are recorded separately.')],
         ].map(([number, title, text]) => (
           <div key={number}>
             <span>{number}</span>
@@ -1041,18 +1108,18 @@ export function Drills(props: PageProps) {
       </div>
       {error && (
         <p className="error-message" role="alert">
-          {error}
+          {systemText(error)}
         </p>
       )}
       <section className="card">
         <SectionTitle
-          title="Your practice log"
-          subtitle="A record of what happened, including unanswered requests."
+          title={t('Your practice log')}
+          subtitle={t('A record of what happened, including unanswered requests.')}
           action={
             drills.length > 0 && (
               <button className="text-link" onClick={download}>
                 <Download size={16} />
-                Export report
+                {t('Export report')}
               </button>
             )
           }
@@ -1067,18 +1134,19 @@ export function Drills(props: PageProps) {
             />
           ))
         ) : (
-          <Empty title="Ready when your circle is">
-            Start your first drill. Use separate browser profiles for the older adult and caregiver,
-            or sign out and switch demo roles.
+          <Empty title={t('Ready when your circle is')}>
+            {t(
+              'Start your first drill. Use separate browser profiles for the older adult and caregiver, or sign out and switch demo roles.',
+            )}
           </Empty>
         )}
       </section>
       <div className="info-strip">
         <Info size={20} />
         <p>
-          Drills send no external notifications. Test timing: 10 seconds to accept, 60 seconds to
-          record an outcome, then a 15-second follow-up grace period. These are demonstration
-          values, not emergency-response recommendations.
+          {t(
+            'Drills send no external notifications. Test timing: 10 seconds to accept, 60 seconds to record an outcome, then a 15-second follow-up grace period. These are demonstration values, not emergency-response recommendations.',
+          )}
         </p>
       </div>
     </>
@@ -1089,9 +1157,11 @@ export function History(props: PageProps) {
   return (
     <>
       <PageHeading
-        eyebrow="TRUST, MADE VISIBLE"
-        title="Nothing shared in the dark."
-        subtitle="See which actions were taken, what was shared, and which permissions were checked."
+        eyebrow={t('TRUST, MADE VISIBLE')}
+        title={t('Nothing shared in the dark.')}
+        subtitle={t(
+          'See which actions were taken, what was shared, and which permissions were checked.',
+        )}
       />
       <section className="card history-card">
         {props.data.audit.length ? (
@@ -1101,21 +1171,33 @@ export function History(props: PageProps) {
                 {a.decision === 'deny' ? <LockKeyhole size={19} /> : <ShieldCheck size={19} />}
               </span>
               <div>
-                <strong>{a.action.replaceAll('_', ' ')}</strong>
-                <p>{a.detail}</p>
+                <strong>
+                  {t(
+                    a.action.startsWith('reminder_')
+                      ? 'My reminders'
+                      : a.action.startsWith('request_') || a.action === 'help_requested'
+                        ? 'Care requests'
+                        : a.action === 'coverage_updated'
+                          ? 'Care coverage'
+                          : a.action === 'check_in'
+                            ? 'Check-in'
+                            : 'Sharing history',
+                  )}
+                </strong>
+                <p>{systemText(a.detail)}</p>
                 <small>
                   {dateTime(a.created_at, props.data.elder.timezone)}
-                  {a.policy_version ? ` · Policy version ${a.policy_version}` : ''}
+                  {a.policy_version ? t(' · Policy version {{p0}}', { p0: a.policy_version }) : ''}
                 </small>
               </div>
               <Badge tone={a.decision === 'deny' ? 'rose' : 'green'}>
-                {a.decision === 'deny' ? 'Blocked' : 'Recorded'}
+                {a.decision === 'deny' ? t('Blocked') : t('Recorded')}
               </Badge>
             </div>
           ))
         ) : (
-          <Empty title="Your story starts here">
-            Confirmed actions and sharing decisions appear in this history.
+          <Empty title={t('Your story starts here')}>
+            {t('Confirmed actions and sharing decisions appear in this history.')}
           </Empty>
         )}
       </section>
@@ -1128,13 +1210,27 @@ export function SettingsPage(props: PageProps & { health: Health | null }) {
   return (
     <>
       <PageHeading
-        eyebrow="MAKE YOURSELF COMFORTABLE"
-        title="A space that works for you."
-        subtitle="A few simple preferences, and a clear picture of how this prototype works."
+        eyebrow={t('MAKE YOURSELF COMFORTABLE')}
+        title={t('A space that works for you.')}
+        subtitle={t('A few simple preferences, and a clear picture of how this prototype works.')}
       />
       <div className="settings-grid">
         <section className="card">
-          <SectionTitle title="Your account" />
+          <SectionTitle title={t('Language settings')} />
+          <p>{t('Personal notes stay in the language they were written in.')}</p>
+          <p>{t('No translation service is called when you change the language.')}</p>
+          <p className="fine-print">
+            {t('Regional translations are drafts and need fluent-speaker review.')}
+          </p>
+          <p>
+            {languages
+              .filter((entry) => entry.available)
+              .map((entry) => entry.native)
+              .join(' · ')}
+          </p>
+        </section>
+        <section className="card">
+          <SectionTitle title={t('Your account')} />
           <div className="account-summary">
             <Avatar name={props.data.user.name} variant="peach" size="large" />
             <div>
@@ -1144,16 +1240,18 @@ export function SettingsPage(props: PageProps & { health: Health | null }) {
           </div>
           <dl className="detail-list">
             <div>
-              <dt>Role</dt>
-              <dd>{props.data.user.role === 'elder' ? 'Older adult' : 'Caregiver'}</dd>
+              <dt>{t('Role')}</dt>
+              <dd>{props.data.user.role === 'elder' ? t('Older adult') : t('Caregiver')}</dd>
             </div>
             <div>
-              <dt>Household timezone</dt>
+              <dt>{t('Household timezone')}</dt>
               <dd>{props.data.elder.timezone}</dd>
             </div>
             <div>
-              <dt>Data</dt>
-              <dd>{props.data.user.is_demo ? 'Fictional demo household' : 'Your household'}</dd>
+              <dt>{t('Data')}</dt>
+              <dd>
+                {props.data.user.is_demo ? t('Fictional demo household') : t('Your household')}
+              </dd>
             </div>
           </dl>
           <Toggle
@@ -1163,55 +1261,58 @@ export function SettingsPage(props: PageProps & { health: Health | null }) {
               localStorage.setItem('saathi:large-text', String(value));
               document.documentElement.classList.toggle('large-text', value);
             }}
-            label="Larger text"
-            description="A little more room for comfortable reading."
+            label={t('Larger text')}
+            description={t('A little more room for comfortable reading.')}
           />
         </section>
         <section className="card">
-          <SectionTitle title="What is connected" />
+          <SectionTitle title={t('What is connected')} />
           <dl className="detail-list">
             <div>
-              <dt>Language interpretation</dt>
-              <dd>{props.health?.ai === 'live' ? 'Live provider configured' : 'Local helper'}</dd>
-            </div>
-            <div>
-              <dt>Notifications</dt>
+              <dt>{t('Language interpretation')}</dt>
               <dd>
-                {props.health?.notifications === 'webhook'
-                  ? 'Inbox + optional webhook'
-                  : 'In-app inbox'}
+                {props.health?.ai === 'live' ? t('Live provider configured') : t('Local helper')}
               </dd>
             </div>
             <div>
-              <dt>Wearable signals</dt>
-              <dd>Not connected</dd>
+              <dt>{t('Notifications')}</dt>
+              <dd>
+                {props.health?.notifications === 'webhook'
+                  ? t('Inbox + optional webhook')
+                  : t('In-app inbox')}
+              </dd>
             </div>
             <div>
-              <dt>Storage</dt>
-              <dd>Persistent SQLite database</dd>
+              <dt>{t('Wearable signals')}</dt>
+              <dd>{t('Not connected')}</dd>
+            </div>
+            <div>
+              <dt>{t('Storage')}</dt>
+              <dd>{t('Persistent SQLite database')}</dd>
             </div>
           </dl>
           <p className="fine-print">
-            Voice input uses your browser’s speech service when available and may send audio to its
-            provider. Recording starts only when you press the microphone. Always review the
-            transcript.
+            {t(
+              'Voice input uses your browser’s speech service when available and may send audio to its provider. Recording starts only when you press the microphone. Always review the transcript.',
+            )}
           </p>
         </section>
         <section className="card settings-about">
-          <SectionTitle title="Built around dignity" />
+          <SectionTitle title={t('Built around dignity')} />
           <p>
-            Saathi Care AI is inspired by the published Suraksha case study by Team StarBugs, with a
-            separate implementation focused on sharing previews, care-circle drills, and accountable
-            handoffs.
+            {t(
+              'Saathi Care AI is inspired by the published Suraksha case study by Team StarBugs, with a separate implementation focused on sharing previews, care-circle drills, and accountable handoffs.',
+            )}
           </p>
           <p>
-            It coordinates support; it does not diagnose, detect falls, or guarantee emergency
-            assistance. There is no automatic emergency-service dispatch. Keep your existing care
-            and emergency arrangements in place.
+            {t(
+              'It coordinates support; it does not diagnose, detect falls, or guarantee emergency assistance. There is no automatic emergency-service dispatch. Keep your existing care and emergency arrangements in place.',
+            )}
           </p>
           <p className="fine-print">
-            The app works while its server is running. When disconnected, new actions are not sent
-            or queued. A saved check-in or an accepted request does not prove someone is safe.
+            {t(
+              'The app works while its server is running. When disconnected, new actions are not sent or queued. A saved check-in or an accepted request does not prove someone is safe.',
+            )}
           </p>
         </section>
       </div>
