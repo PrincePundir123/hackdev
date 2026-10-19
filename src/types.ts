@@ -1,13 +1,106 @@
-export type User = { id: string; name: string; email: string; role: 'elder' | 'caregiver'; timezone: string; is_demo: boolean };
-export type Contact = { id: string; user_id: string; name: string; email: string; relationship: string; priority: number; available: number; accepted: number; allow_requests: number; allow_notes: number; allow_reminders: number; drill_opt_in: number; external_opt_in: number; version: number };
-export type Reminder = { id: string; title: string; trigger_type: 'fixed' | 'check_in'; offset_minutes: number; due_at: number | null; repeat: 'once' | 'daily'; status: string; completed_at: number | null };
-export type Attempt = { id: string; name: string; user_id: string; status: string; expires_at: number };
-export type Incident = { id: string; title: string; elder_id: string; private_note?: string; state: string; owner_id: string | null; owner_name: string | null; is_test: boolean; created_at: number; updated_at: number; next_due_at: number | null; outcome: string | null; attempts: Attempt[]; timeline: { kind: string; text: string; created_at: number }[]; deliveries?: { status: string; retries: number; last_error: string | null; name: string }[] };
-export type Audit = { id: string; action: string; detail: string; decision: string; created_at: number; policy_version: number | null };
-export type DashboardData = { user: User; elder: { name: string; id: string; timezone: string }; contacts: Contact[]; reminders: Reminder[]; reminders_allowed: boolean; incidents: Incident[]; last_check_in: number | null; audit: Audit[]; stats: { open: number; completed: number } };
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: 'elder' | 'caregiver';
+  timezone: string;
+  is_demo: boolean;
+};
+export type Contact = {
+  id: string;
+  user_id: string;
+  name: string;
+  email: string;
+  relationship: string;
+  priority: number;
+  available: number;
+  accepted: number;
+  allow_requests: number;
+  allow_notes: number;
+  allow_reminders: number;
+  drill_opt_in: number;
+  external_opt_in: number;
+  version: number;
+};
+export type Reminder = {
+  id: string;
+  title: string;
+  trigger_type: 'fixed' | 'check_in';
+  offset_minutes: number;
+  due_at: number | null;
+  repeat: 'once' | 'daily';
+  status: string;
+  completed_at: number | null;
+};
+export type Attempt = {
+  id: string;
+  name: string;
+  user_id: string;
+  status: string;
+  expires_at: number;
+};
+export type Incident = {
+  id: string;
+  title: string;
+  elder_id: string;
+  private_note?: string;
+  state: string;
+  owner_id: string | null;
+  owner_name: string | null;
+  is_test: boolean;
+  created_at: number;
+  updated_at: number;
+  next_due_at: number | null;
+  outcome: string | null;
+  attempts: Attempt[];
+  timeline: { kind: string; text: string; created_at: number }[];
+  deliveries?: { status: string; retries: number; last_error: string | null; name: string }[];
+};
+export type Audit = {
+  id: string;
+  action: string;
+  detail: string;
+  decision: string;
+  created_at: number;
+  policy_version: number | null;
+};
+export type DashboardData = {
+  user: User;
+  elder: { name: string; id: string; timezone: string };
+  contacts: Contact[];
+  reminders: Reminder[];
+  reminders_allowed: boolean;
+  incidents: Incident[];
+  last_check_in: number | null;
+  audit: Audit[];
+  stats: { open: number; completed: number };
+};
 export type Health = { status: string; demo: boolean; ai: string; notifications: string };
-export type ReminderProposal = { intent: 'reminder'; title: string; trigger_type: 'fixed' | 'check_in'; offset_minutes: number; due_at: number | null; repeat: 'once' | 'daily' };
-export type Proposal = ReminderProposal | { intent: 'consent'; contact_id: string; field: 'allow_notes' | 'allow_reminders' | 'allow_requests'; allowed: boolean } | { intent: 'clarify'; message: string };
+export type ReminderProposal = {
+  intent: 'reminder';
+  title: string;
+  trigger_type: 'fixed' | 'check_in';
+  offset_minutes: number;
+  due_at: number | null;
+  repeat: 'once' | 'daily';
+};
+export type Proposal =
+  | ReminderProposal
+  | {
+      intent: 'consent';
+      contact_id: string;
+      field: 'allow_notes' | 'allow_reminders' | 'allow_requests';
+      allowed: boolean;
+    }
+  | { intent: 'clarify'; message: string };
 export type Interpretation = { proposal: Proposal; mode: 'local' | 'live'; notice: string };
-export type Preview = { name: string; can_receive: boolean; notes: boolean; reminders: boolean; sample: Incident | null; example: { title: string; private_note?: string } | null };
-export type Page = 'overview' | 'reminders' | 'circle' | 'requests' | 'drills' | 'history' | 'settings';
+export type Preview = {
+  name: string;
+  can_receive: boolean;
+  notes: boolean;
+  reminders: boolean;
+  sample: Incident | null;
+  example: { title: string; private_note?: string } | null;
+};
+export type Page =
+  'overview' | 'reminders' | 'circle' | 'requests' | 'drills' | 'history' | 'settings';
