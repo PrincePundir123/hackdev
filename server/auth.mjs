@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
+import languages from '../shared/languages.json' with { type: 'json' };
 import { hashPassword, verifyPassword, hashToken, id, publicUser, transaction } from './db.mjs';
 
 export class AppError extends Error {
@@ -19,7 +20,9 @@ const credentials = z.object({
     .transform((x) => x.toLowerCase().trim()),
   password: z.string().min(12).max(128),
 });
+const languageSchema = z.enum(languages.filter((language) => language.available).map((language) => language.code));
 const registerSchema = credentials.extend({
+  language: languageSchema.default('en'),
   name: z.string().trim().min(2).max(70),
   timezone: z.string().max(80).default('Asia/Kolkata'),
   inviteCode: z.string().max(100).optional(),
@@ -93,7 +96,7 @@ export function installAuth(app, db, config) {
         elder = db.prepare('SELECT * FROM users WHERE id=?').get(invite.elder_id);
       }
       db.prepare(
-        'INSERT INTO users (id,household_id,name,email,password_hash,role,timezone,created_at) VALUES (?,?,?,?,?,?,?,?)',
+        'INSERT INTO users (id,household_id,name,email,password_hash,role,timezone,language,created_at) VALUES (?,?,?,?,?,?,?,?,?)',
       ).run(
         userId,
         elder?.household_id || id(),
@@ -102,6 +105,7 @@ export function installAuth(app, db, config) {
         hashPassword(data.password),
         elder ? 'caregiver' : 'elder',
         data.timezone,
+        data.language,
         Date.now(),
       );
       if (invite) {
@@ -152,6 +156,11 @@ export function installAuth(app, db, config) {
     next();
   });
   app.get('/api/auth/me', (req, res) => res.json({ user: publicUser(req.user) }));
+  app.patch('/api/auth/preferences', (req, res) => {
+    const { language } = z.object({ language: languageSchema }).strict().parse(req.body);
+    db.prepare('UPDATE users SET language=? WHERE id=?').run(language, req.user.id);
+    res.json({ user: publicUser({ ...req.user, language }) });
+  });
   app.post('/api/auth/logout', (req, res) => {
     const token = (req.headers.cookie || '')
       .split(';')

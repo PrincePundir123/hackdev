@@ -4,6 +4,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY tsconfig.json vite.config.ts index.html ./
 COPY src ./src
+COPY shared ./shared
 COPY public ./public
 RUN npm run build
 
@@ -13,6 +14,7 @@ ENV NODE_ENV=production PORT=3001 HOST=0.0.0.0 DATABASE_PATH=/app/data/saathi.sq
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && mkdir -p data && chown node:node data
 COPY server ./server
+COPY shared ./shared
 COPY scripts/reset-demo.mjs ./scripts/reset-demo.mjs
 COPY --from=build /app/dist ./dist
 USER node

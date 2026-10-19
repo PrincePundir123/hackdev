@@ -4,6 +4,7 @@ export type User = {
   email: string;
   role: 'elder' | 'caregiver';
   timezone: string;
+  language: string;
   is_demo: boolean;
 };
 export type Contact = {
