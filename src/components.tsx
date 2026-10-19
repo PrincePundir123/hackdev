@@ -99,8 +99,17 @@ export function Modal({
   const titleId = useId();
   useEffect(() => {
     const element = ref.current!;
+    const viewport = window.visualViewport;
+    const updateHeight = () => {
+      element.style.setProperty('--dialog-viewport-height', `${viewport?.height ?? innerHeight}px`);
+    };
+    updateHeight();
+    viewport?.addEventListener('resize', updateHeight);
     element.showModal();
-    return () => element.close();
+    return () => {
+      viewport?.removeEventListener('resize', updateHeight);
+      element.close();
+    };
   }, []);
   return (
     <dialog

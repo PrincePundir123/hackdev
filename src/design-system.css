@@ -406,7 +406,13 @@ textarea:focus {
   border: 1.5px solid var(--line);
   border-radius: 32px;
   box-shadow: 0 25px 80px rgba(0, 38, 77, 0.22);
-  overflow: hidden;
+  max-height: calc(100dvh - 24px);
+  max-height: min(calc(100dvh - 24px), calc(var(--dialog-viewport-height, 100dvh) - 24px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-padding-block: 16px;
+  overflow-wrap: anywhere;
 }
 .modal::backdrop {
   background: rgba(0, 28, 58, 0.6);
@@ -416,6 +422,15 @@ textarea:focus {
   padding: 28px 32px;
   border-bottom: 1.5px solid #d8eded;
   background: #f0f8f8;
+}
+.modal-head > div {
+  min-width: 0;
+}
+.modal-head > .icon-button {
+  flex-shrink: 0;
+}
+.modal form {
+  min-width: 0;
 }
 .modal-head h2 {
   font-family: 'Poppins', sans-serif;
@@ -436,6 +451,10 @@ textarea:focus {
   padding: 22px 32px;
   border-top: 1.5px solid #e5edf1;
   background: #f8fbfc;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  padding-bottom: max(22px, env(safe-area-inset-bottom));
 }
 .modal-actions .button.secondary {
   background: white;
@@ -1337,10 +1356,12 @@ select:focus {
   .modal-actions {
     padding: 18px 22px;
     flex-wrap: wrap;
+    padding-bottom: max(18px, env(safe-area-inset-bottom));
   }
   .modal-actions .button {
     flex: 1;
-    min-width: 120px;
+    min-width: min(120px, 100%);
+    max-width: 100%;
   }
   .app-footer {
     padding-inline: 18px;
