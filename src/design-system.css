@@ -1,0 +1,459 @@
+/* Birdie-inspired visual language, adapted for Saathi's interactive care workspace.
+   Keep the original layout rules; this layer owns the shared visual tokens. */
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+@import '@fontsource/poppins/600.css';
+@import '@fontsource/poppins/700.css';
+
+:root {
+  --navy: #00264d;
+  --navy-soft: #123b60;
+  --aqua: #abe0df;
+  --yellow: #facf80;
+  --surface: #f2f9f9;
+  --green: #006669;
+  --dark: var(--navy);
+  --muted: #4e687e;
+  --line: #dce7ed;
+  --mint: #e5f4f2;
+  --peach: #fff3dd;
+  --rose: #fcece9;
+  --lavender: #efedf8;
+  font-size: 15px;
+  color: var(--navy);
+  background: #f6f8fb;
+}
+h1,
+h2,
+h3,
+.brand {
+  font-family: 'Poppins', 'Manrope', sans-serif;
+  letter-spacing: -0.6px;
+}
+button,
+input,
+select,
+textarea {
+  line-height: 1.5;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #008489;
+  outline-offset: 4px;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline-color: #008489;
+}
+.button {
+  min-height: 46px;
+  border-radius: 30px;
+  padding: 12px 21px;
+  font-size: 14px;
+  white-space: normal;
+  text-align: center;
+  box-shadow: none;
+}
+.primary,
+.checkin-card .button {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--navy);
+}
+.primary:hover,
+.checkin-card .button:hover {
+  background: #f4bf5c;
+  border-color: #f4bf5c;
+}
+.secondary {
+  background: white;
+  color: var(--navy);
+  border-color: #b7ccd8;
+}
+.secondary:hover {
+  background: var(--surface);
+}
+.text-link,
+.inline-link {
+  color: #00666b;
+  font-size: 13px;
+}
+.icon-button {
+  color: #44627c;
+  min-width: 40px;
+  min-height: 40px;
+}
+.icon-button:hover {
+  background: #e5f3f4;
+  color: var(--navy);
+}
+.badge {
+  font-size: 11px;
+  border-radius: 20px;
+  padding: 7px 11px;
+  white-space: normal;
+  text-align: center;
+}
+.badge.green,
+.sage,
+.mint,
+.request-icon.green {
+  color: #17625b;
+  background: #e4f3ed;
+}
+.badge.amber,
+.request-icon.amber {
+  color: #785012;
+  background: #fff0d2;
+}
+.badge.rose,
+.rose {
+  color: #923e38;
+  background: #fcece9;
+}
+.badge.neutral {
+  color: #4e687e;
+  background: #edf2f6;
+}
+.badge.white {
+  color: #215c65;
+  background: white;
+}
+.avatar {
+  background: #e1edf2;
+  color: var(--navy);
+}
+.avatar.sage {
+  background: #d9efed;
+  color: #185857;
+}
+.avatar.peach {
+  background: #ffebca;
+  color: #76501c;
+}
+.avatar.lavender {
+  background: #eae5f7;
+  color: #594775;
+}
+.eyebrow {
+  color: #4e687e;
+  font-size: 11px;
+  letter-spacing: 1.4px;
+}
+.muted,
+.fine-print {
+  color: var(--muted);
+}
+.card,
+.contact-card,
+.coverage-calendar,
+.coverage-stat {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 3px 14px #00264d03;
+}
+.card {
+  padding: 25px;
+}
+.section-title {
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.section-title h2 {
+  font-size: 17px;
+  line-height: 1.5;
+}
+.section-title p {
+  font-size: 13px;
+  margin-top: 6px;
+  color: var(--muted);
+}
+.page-heading {
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+.page-heading h1 {
+  font-size: clamp(26px, 2.3vw, 34px);
+  line-height: 1.35;
+}
+.page-heading p {
+  font-size: 15px;
+  color: var(--muted);
+}
+.page-heading .eyebrow {
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+.workspace {
+  padding: 32px 36px 44px;
+  max-width: 1560px;
+}
+.app-footer {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.soft-label {
+  color: #486980;
+  font-size: 12px;
+}
+.soft-label svg {
+  color: #8a641d;
+}
+.reminder-row,
+.quiet-state,
+.tabs {
+  border-color: var(--line);
+}
+.reminder-copy strong,
+.request-title {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.reminder-copy small,
+.request-copy small,
+.person-row small,
+.quiet-state p,
+.quiet-state strong,
+.circle-note,
+.small-promise p,
+.proposal-card p,
+.proposal-card small,
+.clarification,
+.recipient small,
+.timeline small,
+.audit-row small,
+.field small,
+.stack-form label small,
+.speech-actions > span,
+.example-chip,
+.empty p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.person-row strong {
+  font-size: 14px;
+}
+.reminder-symbol,
+.request-icon,
+.quick-icon {
+  border-radius: 13px;
+}
+.done-button {
+  width: 40px;
+  height: 40px;
+  color: #006669;
+  border-color: #a9c7cd;
+}
+.small-button {
+  min-height: 38px;
+  padding: 8px 10px;
+  font-size: 12px;
+  background: #f2f9f9;
+}
+.quiet-state > span {
+  color: #006669;
+  background: #e4f3ed;
+}
+.tabs {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tabs > button {
+  font-size: 14px;
+  color: var(--muted);
+  min-height: 44px;
+}
+.tabs > button.selected {
+  color: var(--navy);
+  border-color: #007d80;
+}
+.tabs.compact {
+  background: #edf3f7;
+  border-radius: 14px;
+}
+.tabs.compact > button.selected {
+  border-radius: 10px;
+  color: var(--navy);
+}
+.contact-card > p,
+.permission-list > div,
+.detail-list,
+.settings-about > p,
+.account-summary p,
+.drill-steps p,
+.audit-row p {
+  font-size: 14px;
+}
+.permission-list .allowed,
+.permission-list .private {
+  font-size: 12px;
+}
+.allowed {
+  color: #17625b;
+}
+.private,
+.detail-list dt,
+.detail-list dd {
+  color: var(--muted);
+}
+.contact-actions {
+  flex-wrap: wrap;
+}
+.contact-actions > .button {
+  font-size: 13px;
+}
+.request-card:hover {
+  background: var(--surface);
+}
+.request-title {
+  flex-wrap: wrap;
+}
+.drill-hero {
+  background: #edf4fa;
+  border-color: var(--line);
+  border-radius: 24px;
+}
+.drill-hero p {
+  color: var(--muted);
+  font-size: 14px;
+}
+.drill-symbol {
+  color: #315f87;
+  background: #dce9f4;
+}
+.drill-steps > div {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px;
+}
+.drill-steps span {
+  color: #006669;
+}
+.modal {
+  border-color: var(--line);
+  border-radius: 24px;
+  box-shadow: 0 24px 90px #00264d33;
+}
+.modal::backdrop {
+  background: #001c3a85;
+  backdrop-filter: blur(4px);
+}
+.modal-head {
+  padding: 25px 26px;
+  border-color: var(--line);
+  background: #f2f9f9;
+}
+.modal-head h2 {
+  font-size: 22px;
+}
+.modal-head p {
+  color: var(--muted);
+  font-size: 14px;
+}
+.modal-body {
+  padding: 26px;
+}
+.modal-actions {
+  padding: 20px 26px;
+  border-color: var(--line);
+}
+input:not([type='checkbox']),
+textarea,
+select {
+  border-color: #b7ccd8;
+  border-radius: 11px;
+  color: var(--navy);
+}
+.toggle-row {
+  gap: 16px;
+}
+.toggle-row strong {
+  font-size: 14px;
+}
+.toggle-row small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.toggle-row input:checked + .toggle-track {
+  background: #006d70;
+}
+.toast {
+  background: var(--navy);
+  color: white;
+  font-size: 14px;
+  border-radius: 16px;
+}
+.toast.error {
+  background: #8a322c;
+}
+.summary-card {
+  border-top: 4px solid var(--aqua);
+}
+.summary-card:nth-child(2) {
+  border-top-color: var(--yellow);
+}
+.summary-card:nth-child(3) {
+  border-top-color: #d0c3e8;
+}
+.summary-card:nth-child(4) {
+  border-top-color: #91bed9;
+}
+.summary-metrics div {
+  background: #f2f7fa;
+  border: 0;
+  border-radius: 12px;
+  padding: 14px;
+}
+.summary-metrics dt {
+  color: var(--muted);
+}
+.summary-metrics dd {
+  color: var(--navy);
+  font-family: 'Poppins', sans-serif;
+  font-size: 30px;
+}
+.summary-request {
+  background: #f5f9fc;
+  border-radius: 12px;
+  min-height: 50px;
+}
+.coverage-timezone,
+.coverage-timezone small,
+.coverage-legend,
+.coverage-week-day small {
+  color: var(--muted);
+}
+.coverage-week-day {
+  border-color: #cbdce5;
+  background: #f6f9fc;
+  color: var(--navy);
+  border-radius: 13px;
+}
+.coverage-week-day.selected {
+  background: #e6f5f4;
+  border-color: #007b7e;
+  box-shadow: 0 0 0 1px #007b7e;
+}
+.coverage-week-day:hover {
+  border-color: #007b7e;
+}
+.coverage-stat h2 {
+  font-size: 25px;
+}
+.coverage-gap-stat {
+  background: #fff8ec;
+  border-color: #eed8ad;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation-duration: 0.01ms !important;
+  }
+}
