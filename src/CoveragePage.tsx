@@ -86,7 +86,7 @@ function ScheduleEditor({
             onSaved(
               await api<CoverageReport>(
                 '/coverage/me',
-                { mode, windows, version: baseVersion },
+                { mode, windows: mode === 'weekly' ? windows : [], version: baseVersion },
                 'PUT',
               ),
             );
@@ -274,6 +274,16 @@ export default function CoveragePage(props: PageProps) {
   const own = report?.contacts.find((c) => c.user_id === props.data.user.id);
   const day = report?.days[selectedDay ?? report.position.day];
   const nextGap = report?.next_gap;
+  const personalStatus =
+    own && !own.accepted
+      ? 'Participation paused'
+      : own && !own.allow_requests
+        ? 'Requests not shared'
+        : own && !own.available
+          ? 'Marked away'
+          : report?.now.length
+            ? 'Within my hours'
+            : 'Outside my hours';
   return (
     <>
       <div className="page-heading">
@@ -332,12 +342,10 @@ export default function CoveragePage(props: PageProps) {
             >
               <span className="eyebrow">{personal ? 'MY STATUS NOW' : 'SCHEDULED NOW'}</span>
               <h2>
-                {report.now.length
-                  ? personal
-                    ? 'Within my hours'
-                    : `${report.now.length} responder${report.now.length === 1 ? '' : 's'}`
-                  : personal
-                    ? 'Outside my hours'
+                {personal
+                  ? personalStatus
+                  : report.now.length
+                    ? `${report.now.length} responder${report.now.length === 1 ? '' : 's'}`
                     : 'No responder scheduled'}
               </h2>
               <p>
